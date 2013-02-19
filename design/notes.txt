@@ -1,0 +1,7 @@
+Notes on the layout:
+
+Today, most visitors have a screen resolution higher than 1024x768 pixels:
+Date			Higher	1024x768	800x600	640x480	Other
+January 2013	90%		9%			0.5%	0%		0.5%
+
+(source:http://www.w3schools.com/browsers/browsers_display.asp)
