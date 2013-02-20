@@ -28,7 +28,7 @@ User Clicks Scores:
 	Hall of Fame User's who have gotten "perfect rounds" (Score of 0)
 	Average round score for the day, the week, the year
 	
-User Clicks Start Button:
+User Clicks Start Button!:
 	Happy Celebration Noise
 	Enter username (lightbox)
 		and age if you're not old enough to use this website, promptly redirect to youtube my little pony video.
