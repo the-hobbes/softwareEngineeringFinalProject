@@ -1,0 +1,107 @@
+Storyboard
+
+  Opponent 
+  | | | |
+    | |
+  | | | |
+   Player
+   
+Menu:
+
+ Picture of a cat and a rat fighting versus screen mortal kombat
+ Start button. Rules button. Credits button. Link to Github. Scores button.
+ 
+User Clicks Rules:
+	They are shown a lightbox of the rules. Very pretty, link to the silly youtube video
+	Escape to shut off or click outside of the box (X on top corner as well for grandma)
+	
+User Clicks Credits:
+	Another lightbox to show the beautiful names of the people who made this game (links to their websites and such)
+	Escape to shut off or click outside of the box (X on top corner as well for grandma)
+
+User Clicks Link to Github:
+	New tab/Window (preferably new tab) to bring the player to the open source wonderland
+	
+User Clicks Scores:
+	Base Screen is the Top Scores by User (not including the computer)
+	Options to filter by User wins/loss by rounds/games
+	Hall of Fame User's who have gotten "perfect rounds" (Score of 0)
+	Average round score for the day, the week, the year
+	
+User Clicks Start Button:
+	Happy Celebration Noise
+	Enter username (lightbox)
+		and age if you're not old enough to use this website, promptly redirect to youtube my little pony video.
+	Choose your player (play mortal kombat theme) 
+		Change username if they want to if they already played
+		Cat or Rat (make up players like Baron von Ratsworth)
+		Avaters a possibility for upload your own
+	Choose AI difficulty and make evil noises
+	More happy noises as the game curtain unfolds
+	Game begins
+		Cards are delt (pretty animations to represent what has already happened in the backend)
+		The top card of the deck is turned over and put on the discard pile face up
+			If card is a power card it is shuffled in and a new card is drawn until we're all good
+		Show the outside cards to the player (not the computers) for either some time or until they click a button
+		Flip the cards over so no one can see it
+	Oldest player gets to go first (We are in round i)
+		Player must click one of the piles, glow each pile
+			If discard: (Provided there is a card in the discard pile)
+				Glow the players cards so they know to pick one of them
+					Player picks card, pretty animation of swapping cards. 
+					Player card goes to discard (face up)
+			If draw pile:
+				Show the card to the player and pop up options
+				Options: (If the card is a number)
+					Glow the players card for swapping and glow the discard for discarding
+				Options: (If the card is a power card)
+					Peek: Glow the players card to peek at
+						Player selects card. Card is shown. Peek is discarded.
+					Swap:
+						Present a use this card or not dialog
+							Yes: 
+								All cards are glown, player selects 1 from each player, presses swap button
+								Cards are swapped, Swap is discarded
+							No:
+								Discard the swap
+					Draw 2:
+						Show draw 2. Draw the next card
+						Card #2: 
+							If number card, they can use it like a regular turn or discard it
+								Use:
+									Turn is over after doing turn
+								Discard:
+									Repeat from step Draw 2 above. (After discarding card)
+							If power card
+								If Another Draw 2 card:
+									They get to draw 2 more cards and repeat these steps. Abandoning this current draw 2 'loop'
+								Use: 
+									Use the power as described above
+								Discard:
+									Repeat from step Draw 2 above. (After discarding card)
+		Does player want to end their turn?
+			Pretty button that's greyed out during your turn and when you're in the middle of actions
+			Player presses the button:
+				Other player goes one more time, and round then ends.
+		Deck runs out of cards?
+			Yes: 
+				Round ends. 
+			No:
+				Keep calm and carry on
+	End of a Round:
+		Each players cards flip over (pretty pretty) 
+		If any cards are power cards the power cards are swapped into the deck, they get the top/random card back from the deck
+		If a player has reached a score of 60 or more, then the game ends.
+	End Game:
+		Who won? Celebration noises or failure noises. 
+		Avatars fighting and killing each other
+		Show your place on the leaderboard
+		Lightbox with Go back to main or play again (character select?)
+									
+					
+		
+	
+	
+
+
+  
