@@ -1,15 +1,9 @@
-#Ignoring Josh's code we used directory:
-hw-6/*
-
-#Ignore java class files
-*.class
 
 #Ignore Phelans Mac and Eclipse stuff
 *.DS_STORE
 *.classpath
 *.project
 package-list
-resources/
 
 #Ignores for Presentation Folder's Tex
 *.aux
