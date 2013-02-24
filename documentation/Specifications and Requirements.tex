@@ -25,6 +25,7 @@
 		\item[Gantt] A bar graph used to visualize a project schedule
 		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
 		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 				peeked.
+		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
 	\end{description}
 
 \section{Introduction}
@@ -66,6 +67,7 @@ This is where the purpose of our project goes
 		\item Database table names should be short, one word where ever possible
 		\item Directories must be lowercase and without spaces
 		\item File names must be lowercase and without spaces
+		\item File names for card images must be the value of the card, or 10-12 for power cards.
 		\item All images should end in .png and be of that format
 		\item CSS class names must be self-documenting
 		\item CSS class names must be camel case
@@ -76,12 +78,49 @@ This is where the purpose of our project goes
 
 	\bfseries Commenting Conventions \mdseries
 
-	
+	At the beginning of each function or class there must be a comment section within triple qoutes defining the following:
+	\begin{itemize}
+		\item Description of function or class
+		\item A list of parameters and types of each
+		\item A brief description of the return type of the function
+	\end{itemize}
 
+	At the top of each code file there must be a comment section with the following information:
+	\begin{itemize}
+		\item A description of the file's purpose and intent
+		\item A list of the functions or classes defined within the file
+		\item The date the file was made
+		\item The date of the most recent revision
+		\item A list of authors or modifiers of the file. 
+	\end{itemize}
 
+	Within HTML each ending $<div>$ should have a comment indicating the id of the opening tag. CSS comments should be used to partition style sheet files into managable and well ordered blocks of style. It 			must be easy to determine which content is affected by the style by simpling reading through the comments.
+
+	\bfseries General Conventions and Guidelines  \mdseries
+
+	\begin{itemize}
+		\item Conditional statements that involve more than a single variable must use parenthesis
+		\item All sensitive information should be passed through posting whenever possible
+		\item HTML/CSS should pass validation tests and be well formed and self documenting
+		\item Global Variables should only be used when neccesary
+		\item Magic Numbers should be avoided whenever possible 
+		\item Formal specifications should be made available using the shared Google Drive or through the mainline Git repository
+	\end{itemize}
 
 \subsection{Version Control}
 \label{subsec:git}
+
+	The version control used to maintain the source code for this System is Git. The following standards must be followed by all team members in order to maintain proper source code management.
+	\begin{itemize}
+		\item Git commits must be descriptive and verbose
+		\item When merging feature and component branches to dev or mainline the option --no-ff must be used
+		\item The Git tagging system must be used to maintain stable release checkpoints
+		\item The master branch of the mainline repository must be functional
+		\item Rebasing commit history is forbidden if the history has been pushed to a remote repository
+		\item A team member resolving merge conflicts must ensure the merge is agreeable to both their and the incoming code
+		\item All members must have their global config setup with email and name for source code tracking purposes
+	\end{itemize}
+	
 
 \subsection{Architecture and Structure}
 \label{subsec:arch}
