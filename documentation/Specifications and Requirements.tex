@@ -68,6 +68,8 @@
 		\item Class names must begin with a capital letter and use camelcase 
 		\item Database table names must begin with a capital letter and use camelcase
 		\item Database table names should be short, one word where ever possible
+		\item Database field names must be camelcase, beginning with a lowercase letter except for foreign keys
+		\item Foreign key fields are prefixed by the foreign tables name, and therefore begin with uppercase letters
 		\item Directories must be lowercase and without spaces
 		\item File names must be lowercase and without spaces
 		\item File names for card images must be the value of the card, or 10-12 for power cards.
@@ -172,6 +174,15 @@
 
 \subsection{Database Design}
 \label{subsec:dbdesign}
+
+	The database backend is composed of two tables: Players and Games. The field names are shown in figure \ref{fig:dbschema}
+	
+	%I had to snip the picture here because google docs refused to download, so replace this pic later
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{DatabaseDiagram.png}
+		\caption[Database table design]{ Database Schema of the Players and Games tables.}
+		\label{fig:dbschema}
+	\end{figure}
 
 \section{Non-Functional Requirements}
 \label{sec:nonFuncReq}
