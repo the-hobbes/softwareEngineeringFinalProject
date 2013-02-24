@@ -12,24 +12,24 @@
 \maketitle
 
 \begin{abstract}
-This document contains the specifications of CS 205 Software  Engineering's final project, an implementation of Rat-a-tat Cat. These standards and requirements will be followed by all team members. The following terms and descriptions must be clear to all members so that the system is a cohesive and comprehendable system.
+	This document contains the specifications of CS 205 Software  Engineering's final project, an implementation of Rat-a-tat Cat. These standards and requirements will be followed by all team members. The 			following terms and descriptions must be clear to all members so that the system is a cohesive and comprehendable system.
 \end{abstract}
 
 \tableofcontents
 
 \section{Terms and Definitions}
 \label{sec:TermsDefinitions}
-\begin{description}
-	\item[Must] If a specification uses the word Must, then all team members are required to follow this requirement. E.g.  \textit{The System \textbf{must} handle all possible URLs and direct the user's to an appropriate page.} 
-	\item[Shall] If a specification uses the word Shall, then the System must respond to the specification in the detailed way. E.g. \textit{The system \textbf{shall} perform operations in a timely manner and no operation will take more than 10 seconds}
-	\item[Gantt] A bar graph used to visualize a project schedule
-	\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
-	\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and peeked.
-\end{description}
+	\begin{description}
+		\item[Must] If a specification uses the word Must, it is mandatory that all team members follow this requirement. E.g.  \textit{The System \textbf{must} handle all possible URLs and direct the user's to an 				appropriate page.} 
+		\item[Shall] If a specification uses the word Shall, then the System must respond to the specification in the detailed way. E.g. \textit{The system \textbf{shall} perform operations in a timely manner and 				no operation will take more than 10 seconds}
+		\item[Gantt] A bar graph used to visualize a project schedule
+		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
+		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 				peeked.
+	\end{description}
 
 \section{Introduction}
 
-Phelans awesome introduction goes here
+	Phelans awesome introduction goes here
 
 \section{Introduction}
 \label{sec:introduction}
@@ -49,12 +49,45 @@ This is where the purpose of our project goes
 
 \section{Functional Requirements}
 \label{sec:funcReq}
+	The functional requirements of this project are specified by the Coding Standards in \S \ref{subsec:coding}, Version Control standards in \S \ref{subsec:git}, directory and game Architecture in \S 				\ref{subsec:arch}, Artificial Intelligence logical overview in \S \ref{subsec:ai}, and Database Design images and naming conventions in \S \ref{subsec:dbdesign}.
+
 
 \subsection{Coding Standards}
 \label{subsec:coding}
 
+	The following standards must be followed by all team members. By defining these standards all code will be readable for all members, and no discrepencies between conventions will occur. Each team member is 		responsible for keeping to these standards, and submission of code not keeping to these standards will come under review and the format shall be adjusted accordingly. 
+
+	\bfseries Naming conventions \mdseries
+
+	\begin{itemize}
+		\item Variable names must be camelcase, descriptive, and self documenting
+		\item Class names must begin with a capital letter and use camelcase 
+		\item Database table names must begin with a capital letter and use camelcase
+		\item Database table names should be short, one word where ever possible
+		\item Directories must be lowercase and without spaces
+		\item File names must be lowercase and without spaces
+		\item All images should end in .png and be of that format
+		\item CSS class names must be self-documenting
+		\item CSS class names must be camel case
+		\item Constants in any form must be all uppercase with underscores between natural breaks
+		\item Git tagging must follow the convention of version\_x.y, x must be the major release number, y the minor release number
+		\item The team leaders repository should be refered to as mainline during remote declaration
+	\end{itemize}
+
+	\bfseries Commenting Conventions \mdseries
+
+	
+
+
+
+\subsection{Version Control}
+\label{subsec:git}
+
 \subsection{Architecture and Structure}
 \label{subsec:arch}
+
+\subsection{Artificial Intelligence}
+\label{subsec:ai}
 
 \subsection{Database Design}
 \label{subsec:dbdesign}
@@ -70,7 +103,7 @@ pretty pictures and descriptions galore
 \subsection{Game Play}
 \label{subsec:gameplay}
 
-This is where the storyboarding stuff goes
+	This is where the storyboarding stuff goes
 
 \subsection{Character Design and Concept Art}
 \label{subsec:cdesign}
@@ -78,7 +111,7 @@ This is where the storyboarding stuff goes
 \subsection{Timeline and Delivery}
 \label{subsec:timeline}
 
-This is where timeline and due dates go as well as what has to go into each part
+	This is where timeline and due dates go as well as what has to go into each part
 
 \section{Test Cases}
 \label{sec:test}
@@ -86,7 +119,7 @@ This is where timeline and due dates go as well as what has to go into each part
 \section{Summary}
 \label{sec:summary}
 
-Overall summary
+	Overall summary
 
 
 \end{document}
