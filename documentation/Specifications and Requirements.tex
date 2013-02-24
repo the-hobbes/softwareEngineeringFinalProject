@@ -125,8 +125,39 @@ This is where the purpose of our project goes
 \subsection{Architecture and Structure}
 \label{subsec:arch}
 
+	The System shall use the Google App Engine (GAE) and Jinja templating systems to function. The model-view-controller paradigm will be implemented, in this instance the model will be the database backend from 		GAE. The view will be comprised of Jinja templates, Javascript/JQuery, and CSS. The python files used by the GAE will handle all control information and dictate the flow control of the System. The project must                                 	be organized, and the directory structure will be as follows:
+
+	\begin{itemize}
+		\item \texttt{python/}
+		\item \texttt{config/}
+		\item \texttt{templates/}
+		\item \texttt{css/}
+		\item \texttt{scripts/}
+		\item \texttt{images/}
+		\item \texttt{userimages/}
+		\item \texttt{sounds/}
+	\end{itemize}
+
+	These directory names are self explanatory besides the difference between \texttt{images} and \texttt{userimages}. The \texttt{userimages} directory is a location where user uploaded images may be stored, 		this directory is kept seperate for security purposes. 
+
+	Each URL handled by the GAE framework and our configuration files is mapped to a python controller in a many to one relationship. The URL to python controller mapping is defined as follows:
+	
+	\begin{center}
+		\begin{tabular}{| c | c |}\hline
+			\multicolumn{1}{|c}{URL} & \multicolumn{1}{c|}{ Handler Name }\\\hline
+			 \texttt{/}			& MasterControlProgram\\\hline
+			 \texttt{/scores} 		& ScoresHandler\\\hline
+			 \texttt{/game} 		& GameHandler\\\hline
+			 \texttt{/playerinfo}	& PlayerInfoHandler\\\hline
+			 \texttt{/characterchoice} & CharacterHandler\\\hline
+			 \texttt{/difficulty}		& DifficultyHandler\\\hline
+		\end{tabular}
+	\end{center}
+
 \subsection{Artificial Intelligence}
 \label{subsec:ai}
+
+
 
 \subsection{Database Design}
 \label{subsec:dbdesign}
