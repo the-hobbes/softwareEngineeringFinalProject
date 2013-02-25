@@ -26,14 +26,13 @@
 		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
 		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 				peeked.
 		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
+		\item[Knock] The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
 	\end{description}
 
 \section{Introduction}
+\label{sec:introduction}
 
 	Phelans awesome introduction goes here
-
-\section{Introduction}
-\label{sec:introduction}
 
 \section{Scope and Purpose}
 \label{sec:scope}
@@ -157,7 +156,15 @@ This is where the purpose of our project goes
 \subsection{Artificial Intelligence}
 \label{subsec:ai}
 
+	The artificial intelligence (AI) within the System is stochastic in nature. A difficulty modifier passed via the games start up parameters influences the reliability of the AI's memory via a decay rate. Each level of 		difficutly effects the decay rate of the memory as well as the baseline of remembrance. The AI is not all knowing, and keeps estimates of both its and the opponents cards. Using these estimates a strategy can 		be used to determine when to knock and when to use power cards. For each of the four cards in the AI's hand a rate of memory decay is kept. This value determines how well the AI remembers the value of the 		card and is decremented each round according to the decay rate value stored within the AI.
 
+	\begin{description}
+		\item[Swap Strategy] \hspace{3em} Using an internal estimate, the AI selects it's highest known card and switches it with the players lowest known card. The AI can determine what the players cards are 			based	on if the Player has drawn from the discard pile or swapped with one of the AI's known cards. In the case of no cards being known -- whether in selection of its own highest card or the users -- a 			random card is chose. 
+		\item[Peek Strategy] \hspace{3em} The AI will always select a card it does not know to peek. If all the values are known, the AI will select the card with the lowest decayed value, and that value will be 			reset to 1.
+		\item[Knocking] \hspace{3em}  The AI will knock when it has reasonable confidence that its internal estimate of its own score is higher than the players.
+	\end{description}
+
+	The AI will also keep track of internal statistics to send to the database later. This is primarily a logging function and is an optional part of the AI implementation.
 
 \subsection{Database Design}
 \label{subsec:dbdesign}
