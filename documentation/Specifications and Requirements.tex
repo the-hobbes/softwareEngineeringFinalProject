@@ -12,7 +12,7 @@
 \maketitle
 
 \begin{abstract}
-	This document contains the specifications of CS 205 Software  Engineering's final project, an implementation of Rat-a-tat Cat. These standards and requirements will be followed by all team members. The 			following terms and descriptions must be clear to all members so that the system is a cohesive and comprehendable system.
+	This document contains the specifications of CS 205 Software  Engineering's final project, an implementation of Rat-a-tat Cat. These standards and requirements will be followed by all team members. The following terms and descriptions must be clear to all members so that the system is a cohesive and comprehendable system.
 \end{abstract}
 
 \tableofcontents
@@ -20,11 +20,11 @@
 \section{Terms and Definitions}
 \label{sec:TermsDefinitions}
 	\begin{description}
-		\item[Must] If a specification uses the word Must, it is mandatory that all team members follow this requirement. E.g.  \textit{The System \textbf{must} handle all possible URLs and direct the user's to an 				appropriate page.} 
-		\item[Shall] If a specification uses the word Shall, then the System must respond to the specification in the detailed way. E.g. \textit{The system \textbf{shall} perform operations in a timely manner and 				no operation will take more than 10 seconds}
+		\item[Must] If a specification uses the word Must, it is mandatory that all team members follow this requirement. E.g.  \textit{The System \textbf{must} handle all possible URLs and direct the user's to an appropriate page.} 
+		\item[Shall] If a specification uses the word Shall, then the System must respond to the specification in the detailed way. E.g. \textit{The system \textbf{shall} perform operations in a timely manner and no operation will take more than 10 seconds}
 		\item[Gantt] A bar graph used to visualize a project schedule
 		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
-		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 				peeked.
+		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 	peeked.
 		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
 		\item[Knock] The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
 	\end{description}
@@ -53,13 +53,13 @@
 
 \section{Functional Requirements}
 \label{sec:funcReq}
-	The functional requirements of this project are specified by the Coding Standards in \S \ref{subsec:coding}, Version Control standards in \S \ref{subsec:git}, directory and game Architecture in \S 				\ref{subsec:arch}, Artificial Intelligence logical overview in \S \ref{subsec:ai}, and Database Design images and naming conventions in \S \ref{subsec:dbdesign}.
+	The functional requirements of this project are specified by the Coding Standards in \S \ref{subsec:coding}, Version 			Control standards in \S \ref{subsec:git}, directory and game Architecture in \S 	\ref{subsec:arch}, Artificial Intelligence 		logical overview in \S \ref{subsec:ai}, and Database Design images and naming conventions in \S\ref{subsec:dbdesign}.
 
 
 \subsection{Coding Standards}
 \label{subsec:coding}
 
-	The following standards must be followed by all team members. By defining these standards all code will be readable for all members, and no discrepencies between conventions will occur. Each team member is 		responsible for keeping to these standards, and submission of code not keeping to these standards will come under review and the format shall be adjusted accordingly. 
+	The following standards must be followed by all team members. By defining these standards all code will be readable for 		all members, and no discrepencies between conventions will occur. Each team member is responsible for keeping to these 	standards, and submission of code not keeping to these standards will come under review and the format shall be 			adjusted accordingly. 
 
 	\bfseries Naming conventions \mdseries
 
@@ -77,7 +77,7 @@
 		\item CSS class names must be self-documenting
 		\item CSS class names must be camel case
 		\item Constants in any form must be all uppercase with underscores between natural breaks
-		\item Git tagging must follow the convention of version\_x.y, x must be the major release number, y the minor release number
+		\item Git tagging must follow the convention of version\_x.y, x must be the major release number, y the minor 					release number
 		\item The team leaders repository should be refered to as mainline during remote declaration
 	\end{itemize}
 
@@ -99,7 +99,7 @@
 		\item A list of authors or modifiers of the file. 
 	\end{itemize}
 
-	Within HTML each ending $<div>$ should have a comment indicating the id of the opening tag. CSS comments should be used to partition style sheet files into managable and well ordered blocks of style. It 			must be easy to determine which content is affected by the style by simpling reading through the comments.
+	Within HTML each ending $<div>$ should have a comment indicating the id of the opening tag. CSS comments should be 	used to partition style sheet files into managable and well ordered blocks of style. It must be easy to determine which 			content is affected by the style by simpling reading through the comments.
 
 	\bfseries General Conventions and Guidelines  \mdseries
 
@@ -130,7 +130,7 @@
 \subsection{Architecture and Structure}
 \label{subsec:arch}
 
-	The System shall use the Google App Engine (GAE) and Jinja templating systems to function. The model-view-controller paradigm will be implemented, in this instance the model will be the database backend from 		GAE. The view will be comprised of Jinja templates, Javascript/JQuery, and CSS. The python files used by the GAE will handle all control information and dictate the flow control of the System. The project must                                 	be organized, and the directory structure will be as follows:
+	The System shall use the Google App Engine (GAE) and Jinja templating systems to function. The model-view-controller 			paradigm will be implemented, in this instance the model will be the database backend from GAE. The view will be 				comprised of Jinja templates, Javascript/JQuery, and CSS. The python files used by the GAE will handle all control 			information and dictate the flow control of the System. The project must be organized, and the directory structure will 			be as follows:
 
 	\begin{itemize}
 		\item \texttt{python/}
@@ -143,9 +143,9 @@
 		\item \texttt{sounds/}
 	\end{itemize}
 
-	These directory names are self explanatory besides the difference between \texttt{images} and \texttt{userimages}. The \texttt{userimages} directory is a location where user uploaded images may be stored, 		this directory is kept seperate for security purposes. 
+	These directory names are self explanatory besides the difference between \texttt{images} and \texttt{userimages}. 			The \texttt{userimages} directory is a location where user uploaded images may be stored, this directory is kept 				separate for security purposes. 
 
-	Each URL handled by the GAE framework and our configuration files is mapped to a python controller in a many to one relationship. The URL to python controller mapping is defined as follows:
+	Each URL handled by the GAE framework and our configuration files is mapped to a python controller in a many to one 			relationship. The URL to python controller mapping is defined as follows:
 	
 	\begin{center}
 		\begin{tabular}{| c | c |}\hline
@@ -162,27 +162,38 @@
 \subsection{Artificial Intelligence}
 \label{subsec:ai}
 
-	The artificial intelligence (AI) within the System is stochastic in nature. A difficulty modifier passed via the games start up parameters influences the reliability of the AI's memory via a decay rate. Each level of 		difficutly effects the decay rate of the memory as well as the baseline of remembrance. The AI is not all knowing, and keeps estimates of both its and the opponents cards. Using these estimates a strategy can 		be used to determine when to knock and when to use power cards. For each of the four cards in the AI's hand a rate of memory decay is kept. This value determines how well the AI remembers the value of the 		card and is decremented each round according to the decay rate value stored within the AI.
+	The artificial intelligence (AI) within the System is stochastic in nature. A difficulty modifier passed via the games start up 	parameters influences the reliability of the AI's memory via a decay rate. Each level of difficulty effects the decay rate 			of the memory as well as the baseline of remembrance. The AI is not all knowing, and keeps estimates of both its and 			the opponents cards. Using these estimates a strategy can 	be used to determine when to knock and when to use 			power cards. For each of the four cards in the AI's hand a rate of memory decay is kept. This value determines how well 	the AI remembers the value of the card and is decremented each round according to the decay rate value 				stored within the AI.
 
 	\begin{description}
-		\item[Swap Strategy] \hspace{3em} Using an internal estimate, the AI selects it's highest known card and switches it with the players lowest known card. The AI can determine what the players cards are 			based	on if the Player has drawn from the discard pile or swapped with one of the AI's known cards. In the case of no cards being known -- whether in selection of its own highest card or the users -- a 			random card is chose. 
-		\item[Peek Strategy] \hspace{3em} The AI will always select a card it does not know to peek. If all the values are known, the AI will select the card with the lowest decayed value, and that value will be 			reset to 1.
-		\item[Knocking] \hspace{3em}  The AI will knock when it has reasonable confidence that its internal estimate of its own score is higher than the players.
+		\item[Swap Strategy] \hspace{3em} Using an internal estimate, the AI selects it's highest known card and 						switches it with the players lowest known card. The AI can determine what the players cards are based on 				if the Player has drawn from the discard pile or swapped with one of the AI's known cards. In the case of 					no cards being known -- whether in selection of its own highest card or the users -- a random card is 					chose. 
+		\item[Peek Strategy] \hspace{3em} The AI will always select a card it does not know to peek. If all the values are 			known, the AI will select the card with the lowest decayed value, and that value will be reset to 1.
+		\item[Knocking] \hspace{3em}  The AI will knock when it has reasonable confidence that its internal estimate of its 			own score is higher than the players.
 	\end{description}
 
-	The AI will also keep track of internal statistics to send to the database later. This is primarily a logging function and is an optional part of the AI implementation.
+	The AI will also keep track of internal statistics to send to the database later. This is primarily a logging function and is an 	optional part of the AI implementation.
 
 \subsection{Database Design}
 \label{subsec:dbdesign}
 
-	The database backend is composed of two tables: Players and Games. The field names are shown in figure \ref{fig:dbschema}
+	The database backend is composed of two tables: \texttt{Players} and \texttt{Games}. The field names are shown in 			figure \ref{fig:dbschema}, you can see by the figure that the \texttt{Games} table uses a foreign key referencing the 			playerID within the \texttt{Players} table. This serves to link a user to their scores and allows for the creation of 				leader-boards and other statistics that encourages competition and replay value.
 	
-	%I had to snip the picture here because google docs refused to download, so replace this pic later
-	\begin{figure}
+	\begin{figure}[ht]
 		\includegraphics[width=0.5\textwidth]{DatabaseDiagram.png}
 		\caption[Database table design]{ Database Schema of the Players and Games tables.}
 		\label{fig:dbschema}
 	\end{figure}
+
+	The querying of the database during gameplay is shown in figure \ref{fig:dbflow}. The System shall have failsafe 			methods in place so that no in-progress games or games that are terminated unexpectedly affect the statistics for each 		player. A players name and age are the only user supplied information that is entered into the database. The other 			fields are computed by execution and completion of the game.
+
+	\onecolumn
+	\begin{figure}[hb]	
+		\centering
+		\includegraphics[width=1.0\textwidth]{DatabaseFlowChart.png}
+		\caption[Database Query Flow]{ The overall timing and triggers of database interactions from within the game.  }
+		\label{fig:dbflow}
+	\end{figure}
+	\twocolumn
+
 
 \section{Non-Functional Requirements}
 \label{sec:nonFuncReq}
