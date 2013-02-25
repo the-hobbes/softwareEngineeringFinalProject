@@ -14,3 +14,6 @@ package-list
 *.synctex.gz
 *.synctex.gz(busy)
 *.toc
+
+#While creating the presentation we will ignore the pdf
+documentation/*.pdf
