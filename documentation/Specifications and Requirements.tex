@@ -6,7 +6,7 @@
 \usepackage{graphicx}
 
 \title{Requirements and Specifications}
-\author{Bryan Ceberio-Lucas \and Ethan Eldridge \and Peter LeBlanc \and Phelan Vendeville }
+\author{Bryan Ceberio-Lucas, \and Ethan Eldridge, \and Peter LeBlanc, \and Phelan Vendeville }
 
 \begin{document}
 \maketitle
@@ -213,8 +213,76 @@
 
 \subsection{User Interface}
 \label{subsec:ui}
+	The user interface shall be constructed so as to be intuitive and easy to use. A player communicating with the interface should need little to no instruction in order to execute decisions and allow the gameplay to flow. Although the interface does not teach the actual mechanics of gameplay, it should be structured in such a way as to funnel the user into gameplay decisions with a minimal amount of instruction. 
+	
+	Ease of use must be measured through usability testing. A series of users will be presented with the interface and supervised using it, with limited contact between the test administrators. The administrators must record their observations and make note of information bottlenecks and constriction points, areas where the flow of the gameplay may become stymied and indicate a change in design is potentially necessary. 
+	
+	There will be several different interfaces presented to the user, each with a different purpose. The details and design of these interfaces will be examined in the following section. 
+	
+	\begin{description}
+	\item[\textbf{Landing Page:}] \hspace{4em} The landing page will be the first interaction between the user and the game. As such, it must present a clean and polished first impression. The main content area will contain a large splash image presenting introductory art for the game, as well as a series of buttons underneath the splash image.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{1_IntroPage.jpg}
+		\caption{Landing page wireframe diagram. }
+		\label{fig:landingpagewireframe}
+	\end{figure}
+	
+	These buttons will direct the user to different areas of the game space, and include Start (begin the game), Credits (display a lightbox of game credits), Rules (display a lightbox of gameplay rules), and Scores (send the player to a leaderboard page). There will also be provided, underneath the buttons, a link to the github repository containing the game project files. The layout of this landing page can be seen in 	Figure \ref{fig:landingpagewireframe}.
+	
+	\item[\textbf{Lightbox:}] \hspace{2em} Lightbox displays will be provided for the targets of the Credits and Rules buttons. These light-boxes will consist of a central section to provide the information relevant to the button choice, and an outer section to darken the background of the page and focus the user’s attention on the central content area. This design can be seen displayed in Figure \ref{fig:lightbox}. 
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{2_rulesCreditsScoresLightbox.jpg}
+		\caption{Lightbox diagram. }
+		\label{fig:lightbox}
+	\end{figure}
+	
+	\item[\textbf{Name and Age:}] \hspace{4em} The next view the user will be presented by upon clicked the Begin Game button is a form whose purpose is to gather the user’s name and age. This form can be seen in Figure \ref{fig:userinfo}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{3_UsernameAge.jpg}
+		\caption{User information collection diagram. }
+		\label{fig:userinfo}
+	\end{figure}
+	
+	\item[\textbf{Choose Player:}] \hspace{4em} After entering the name and age information, the user is directed to the player choice page. In this page, the user selects one of 6 characters, 3 rats and 3 cats, to be their player avatar. A large central box displays the currently selected avatar, and a scrolling filmstrip of thumbnails sits below it allowing the user to choose the character avatar they desire. Below this filmstrip are two buttons, one to go back and one to go forward. Please see the appendix for a gallery of character and concept art. The Choose Player screen can be seen in Figure \ref{fig:chooseplayer}. 
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{4_ChoosePlayer.jpg}
+		\caption{Player choice diagram. }
+		\label{fig:chooseplayer}
+	\end{figure}	
+	
+	\item[\textbf{Select Difficulty:}] \hspace{5em}The player is then directed to the difficulty selection interface. Like the previous interface, there is a large central box and scrolling filmstrip below it. Rather than player characters however, this filmstrip contains three difficulty settings; easy, medium and hard. The central box displays an image correlated with that difficulty level. There are buttons provided for forward and backwards navigation as well. This layout can be seen in Figure \ref{fig:difficulty}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{5_ChooseDifficulty.jpg}
+		\caption{Difficulty level diagram. }
+		\label{fig:difficulty}
+	\end{figure}
+	
+	\item[\textbf{Game Space:}] \hspace{4em} The final screen available to the player is the game space. This interface facilitates the player’s interaction with the actual flow of the game. There are several sections to this play space. There are two areas for the cards in play, the 4 cards on the top of the screen being for the opponent and the 4 on the bottom being for the player. The deck and discard piles are located between the two active card spreads, with the deck being on the right and the discard to its left. 
+	
+	In addition, there is a large area to the right of the interface which is used to display the active card (drawn from the discard or draw pile). A button below it is used by the player to “knock”, or end a round. This button will be active only on the player’s turn. In the upper left corner of the screen, there is a section for administrative utilities outside of the regular gameplay. This section includes the functionality to end the game, got back to the home screen or pull up the game rules (in a lightbox) at any time. After the game concludes, a lightbox containing the results is displayed to the user. This layout can be viewed in Figure \ref{fig:gamespace}.
 
-pretty pictures and descriptions galore
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{6_GameSpace.jpg}
+		\caption{Main game space diagram. }
+		\label{fig:gamespace}
+	\end{figure}
+
+	\item[\textbf{Final Notes:}] \hspace{3em} In keeping with W3 statistics for modern screen size use, the interface will be designed to accommodate a viewport of 800x600 pixels. The interface should be flexible enough to scale with a reasonable degree of success to larger and smaller screen sizes. 
+	
+	The next actions of a player and their available options will be indicated by glowing areas of the gameboard. For example, when a player must decide between drawing from the Deck or from the Discard Pile, both of these objects will have a glowing effect applied to them to indicate potential choices. This glow can be seen surrounding the discard pile in Figure \ref{fig:gamespace}. 
+	
+	\end{description}
 
 \subsection{Game Play}
 \label{subsec:gameplay}
@@ -303,13 +371,36 @@ pretty pictures and descriptions galore
 		\end{tabular}
 	\end{center}
 
-\section{Test Cases}
-\label{sec:test}
-
 \section{Summary}
 \label{sec:summary}
 
 	It is our desire that this implementation of the Rat-a-Tat-Cat card game capture the spirit and mechanics of the original game while adapting it to an interactive, web-driven and graphically pleasing format. This software implementation of Rat-a-Tat-Cat should be stable, robust, and eminently usable, providing players with an intuitive and consistently enjoyable gameplay experience in a natural interface. This specifications document is intended to provide the necessary framework to both implement and measure the success of these requirements, as well as set followable engineering standards to facilitate the creative process and satisfy the client’s inquiries and expectations.
 
+\section{Appendix}
+\label{sec:appendix}
+
+\subsection{Rat Characters}
+\label{subsec:ratcharacters}
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{Rat_Ratman.jpg}
+		\caption{The character of "The Ratman".}
+		\label{fig:ratman}
+	\end{figure}
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{Rat_Jason.jpg}
+		\caption{The character of "Jason H.".}
+		\label{fig:jason}
+	\end{figure}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{Rat_Betty.jpg}
+		\caption{The character of "Betty, the Rat Queen".}
+		\label{fig:betty}
+	\end{figure}
 
 \end{document}
