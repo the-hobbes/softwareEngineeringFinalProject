@@ -28,6 +28,7 @@
 		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
 		\item[Knock] \hspace{.5em} The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
 		\item[Light-Box] \hspace{2em}An overlayed $<div>$ tag containing the contents of a webpage, usually placed above the current page.
+		\item[REST] Representational state transfer, this is the primary method of resource sharing between clients and servers within the world wide web. It emphasizes a stateless environment, which can cause difficulties when designing game systems and web-pages that require a large amount of Client Server interaction.
 	\end{description}
 
 
@@ -245,6 +246,31 @@ pretty pictures and descriptions galore
 	\end{figure}
 
 	When a round ends, the score is added to an overall score for the game, once a Player or AI reaches 60 or more points, the game ends. 
+
+\subsection{The State Stack }
+\label{subsec:urlhandstack}
+
+	The execution of the program is driven through user interactions, in order to keep track of the game environment within a REST environment like an HTML document we create use a stack of possible states the System can be in. These states are defined as follows:
+	\begin{itemize}
+		\item \bfseries waitingForDraw \mdseries Iindicates the System shall glow the discard and deck cards, and await user  interaction.
+		\item \bfseries waitingForPCard \mdseries Indicates the System shall glow the players cards and await user interaction.
+		\item \bfseries HAL \mdseries The AI takes control of the game and processes its turn. 
+		\item \bfseries playerChoice \mdseries A player has drawn any card from the deck and must choose to either discard or use it.
+		\item \bfseries draw2PlayerChoice  \mdseries This is a special playerChoice state due to the nature of the draw 2 power card, the user is able to draw multiple cards and process each of those states while in this state.
+	\end{itemize}
+
+	The URL's handlers specified in \S\ref{subsec:arch} deal with actual pages defined within html. However there also exist a python Handler for each of the states. The following table indicates which states map to which controller:
+	
+	\begin{center}
+		\begin{tabular}{| c | c |}\hline
+			\multicolumn{1}{|c}{State} & \multicolumn{1}{c|}{ Handler Name }\\\hline
+			\texttt{waitingForDraw} & waitingForDrawHandler\\\hline
+			\texttt{waitingForPCard} & waitingForPCardHandler\\\hline
+			\texttt{HAL} & opponentAIHandler\\\hline
+			\texttt{playerChoice} & playerChoiceHandler\\\hline
+			\texttt{draw2PlayerChoice} & drawPlayerChoiceHandler\\\hline
+		\end{tabular}
+	\end{center}
 
 \subsection{Character Design and Concept Art}
 \label{subsec:cdesign}
