@@ -26,8 +26,10 @@
 		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
 		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 	peeked.
 		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
-		\item[Knock] The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
+		\item[Knock] \hspace{.5em} The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
+		\item[Light-Box] \hspace{2em}An overlayed $<div>$ tag containing the contents of a webpage, usually placed above the current page.
 	\end{description}
+
 
 \section{Introduction}
 \label{sec:introduction}
@@ -50,6 +52,11 @@
 	This document will be used to delineate the behavior, structure and requirements of the Rat-a-Tat-Cat game system, including both functional and nonfunctional elements. This document has been written to be read, and as such will serve as a guide to both developers and the client. It shall provide a followable rubric to the software engineering team for enumeration of executable and deliverable expectations, and give the client a set of expectations to be fulfilled. 
 	
 	We shall begin the specifications document with an exploration of the project’s functional requirements, then continue with its nonfunctional stipulations. We will outline a series of test cases to ascertain the completion of such exigencies, and conclude with a brief summary of the document.
+
+\section{Rules}
+\label{sec:rules}
+
+	The rules go here
 
 \section{Functional Requirements}
 \label{sec:funcReq}
@@ -185,14 +192,12 @@
 
 	The querying of the database during gameplay is shown in figure \ref{fig:dbflow}. The System shall have failsafe 			methods in place so that no in-progress games or games that are terminated unexpectedly affect the statistics for each 		player. A players name and age are the only user supplied information that is entered into the database. The other 			fields are computed by execution and completion of the game.
 
-	\onecolumn
-	\begin{figure}[hb]	
+	\begin{figure}[b]	
 		\centering
-		\includegraphics[width=1.0\textwidth]{DatabaseFlowChart.png}
+		\includegraphics[width=0.5\textwidth]{DatabaseFlowChart.png}
 		\caption[Database Query Flow]{ The overall timing and triggers of database interactions from within the game.  }
 		\label{fig:dbflow}
 	\end{figure}
-	\twocolumn
 
 
 \section{Non-Functional Requirements}
@@ -206,7 +211,40 @@ pretty pictures and descriptions galore
 \subsection{Game Play}
 \label{subsec:gameplay}
 
-	This is where the storyboarding stuff goes
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{landingpage.png}
+		\caption{Landing page control flow diagram. }
+		\label{fig:landingpage}
+	\end{figure}
+
+	The user is presented with the initial landing screen described in \S\ref{subsec:ui}, the execution flow is described in figure \ref{fig:landingpage}. The initial landing page is handled by the MainHandler controller and will use asynchronous post requests through jQuery to create light-boxes to display the Rules and Credits pages. The scores page shall exist on its own page due to its more complex nature and will allow players to see leader-boards and filter scoring information. Once A Player decides to start the game, their information will be gathered and an account created, the program will then divert control to the Game controller.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{gameplay.png}
+		\caption{Game execution flow detailing initial setup and actions within a round. }
+		\label{fig:gameplay}
+	\end{figure}
+
+	Once a user has begun the game the initial steps of dealing and selected a player to go first are executed. This requires no input from the user and consists primarily of animations and effects. Once a round begins, each player takes turns following the rules of the game specified in \S\ref{sec:rules}. 
+
+	During a turn, a user is shown their possible actions to take by Glow-ing the cards and options available to them. At the beginning of the turn, the deck and discard piles are glown, indicating the User may select either to draw from the deck or discard pile. Note that in a sidebar, help text shall be displayed to indicate what the User should do if the visual queues are not enough information. Once a user has selected a card, they may choose to use it or to discard it. The use of each type of card is defined below and the sequence of actions defined for power cards displayed in figure \ref{fig:powact}.
+	\begin{description}
+		\item[Numeric] \hspace{1em} A numeric card may be swapped with any of the player's cards. The card is shown to the user, and their cards glown. Upon selection of a card, the selected card is discarded and replaced in the player's hand by the drawn card.
+		\item[Peek] A peek card allows a user to look at a single card in their hand. If used, the player's cards glow and they are able to select the card to view.
+		\item[Swap] A swap card allows a user to swap one of their cards with a card from the opponents hand. No cards are viewed. The player's cards are glown, allowing the player to select their card to switch. After selection, the opponents cards are glown and the player chooses the opponent card to swap with. 
+		\item[Draw2] When a player draws a Draw 2 card they are allowed to draw up to 2 more cards from the deck or discard pile. The deck and discard piles glow indicating the need for a selection. Once a user draws a card, they may choose to use the card or to discard it. If a player uses a card, the draw 2 card is no longer in affect and after performing the actions allowed by the drawn card, their turn ends. 
+	\end{description}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{powercardactions.png}
+		\caption{Sequence of actions to be taken upon using any power card.}
+		\label{fig:powact}
+	\end{figure}
+
+	When a round ends, the score is added to an overall score for the game, once a Player or AI reaches 60 or more points, the game ends. 
 
 \subsection{Character Design and Concept Art}
 \label{subsec:cdesign}
