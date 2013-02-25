@@ -143,6 +143,9 @@
 \label{subsec:arch}
 
 	The System shall use the Google App Engine (GAE) and Jinja templating systems to function. The model-view-controller 			paradigm will be implemented, in this instance the model will be the database backend from GAE. The view will be 				comprised of Jinja templates, Javascript/JQuery, and CSS. The python files used by the GAE will handle all control 			information and dictate the flow control of the System. The project must be organized, and the directory structure will 			be as follows:
+	
+	%Dont want the list to be split accross pages
+	\newpage
 
 	\begin{itemize}
 		\item \texttt{python/}
@@ -268,11 +271,11 @@ pretty pictures and descriptions galore
 	\begin{center}
 		\begin{tabular}{| c | c |}\hline
 			\multicolumn{1}{|c}{State} & \multicolumn{1}{c|}{ Handler Name }\\\hline
-			\texttt{waitingForDraw} & waitingForDrawHandler\\\hline
-			\texttt{waitingForPCard} & waitingForPCardHandler\\\hline
+			\texttt{waitingForDraw} & waitingForDHandler\\\hline
+			\texttt{waitingForPCard} & waitingForPCHandler\\\hline
 			\texttt{HAL} & opponentAIHandler\\\hline
 			\texttt{playerChoice} & playerChoiceHandler\\\hline
-			\texttt{draw2PlayerChoice} & drawPlayerChoiceHandler\\\hline
+			\texttt{draw2PlayerChoice} & draw2ChoiceHandler\\\hline
 		\end{tabular}
 	\end{center}
 
