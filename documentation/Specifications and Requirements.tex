@@ -24,11 +24,11 @@
 		\item[Shall] If a specification uses the word Shall, then the System must respond to the specification in the detailed way. E.g. \textit{The system \textbf{shall} perform operations in a timely manner and no operation will take more than 10 seconds}
 		\item[Gantt] A bar graph used to visualize a project schedule
 		\item[Glow] To glow is to surround an object with a faint highlight that indicates that the User may interact with this object.
-		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System, this collection is refered to as the State and can be pushed, popped, and 	peeked.
+		\item[State] The System's internal state is kept using a Stack of strings that indicate the current and next state of the System. This collection is refered to as the State and can be pushed, popped, and 	peeked.
 		\item[Magic Numbers] \hspace{4em} Hard-coded numerical constants 
-		\item[Knock] \hspace{.5em} The button press that determines a round is over and the cards should be overturned when gameplay returns to the user who knocked.
+		\item[Knock] \hspace{.5em} The button press that determines a round is over. All cards should be overturned when gameplay returns to the user who knocked.
 		\item[Light-Box] \hspace{2em}An overlayed $<div>$ tag containing the contents of a webpage, usually placed above the current page.
-		\item[REST] Representational state transfer, this is the primary method of resource sharing between clients and servers within the world wide web. It emphasizes a stateless environment, which can cause difficulties when designing game systems and web-pages that require a large amount of Client Server interaction.
+		\item[REST] (Representational state transfer) This is the primary method of resource sharing between clients and servers within the world wide web. It emphasizes a stateless environment, which can cause difficulties when designing game systems and web-pages that require a large amount of Client Server interaction.
 	\end{description}
 
 
@@ -61,7 +61,7 @@
 
 	Each turn begins with a player making the choice to draw from the discard pile or the deck. If the player draws the top card of the discard pile (which is face up), then they may replace one of their 4 cards with the drawn card. The players turn is now over. However, if a player draws from the deck, depending on the type of card they receive a different action may occur. If the user draws a numeric card, they are able to swap any of their 4 cards with the drawn card. After doing so, whichever card is not used is discarded face up. If the user draws a power card they execute that power. The power card actions are described in detail in \S\ref{subsec:gameplay}. 
 
-	When a player thinks that they have the lowest score and can win the round, they knock on the table and each player is allowed one more turn. After these turns are taken, the players flip their cards over and total their card values. Any power cards in the turned over cards  must be swapped with the top card of the draw pile. Whichever player has the lowest score wins the round. If a player has accumulated over 60 points they lose or if the draw pile is used up, the game is also over.
+	When a player thinks that they have the lowest score and can win the round, they knock on the table and each player is allowed one more turn. After these turns are taken, the players flip their cards over and total their card values. Any power cards in the turned over cards  must be swapped with the top card of the draw pile. Whichever player has the lowest score wins the round. If the draw pile is used up, the round is over. When a player has accumulated over 60 points, they lose the game. 
 
 \section{Functional Requirements}
 \label{sec:funcReq}
@@ -142,7 +142,7 @@
 \subsection{Architecture and Structure}
 \label{subsec:arch}
 
-	The System shall use the Google App Engine (GAE) and Jinja templating systems to function. The model-view-controller 			paradigm will be implemented, in this instance the model will be the database backend from GAE. The view will be 				comprised of Jinja templates, Javascript/JQuery, and CSS. The python files used by the GAE will handle all control 			information and dictate the flow control of the System. The project must be organized, and the directory structure will 			be as follows:
+	The System shall use the Google App Engine (GAE) and Jinja templating systems. The model-view-controller 			paradigm will be implemented in the following manner: the model will be the database backend from GAE, the view will be comprised of Jinja templates, Javascript/JQuery, and CSS, and the python files used by the GAE will handle all control 			information and dictate the flow control of the System. The project must be organized into discrete pieces, and the directory structure will 			be as follows:
 	
 	%Dont want the list to be split accross pages
 	\newpage
@@ -158,7 +158,7 @@
 		\item \texttt{sounds/}
 	\end{itemize}
 
-	These directory names are self explanatory besides the difference between \texttt{images} and \texttt{userimages}. 			The \texttt{userimages} directory is a location where user uploaded images may be stored, this directory is kept 				separate for security purposes. 
+	These directory names are self explanatory, aside from the difference between \texttt{images} and \texttt{userimages}. 			The \texttt{userimages} directory is a location where user uploaded images may be stored, this directory is kept 				separate for security purposes. 
 
 	Each URL handled by the GAE framework and our configuration files is mapped to a python controller in a many to one 			relationship. The URL to python controller mapping is defined as follows:
 	
@@ -177,12 +177,12 @@
 \subsection{Artificial Intelligence}
 \label{subsec:ai}
 
-	The artificial intelligence (AI) within the System is stochastic in nature. A difficulty modifier passed via the games start up 	parameters influences the reliability of the AI's memory via a decay rate. Each level of difficulty effects the decay rate 			of the memory as well as the baseline of remembrance. The AI is not all knowing, and keeps estimates of both its and 			the opponents cards. Using these estimates a strategy can 	be used to determine when to knock and when to use 			power cards. For each of the four cards in the AI's hand a rate of memory decay is kept. This value determines how well 	the AI remembers the value of the card and is decremented each round according to the decay rate value 				stored within the AI.
+	The artificial intelligence (AI) within the System is stochastic in nature. A difficulty modifier passed via the game's start up 	parameters influences the reliability of the AI's memory via a decay rate. Each level of difficulty effects the decay rate 			of the memory as well as the baseline of remembrance. The AI is not all knowing, and instead keeps estimates of both its and 			the opponents cards. Using these estimates a strategy can determines when to knock and when to use 			power cards. For each of the four cards in the AI's hand, a rate of memory decay is kept. This value determines how well 	the AI remembers the value of that card. This rate is decremented each round according to the decay rate value 				stored within the AI.
 
 	\begin{description}
-		\item[Swap Strategy] \hspace{3em} Using an internal estimate, the AI selects it's highest known card and 						switches it with the players lowest known card. The AI can determine what the players cards are based on 				if the Player has drawn from the discard pile or swapped with one of the AI's known cards. In the case of 					no cards being known -- whether in selection of its own highest card or the users -- a random card is 					chose. 
-		\item[Peek Strategy] \hspace{3em} The AI will always select a card it does not know to peek. If all the values are 			known, the AI will select the card with the lowest decayed value, and that value will be reset to 1.
-		\item[Knocking] \hspace{3em}  The AI will knock when it has reasonable confidence that its internal estimate of its 			own score is higher than the players.
+		\item[Swap Strategy] \hspace{3em} Using an internal estimate, the AI selects it's highest known card and 						switches it with the players lowest known card. The AI can determine what the players cards are based on 				if the Player has drawn from the discard pile or swapped with one of the AI's known cards. In the case of 					no cards being known -- whether in selection of its own highest card or the users -- a random card is 					chosen. 
+		\item[Peek Strategy] \hspace{3em} The AI will always select a card it does not know to peek at. If all the values are 			known, the AI will select the card with the lowest decayed value, and that value will be reset to 1.
+		\item[Knocking] \hspace{3em}  The AI will knock when it has reasonable confidence that its internal estimate of its 			own score is lower than the player's.
 	\end{description}
 
 	The AI will also keep track of internal statistics to send to the database later. This is primarily a logging function and is an 	optional part of the AI implementation.
@@ -190,7 +190,7 @@
 \subsection{Database Design}
 \label{subsec:dbdesign}
 
-	The database backend is composed of two tables: \texttt{Players} and \texttt{Games}. The field names are shown in 			figure \ref{fig:dbschema}, you can see by the figure that the \texttt{Games} table uses a foreign key referencing the 			playerID within the \texttt{Players} table. This serves to link a user to their scores and allows for the creation of 				leader-boards and other statistics that encourages competition and replay value.
+	The database backend is composed of two tables: \texttt{Players} and \texttt{Games}. The field names are shown in 			figure \ref{fig:dbschema}. As shown in the figure, the \texttt{Games} table uses a foreign key referencing the 			playerID within the \texttt{Players} table. This serves to link a user to their scores and allows for the creation of 				leader-boards and other statistical structures to encourage competition and replay value.
 	
 	\begin{figure}[ht]
 		\includegraphics[width=0.5\textwidth]{DatabaseDiagram.png}
@@ -198,7 +198,7 @@
 		\label{fig:dbschema}
 	\end{figure}
 
-	The querying of the database during gameplay is shown in figure \ref{fig:dbflow}. The System shall have failsafe 			methods in place so that no in-progress games or games that are terminated unexpectedly affect the statistics for each 		player. A players name and age are the only user supplied information that is entered into the database. The other 			fields are computed by execution and completion of the game.
+	The querying of the database during gameplay is shown in figure \ref{fig:dbflow}. The System shall have failsafe 			methods in place so that no in-progress games or games that are terminated unexpectedly affect the statistics for each 		player. A player's name and age are the only user supplied information that is entered into the database. The other 			fields are computed by execution and completion of the game.
 
 	\begin{figure}[b]	
 		\centering
@@ -215,7 +215,7 @@
 \label{subsec:ui}
 	The user interface shall be constructed so as to be intuitive and easy to use. A player communicating with the interface should need little to no instruction in order to execute decisions and allow the gameplay to flow. Although the interface does not teach the actual mechanics of gameplay, it should be structured in such a way as to funnel the user into gameplay decisions with a minimal amount of instruction. 
 	
-	Ease of use must be measured through usability testing. A series of users will be presented with the interface and supervised using it, with limited contact between the test administrators. The administrators must record their observations and make note of information bottlenecks and constriction points, areas where the flow of the gameplay may become stymied and indicate a change in design is potentially necessary. 
+	Ease of use must be measured through usability testing. A series of test users will be presented with the interface and supervised while using it. The administrators of such tests must record their observations and make note of information bottlenecks and constriction points, the areas where the flow of the gameplay may become stymied and indicate a change in design is potentially necessary. 
 	
 	There will be several different interfaces presented to the user, each with a different purpose. The details and design of these interfaces will be examined in the following section. 
 	
@@ -294,7 +294,7 @@
 		\label{fig:landingpage}
 	\end{figure}
 
-	The user is presented with the initial landing screen described in \S\ref{subsec:ui}, the execution flow is described in figure \ref{fig:landingpage}. The initial landing page is handled by the MainHandler controller and will use asynchronous post requests through jQuery to create light-boxes to display the Rules and Credits pages. The scores page shall exist on its own page due to its more complex nature and will allow players to see leader-boards and filter scoring information. Once A Player decides to start the game, their information will be gathered and an account created, the program will then divert control to the Game controller.
+	The user is presented with the initial landing screen described in \S\ref{subsec:ui}, the execution flow is described in figure \ref{fig:landingpage}. The initial landing page is served by the MainHandler controller and will use asynchronous post requests through jQuery to create light-boxes in order to display the Rules and Credits pages. The scores page shall exist on its own page due to its more complex nature, and will allow players to see leader-boards and filters for scoring information. Once A player decides to start the game, his or her information will be gathered and an account created. The program will then divert control to the Game controller.
 
 	\begin{figure}[h]
 		\centering
@@ -303,9 +303,9 @@
 		\label{fig:gameplay}
 	\end{figure}
 
-	Once a user has begun the game the initial steps of dealing and selected a player to go first are executed. This requires no input from the user and consists primarily of animations and effects. Once a round begins, each player takes turns following the rules of the game specified in \S\ref{sec:rules}. 
+	Once a user has begun the game, the initial steps of dealing and selecting a player to go first are executed. This requires no input from the user and consists primarily of animations and effects. Once a round begins, each player takes turns following the rules of the game specified in \S\ref{sec:rules}. 
 
-	During a turn, a user is shown their possible actions to take by Glow-ing the cards and options available to them. At the beginning of the turn, the deck and discard piles are glown, indicating the User may select either to draw from the deck or discard pile. Note that in a sidebar, help text shall be displayed to indicate what the User should do if the visual queues are not enough information. Once a user has selected a card, they may choose to use it or to discard it. The use of each type of card is defined below and the sequence of actions defined for power cards displayed in figure \ref{fig:powact}.
+	During a turn, a user is shown their possible actions to take by Glow-ing the cards and options available to them. At the beginning of the turn, the deck and discard piles are glown, indicating the User may select either to draw from the deck or discard pile. Note that in a sidebar, help text shall be displayed to indicate what the User should do if the visual cues are insufficient to prompt the correct action. Once a user has selected a card, they may choose to use it or to discard it. The use of each type of card is defined below and the sequence of actions delinated for power cards is displayed in figure \ref{fig:powact}.
 	\begin{description}
 		\item[Numeric] \hspace{1em} A numeric card may be swapped with any of the player's cards. The card is shown to the user, and their cards glown. Upon selection of a card, the selected card is discarded and replaced in the player's hand by the drawn card.
 		\item[Peek] A peek card allows a user to look at a single card in their hand. If used, the player's cards glow and they are able to select the card to view.
@@ -402,5 +402,8 @@
 		\caption{The character of "Betty, the Rat Queen".}
 		\label{fig:betty}
 	\end{figure}
+	
+\subsection{Cat Characters}
+\label{subsec:catcharacters}
 
 \end{document}
