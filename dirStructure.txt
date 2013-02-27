@@ -1,0 +1,18 @@
+Directory Structure:
+
+	Root/
+		Python Files
+		Config Files
+		Templates/
+		css/
+		scripts/
+		images/
+		userimages/
+		sounds/
+
+Templates is all html and templatings
+css is script
+scripts is js/jquery
+images is an image directory 
+userimages - user uploaded images world writable, all security holes welcome
+sounds is where music and such goes

@@ -1,0 +1,64 @@
+AI
+
+stats instance
+	Instance of a statistical class that just collects information to send to the database
+	later on. No big problems here, primarily a logging function.
+
+estAIScore = 36
+	Estimate of our score. This begins high so we don't knock right away when comparing to
+	our estimate of the opponents score.
+
+estOppScore = 0 
+	Estimate of opponents score. This begins at 0 so the AI doesn't knock right away
+	This is incremented whenever a swap card is drawn, or there is some chance of 
+	seeing the opponents cards. An AI can see the opponents cards when -the other player
+	swaps a card whose value is known to the player, a swap is made by either player for 
+	a card that computer knows the value of.
+
+opCardsMem [] = {0,0,0,0}
+	Memory of card values for the opponent. These are updated during swaps and when a 
+	player takes from the discard pile and swaps it in. (since discard is face up)
+
+aiCardsMem [] = {inf,inf,inf,inf}
+	Memory of our cards, all initialized high so we always swap em out for lower cards
+
+aiCards [] = {9,9,9,9}
+	The AI's actual card values
+
+discardTopValue = 0-11 (10,11,12 = power cards)
+	keep track of discard piles top card (or top cards --use stack--) so that we can
+	form estimates of the opponent or our cards
+
+difficultyLevel = 0-3
+	0 = easy, 1 = medium, 2 = expert, 3 = perfect recall
+	These values affect the decay of memory
+
+decayRate = 0.01 - 0.99
+	Rate of decay for memory each turn --implementation side note: abs and rounded into
+	values between 0.01 - 0.99.
+
+decayMemory [] = {1,1,1,1}
+	If decayMemory is used, this number represents the percentage of remembering the
+	card correctly, this is decremented each round according to some fixed percentage
+	down to some lower bound. (which depends on difficult not less than 50% on medium)
+
+swapping strategy:
+	Pick AI's highest card known to it (if all unknown choose at random)
+	Switch with Players lowest known card (if all unknown choose at random)
+	if cards are known update estimates
+
+Peeking strategy:
+	Peek at a card we don't know (inf or some appropriate flag) and remember it
+	If using decayMemory, and all values known, look for lowest decayed value and
+	reset decay value to 1
+
+knocking:
+	Knocking is done when the computer has reasonable confidence that it's cards are 
+	higher than its opponents. Using opCardsMem and aiCardsMem and possibly decay memory
+	as well. 
+
+
+Notes:
+	It doesn't actually matter what character we choose for the class itself. The class
+	should take the decay rate and other parameters issued from the characters stats themselves.
+	Thinking that each character could have a slightly different decay of memory and such.

@@ -1,0 +1,17 @@
+
+#Ignore Phelans Mac and Eclipse stuff
+*.DS_STORE
+*.classpath
+*.project
+package-list
+
+#Ignores for Presentation Folder's Tex
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+

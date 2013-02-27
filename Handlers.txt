@@ -1,0 +1,12 @@
+Handlers:
+
+	/=>MainHandler
+	/rules => RuleHandlar
+	/credits => CreditHandler
+	/scores => ScoresHandler
+	/game => GameHandler
+	/endGame => EndGameHandler
+
+Naming Conventions: 
+	Uppercase + Camel Case for python class names
+	regular camel case for urls themselves
