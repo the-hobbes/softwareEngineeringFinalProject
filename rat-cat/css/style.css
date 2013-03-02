@@ -1,0 +1,74 @@
+/*
+  Style.css, the main styling document for the application.
+  Phelan Vendeville
+  2MAR2013
+*/
+
+/*
+  This block of styling is used to format the main divisions of the page
+*/
+body {
+  min-width: 960px;
+}
+
+#container{
+  width:900px;
+  background-color: gray;
+  height:600px;
+  margin:0px auto;
+  padding-top:10px;
+  margin-top:20px;
+}
+
+#imageBox{
+  width:500px;
+  height:400px;
+  background-color: white;
+  margin:0px auto;
+  margin-bottom: 25px;
+}
+
+#startBox{
+  width:200px;
+  background-color: red;
+  height: 90px;
+  margin-right: 5px;
+  float: left;
+  margin-left: 40px;
+}
+
+#creditsBox{
+  width:200px;
+  background-color: green;
+  height: 90px;
+  margin-right: 5px;
+  float:left;
+}
+
+#rulesBox{
+  width:200px;
+  background-color: blue;
+  height: 90px;
+  margin-right: 5px;
+  float:left;
+}
+
+#scoresBox{
+  width:200px;
+  background-color: yellow;
+  height: 90px;
+  margin-right: 5px;
+  float:left;
+  margin-bottom: 25px;
+}
+
+#gitBox{
+  clear:both;
+  background-color: black;
+  height:20px;
+  width:900px;
+}
+
+.shadow{
+  box-shadow: 5px 5px 5px #000;
+}
