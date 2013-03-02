@@ -15,7 +15,11 @@
 # limitations under the License.
 #
 import webapp2
-from python.derp import *
+from python.game import *
+from python.scores import *
+from python.playerinfo import *
+from python.difficulty import *
+from python.characterchoice import *
 
 
 class MasterControlProgram(webapp2.RequestHandler):
@@ -23,5 +27,10 @@ class MasterControlProgram(webapp2.RequestHandler):
         self.response.write('Hello world!')
 
 app = webapp2.WSGIApplication([
-    ('/', MasterControlProgram),('/game',GameHandler)
+    ('/', MasterControlProgram),
+    ('/game',GameHandler),
+    ('/scores',ScoresHandler),
+    ('/playerinfo',PlayerInfoHandler),
+    ('/difficulty',DifficultyHandler),
+    ('/characterchoice',CharacterHandler)
 ], debug=True)
