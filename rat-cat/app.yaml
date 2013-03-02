@@ -5,9 +5,12 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /favicon\.ico
-  static_files: favicon.ico
-  upload: favicon\.ico
+- url: /images/favicon\.ico
+  static_files: static/images/favicon.ico
+  upload: /images/favicon\.ico
+
+- url: /derp
+  script: main.app
 
 - url: .*
   script: main.app
@@ -15,3 +18,5 @@ handlers:
 libraries:
 - name: webapp2
   version: "2.5.2"
+
+

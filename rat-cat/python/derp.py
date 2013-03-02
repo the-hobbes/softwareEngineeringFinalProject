@@ -15,13 +15,8 @@
 # limitations under the License.
 #
 import webapp2
-from python.derp import *
 
-
-class MasterControlProgram(webapp2.RequestHandler):
+class GameHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        self.response.write('Hello game!')
 
-app = webapp2.WSGIApplication([
-    ('/', MasterControlProgram),('/game',GameHandler)
-], debug=True)
