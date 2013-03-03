@@ -5,14 +5,57 @@
 		<title>Choose Player</title>
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="css/grid.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script>
+			//document ready function (note that $ replaces jQuery().ready)
+			$(function($){
+				//hide the radio buttons
+				$('#characterForm input:radio').addClass('input_hidden');
+				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+				$('#characterForm label').click(function(){
+				    $(this).addClass('selected').siblings().removeClass('selected');
+				    $(this).addClass('glowing');
+				});
+			});
+
+			//handle clicks for each radiobutton in order to change the central image
+			function changeMainImage(selector){
+				// console.log(selector)
+				// $("#imageBox").attr("src", "path/to/newImage.jpg");
+				$("#imageBox").text("The image should be #: " + selector);
+			}
+		</script>
 	</head>
 
 	<body>
-	  <header> </header>
+	  
+		<div id="container" class="shadow">
+			<form id="characterForm" method="post">
 
-	  <footer> </footer>
+				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+				<div id="characterStrip">
+					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage(1)"/>
+			        <label for="character1"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage(2)"/>
+			        <label for="character2"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage(3)"/>
+			        <label for="character3"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage(4)"/>
+			        <label for="character4"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage(5)"/>
+			        <label for="character5"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage(6)"/>
+			        <label for="character6"><img src="images/testThumb.png"/></label>
+
+				</div><!--end characterStrip-->
+				<input id="characterButton" class="submitButton" type="submit">
+			</form><!-- end characterForm-->
+		</div><!-- end container-->
 
 	</body>
 </html>

@@ -3,17 +3,19 @@
   Phelan Vendeville
   2MAR2013
 */
+@import url(http://fonts.googleapis.com/css?family=Tauri);
 
 /*
-  This block of styling is used to format the main divisions of the page
+  This block of styling is used to format the main divisions of the Landing page
 */
 body {
   min-width: 960px;
+  font-family: 'Tauri', sans-serif;
 }
 
 #container{
   width:900px;
-  background-color: gray;
+  background-color: #242424;
   height:600px;
   margin:0px auto;
   padding-top:10px;
@@ -29,34 +31,22 @@ body {
 }
 
 #startBox{
-  width:200px;
-  background-color: red;
-  height: 90px;
   margin-right: 5px;
   float: left;
   margin-left: 40px;
 }
 
 #creditsBox{
-  width:200px;
-  background-color: green;
-  height: 90px;
   margin-right: 5px;
   float:left;
 }
 
 #rulesBox{
-  width:200px;
-  background-color: blue;
-  height: 90px;
   margin-right: 5px;
   float:left;
 }
 
 #scoresBox{
-  width:200px;
-  background-color: yellow;
-  height: 90px;
   margin-right: 5px;
   float:left;
   margin-bottom: 25px;
@@ -67,8 +57,141 @@ body {
   background-color: black;
   height:20px;
   width:900px;
+  color:white;
+  padding-top:5px;
+  padding-bottom: 5px;
 }
 
+/*
+  Snappy styling global to all pages.
+*/
 .shadow{
-  box-shadow: 5px 5px 5px #000;
+  box-shadow: 5px 5px 15px #000;
+}
+
+.centerText{
+  text-align: center;
+}
+
+a:link {text-decoration:none;}   /* unvisited link */
+a:visited {text-decoration:none;} /* visited link */
+a:hover {text-decoration:underline;}  /* mouse over link */
+a:active {text-decoration:underline;} /* selected link */
+
+button{
+  font:2.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  padding:14px;
+  background:url(../images/buttonGloss.png) repeat-x center #212121;
+  background-color:rgba(97,97,97,1);
+  border:1px solid #212121;
+  -moz-border-radius:10px;-webkit-border-radius:10px;
+  border-radius:10px;
+  border-bottom:1px solid #212121;
+  -moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  cursor:pointer;
+  width:200px;
+}
+button:hover{background-color:rgba(59,59,59,0.8);}
+button:active{position:relative;top:2px;}
+
+/*
+  Lightbox styling
+*/
+.hideMe{
+  z-index: 3000; display: none;
+}
+
+/*
+  Styling for the player information page.
+*/
+#userEntry{
+  width:400px;
+  background-color: white;
+  margin:0px auto;
+  margin-top:150px;
+  text-align: center;
+  -moz-border-radius: 25;
+  -webkit-border-radius: 25px;
+  padding:10px;
+}
+.inset {
+   -moz-box-shadow: inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow: inset 0 0 10px #000000;
+   background-color: #EBEBEB;
+}
+.error{
+  background-color: red;
+}
+#nameEntry{
+  float:left;
+  height:25px;
+  margin-bottom: 5px;
+  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  color:gray;
+}
+#ageEntry{
+  clear:left; 
+  display:block; 
+  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  color:gray;
+}
+#infoForm{
+  width:290px;
+  margin:0px auto;
+}
+.submitButton{
+  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  padding:14px;
+  background:url(../images/buttonGloss.png) repeat-x center #212121;
+  background-color:rgba(97,97,97,1);
+  border:1px solid #212121;
+  -moz-border-radius:10px;-webkit-border-radius:10px;
+  border-radius:10px;
+  border-bottom:1px solid #212121;
+  -moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+  cursor:pointer;
+  width:100px;
+}
+submitButton:hover{background-color:rgba(59,59,59,0.8);}
+submitButton:active{position:relative;top:2px;}
+
+/*
+  Styling for the character choice page.
+*/
+#characterStrip{
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: inset 0 0 10px #000000;
+  background-color: #EBEBEB;
+  overflow-x: scroll; 
+  overflow-y:hidden;
+  height:100px;
+  white-space: nowrap
+}
+
+#characterButton{
+  margin-left:400px;
+  margin-top: 10px;
+}
+.input_hidden {
+    position: absolute;
+    left: -9999px;
+}
+.selected {
+    background-color: #1BA5E0;
+    /*box-shadow: 0 0 10px #1BA5E0;*/
+}
+#characterForm label {
+    display: inline-block;
+    cursor: pointer;
+}
+#characterForm label img {
+  margin-top:3px;
+  margin-left:2px;
+  margin-right: 2px;
 }

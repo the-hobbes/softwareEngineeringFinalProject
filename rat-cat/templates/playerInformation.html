@@ -1,0 +1,29 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Player Information</title>
+		<meta name="description" content="">
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	</head>
+
+	<body>
+	  <div id="container" class="shadow">
+
+	  	<div id="userEntry">
+		  	<h1>Name and Age</h1>
+			<hr>
+
+			<form id="infoForm" method="post">
+				<input id="nameEntry" class="inset" type="text" name="name" value="{{name}}">
+				<input id="ageEntry" class="inset" type="text" name="age" value="{{age}}">
+				<input class="submitButton" type="submit">
+			</form>
+			<div class="error">{{error}}</div><!-- render this page with error courtesy of jinja-->
+		</div><!-- end userentry-->
+
+	  </div><!-- end container-->
+
+	</body>
+</html>
