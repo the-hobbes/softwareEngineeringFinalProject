@@ -20,3 +20,16 @@ class DifficultyHandler(Handler):
 			Standard get method. Renders template.
 		'''
 		self.render("selectDifficulty.html")
+
+	def post(self):
+		'''
+			post
+			Standard post method. Relevent information is pulled from the post request and processed. The user is forwarded to the next stage (the actual game)
+			if all is well.
+		'''
+		difficulty = self.request.get("difficultyGroup")
+		if difficulty:
+			#add the difficulty to the database
+			self.redirect("/game")
+		else:
+			self.render("selectDifficulty.html")

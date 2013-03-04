@@ -6,13 +6,47 @@
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script>
+			//document ready function (note that $ replaces jQuery().ready)
+			$(function($){
+				//hide the radio buttons
+				$('#difficultyForm input:radio').addClass('input_hidden');
+				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+				$('#difficultyForm label').click(function(){
+				    $(this).addClass('selected').siblings().removeClass('selected');
+				    $(this).addClass('glowing');
+				});
+			});
+
+			//handle clicks for each radiobutton in order to change the central image
+			function changeMainImage(selector){
+				// console.log(selector)
+				// $("#imageBox").attr("src", "path/to/newImage.jpg");
+				$("#imageBox").text("The image should be #: " + selector);
+			}
+		</script>
 	</head>
 
 	<body>
 	  
-	  <div id="container" class="shadow">
-	  	Awww yeah difficulty
-	  </div><!-- end container -->
+		<div id="container" class="shadow">
+			<form id="difficultyForm" method="post">
+
+				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+				<div id="difficultyStrip">
+					<input type="radio" name="difficultyGroup" id="easy" value="easy" onclick="changeMainImage('easy')"/>
+					<label for="easy"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="difficultyGroup" id="medium" value="medium" onclick="changeMainImage('medium')"/>
+					<label for="medium"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="difficultyGroup" id="hard" value="hard" onclick="changeMainImage('hard')"/>
+					<label for="hard"><img src="images/testThumb.png"/></label>
+				</div><!-- end characterstrip-->
+
+				<input id="difficultyButton" class="submitButton" type="submit">
+			</form><!-- end characterForm-->
+		</div><!-- end container -->
 
 	</body>
 </html>

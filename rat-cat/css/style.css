@@ -12,16 +12,14 @@ body {
   min-width: 960px;
   font-family: 'Tauri', sans-serif;
 }
-
 #container{
   width:900px;
   background-color: #C4C4C4;
-  height:600px;
+  height:625px;
   margin:0px auto;
   padding-top:10px;
-  margin-top:20px;
+  margin-top:50px;
 }
-
 #imageBox{
   width:500px;
   height:400px;
@@ -29,29 +27,24 @@ body {
   margin:0px auto;
   margin-bottom: 25px;
 }
-
 #startBox{
   margin-right: 5px;
   float: left;
   margin-left: 40px;
 }
-
 #creditsBox{
   margin-right: 5px;
   float:left;
 }
-
 #rulesBox{
   margin-right: 5px;
   float:left;
 }
-
 #scoresBox{
   margin-right: 5px;
   float:left;
-  margin-bottom: 25px;
+  margin-bottom: 50px;
 }
-
 #gitBox{
   clear:both;
   background-color: black;
@@ -61,18 +54,15 @@ body {
   padding-top:5px;
   padding-bottom: 5px;
 }
-
 /*
   Snappy styling global to all pages.
 */
 .shadow{
   box-shadow: 5px 5px 15px #000;
 }
-
 .centerText{
   text-align: center;
 }
-
 a:link {text-decoration:none;}   /* unvisited link */
 a:visited {text-decoration:none;} /* visited link */
 a:hover {text-decoration:underline;}  /* mouse over link */
@@ -95,14 +85,12 @@ button{
 }
 button:hover{background-color:rgba(59,59,59,0.8);}
 button:active{position:relative;top:2px;}
-
 /*
   Lightbox styling
 */
 .hideMe{
   z-index: 3000; display: none;
 }
-
 /*
   Styling for the player information page.
 */
@@ -126,15 +114,15 @@ button:active{position:relative;top:2px;}
   background-color: red;
 }
 #nameEntry{
-  float:left;
+  /*float:left;*/
   height:25px;
   margin-bottom: 5px;
   font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
   color:gray;
 }
 #ageEntry{
-  clear:left; 
-  display:block; 
+  /*clear:left; */
+  /*display:block; */
   font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
   color:gray;
 }
@@ -170,10 +158,8 @@ submitButton:active{position:relative;top:2px;}
   background-color: #EBEBEB;
   overflow-x: scroll; 
   overflow-y:hidden;
-  height:100px;
-  white-space: nowrap
+  white-space: nowrap;
 }
-
 #characterButton{
   margin-left:400px;
   margin-top: 10px;
@@ -194,4 +180,50 @@ submitButton:active{position:relative;top:2px;}
   margin-top:3px;
   margin-left:2px;
   margin-right: 2px;
+}
+/*
+  Styling for the difficulty choice page.
+*/
+#difficultyForm label {
+    display: inline-block;
+    cursor: pointer;
+}
+#difficultyForm label img {
+  margin-top:3px;
+  margin-left:2px;
+  margin-right: 2px;
+}
+#difficultyButton{
+  margin-left:400px;
+  margin-top: 10px;
+}
+#difficultyStrip{
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: inset 0 0 10px #000000;
+  background-color: #EBEBEB;
+  width: 623px;
+  margin:0px auto;
+}
+/*
+  Styling for the difficulty choice page.
+*/
+#infoBox{
+  position: absolute;
+  top:15px;
+  left:15px;
+  width:300px;
+  height: 250px;
+  background-color: rgba(0,0,0,.7);
+
+  -moz-border-radius:10px;-webkit-border-radius:10px;
+  border-radius:10px;
+}
+#opponentCards{
+  width:700px;
+  height:200px;
+  background-color: rgba(0,0,0,.7);
+  margin: 0px auto;
+  position: relative;
+  top:-55px;
 }
