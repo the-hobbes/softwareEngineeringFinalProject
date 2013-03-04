@@ -9,6 +9,10 @@
 from handler import *
 
 class CharacterHandler(Handler):
+	'''
+		CharacterHandler
+		Inherits from handler. Used to respond to http requests for the /characterchoice url.
+	'''
 	def get(self):
 		'''
 			get
@@ -19,7 +23,12 @@ class CharacterHandler(Handler):
 	def post(self):
 		'''
 			post
-			Standard post method. Collects posted form information.
+			Standard post method. Collects posted form information, adds it to the database and redirects the user to
+			the difficulty choice page.
 		'''
 		radioAnswer = self.request.get("characterGroup")
-		self.write(radioAnswer)
+		# self.write(radioAnswer)
+		if radioAnswer:
+			self.redirect("/difficulty")
+		else:
+			self.render("choosePlayer.html")
