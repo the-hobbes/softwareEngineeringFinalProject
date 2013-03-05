@@ -9,7 +9,7 @@ handlers:
   static_files: static/images/favicon.ico
   upload: /images/favicon\.ico
 
-- url: /derp
+- url: /game
   script: main.app
 
 - url: .*
