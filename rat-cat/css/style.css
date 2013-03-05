@@ -306,3 +306,48 @@ submitButton:active{position:relative;top:2px;}
 #opCard1, #playerCard1{
   margin-left:65px;
 }
+
+/*
+  Styling for the top ten scores page.
+*/
+#topTen{
+  width:700px;
+  background-color: rgba(0,0,0,.7);
+  margin:0px auto;
+  color: white;
+  text-align: center;
+  padding:10px;
+  -moz-border-radius:10px;-webkit-border-radius:10px;
+  border-radius:10px;
+  padding-bottom: 20px;
+  margin-top: 70px;
+}
+.even{
+  background-color: rgba(255,115,115,.2);
+}
+.odd{
+}
+#topTen ul{
+  list-style: none;
+  padding: 0px;
+  margin:0px;
+  text-align: center;
+}
+.playerName{
+  color:rgba(255,115,115,1);
+  padding-top:5px;
+  padding-bottom:5px;
+}
+.playerScore{
+  color:rgba(255,115,115,1);
+  padding-top:5px;
+  padding-bottom:5px;
+}
+#homeButton{
+  width:100px;
+  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  margin-top: 30px;
+}
+
+
+
