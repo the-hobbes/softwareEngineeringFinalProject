@@ -6,6 +6,8 @@
 # This handler processes user information entry. It renders a form for the user to input their name and age, then adds that
 # to the database and forwards the user to the next page. 
 from handler import *
+#re = regular expresion module
+import re;
 
 class PlayerInfoHandler(Handler):
 	'''
@@ -42,11 +44,17 @@ class PlayerInfoHandler(Handler):
 		name = self.request.get("name")
 		age = self.request.get("age")
 
-		if (name and age):
+		#validation for age
+		validAge = re.match("^[0-9]+$",age,re.M|re.I)
+
+		if (name and age and validAge):
 			#success. 
 			# This is where we add their information to the database,
 			# as well as moving them to the next page.
 			self.redirect("/characterchoice")
 		else:
-			error = "We need both your name and your age!"
+			if validAge:
+				error = "We need both your name and your age!"
+			else:
+				error = "You must enter a number for your age"
 			self.renderPlayerInfo(name, age, error)
