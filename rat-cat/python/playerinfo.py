@@ -44,14 +44,19 @@ class PlayerInfoHandler(Handler):
 		name = self.request.get("name")
 		age = self.request.get("age")
 
-		#validation for age
+		#validation for age and profanity
 		validAge = re.match("^[0-9]+$",age,re.M|re.I)
+		swearWords = ["fuck", "shit", "suck my dick, I'm a shark"]
+		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)
 
 		if (name and age and validAge):
 			#success. 
-			# This is where we add their information to the database,
-			# as well as moving them to the next page.
-			self.redirect("/characterchoice")
+			# This is where we add their information to the database, as well as moving them to the next page.
+			if vulgarity.search(name):
+				error = "dang, get a bar of soap up in that biz!"
+				self.renderPlayerInfo(name, age, error)
+			else:
+				self.redirect("/characterchoice")
 		else:
 			if validAge:
 				error = "We need both your name and your age!"

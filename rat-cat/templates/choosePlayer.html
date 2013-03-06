@@ -14,7 +14,6 @@
 				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
 				$('#characterForm label').click(function(){
 				    $(this).addClass('selected').siblings().removeClass('selected');
-				    $(this).addClass('glowing');
 				});
 			});
 
@@ -32,8 +31,38 @@
 		<div id="container" class="shadow">
 			<form id="characterForm" method="post">
 
-				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
-				<div id="characterStrip">
+				<div id="characterStripLeft">
+					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage(1)"/>
+			        <label for="character1"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage(2)"/>
+			        <label for="character2"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage(3)"/>
+			        <label for="character3"><img src="images/testThumb.png"/></label>
+				</div><!--end characterStripLeft-->
+
+			     <div id="characterStripRight">
+					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage(4)"/>
+			        <label for="character4"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage(5)"/>
+			        <label for="character5"><img src="images/testThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage(6)"/>
+			        <label for="character6"><img src="images/testThumb.png"/></label>
+				</div><!--end characterStripRight-->
+ 				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+
+				<input id="characterButton" class="submitButton" type="submit">
+			</form><!-- end characterForm-->
+		</div><!-- end container-->
+
+	</body>
+</html>
+
+
+				<!-- <div id="characterStrip">
 					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage(1)"/>
 			        <label for="character1"><img src="images/testThumb.png"/></label>
 
@@ -51,11 +80,4 @@
 
 					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage(6)"/>
 			        <label for="character6"><img src="images/testThumb.png"/></label>
-
-				</div><!--end characterStrip-->
-				<input id="characterButton" class="submitButton" type="submit">
-			</form><!-- end characterForm-->
-		</div><!-- end container-->
-
-	</body>
-</html>
+				</div> -->
