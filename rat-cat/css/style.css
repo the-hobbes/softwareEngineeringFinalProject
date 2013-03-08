@@ -180,8 +180,8 @@ submitButton:active{position:relative;top:2px;}
     left: -9999px;
 }
 .selected{
-    /*background-color: #1BA5E0;*/
-    /*box-shadow: 0 0 10px #1BA5E0;*/
+    background-color: #1BA5E0;
+    box-shadow: 0 0 10px #1BA5E0;
 }
 #characterForm label {
     /*display: inline-block;*/
@@ -364,5 +364,12 @@ submitButton:active{position:relative;top:2px;}
   margin-top: 30px;
 }
 
+/*
+  Styling for links on the credit page
+*/
+a.credits:link {text-decoration:none; color: #000000 !important;}   /* unvisited link */
+a.credits:visited {text-decoration:none; color: #000000 !important;} /* visited link */
+a.credits:hover {text-decoration:underline;}  /* mouse over link */
+a.credits:active {text-decoration:none;} /* selected link */
 
 
