@@ -364,5 +364,12 @@ submitButton:active{position:relative;top:2px;}
   margin-top: 30px;
 }
 
+/*
+  Styling for links on the credit page
+*/
+a.credits:link {text-decoration:none; color: #000000 !important;}   /* unvisited link */
+a.credits:visited {text-decoration:none; color: #000000 !important;} /* visited link */
+a.credits:hover {text-decoration:underline;}  /* mouse over link */
+a.credits:active {text-decoration:none;} /* selected link */
 
 
