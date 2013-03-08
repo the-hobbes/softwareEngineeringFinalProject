@@ -180,8 +180,8 @@ submitButton:active{position:relative;top:2px;}
     left: -9999px;
 }
 .selected{
-    /*background-color: #1BA5E0;*/
-    /*box-shadow: 0 0 10px #1BA5E0;*/
+    background-color: #1BA5E0;
+    box-shadow: 0 0 10px #1BA5E0;
 }
 #characterForm label {
     /*display: inline-block;*/

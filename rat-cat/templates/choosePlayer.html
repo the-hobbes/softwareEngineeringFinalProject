@@ -13,7 +13,9 @@
 				$('#characterForm input:radio').addClass('input_hidden');
 				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
 				$('#characterForm label').click(function(){
-				    $(this).addClass('selected').siblings().removeClass('selected');
+					$('#character1').removeClass('selected').nextAll().removeClass('selected');
+					$('#character4').removeClass('selected').nextAll().removeClass('selected');
+				    $(this).addClass('selected');
 				});
 			});
 
