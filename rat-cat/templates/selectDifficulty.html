@@ -13,8 +13,12 @@
 				$('#difficultyForm input:radio').addClass('input_hidden');
 				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
 				$('#difficultyForm label').click(function(){
-				    $(this).addClass('selected').siblings().removeClass('selected');
-				    $(this).addClass('glowing');
+				    $(this).addClass('glowing').siblings().removeClass('glowing');
+
+				    var glow = $('.glowing');
+				    setInterval(function(){
+					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+					}, 2000);
 				});
 			});
 

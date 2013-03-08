@@ -57,6 +57,19 @@ body {
 /*
   Snappy styling global to all pages.
 */
+.glowing {
+    -webkit-transition: box-shadow 1s linear;
+    -moz-transition: box-shadow 1s linear;
+    -ms-transition: box-shadow 1s linear;
+    -o-transition: box-shadow 1s linear;
+    transition: box-shadow 1s linear;
+    background-color: #1BA5E5;
+}
+
+.glowing:hover,
+.glowing.glow {
+    box-shadow: 0 0 10px 2px #1BA5E0;
+}
 .shadow{
   /*box-shadow: 5px 5px 15px #000;*/
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
@@ -161,7 +174,6 @@ submitButton:active{position:relative;top:2px;}
   overflow-y:hidden;
   white-space: nowrap;
 }
-
 #characterStripLeft{
   float: left;
   margin-left: 25px;
@@ -179,20 +191,21 @@ submitButton:active{position:relative;top:2px;}
     position: absolute;
     left: -9999px;
 }
-.selected{
+/*.selected{
     background-color: #1BA5E0;
     box-shadow: 0 0 10px #1BA5E0;
-}
+}*/
 #characterForm label {
     /*display: inline-block;*/
     display: block;
     cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    padding:0px;
 }
 #characterForm label img {
   margin-top:3px;
   margin-left:2px;
   margin-right: 2px;
+  border:1px solid black;
 }
 /*
   Styling for the difficulty choice page.
@@ -202,23 +215,24 @@ submitButton:active{position:relative;top:2px;}
     cursor: pointer;
 }
 #difficultyForm label img {
-  margin-top:3px;
+/*  margin-top:3px;
   margin-left:2px;
-  margin-right: 2px;
+  margin-right: 2px;*/
+  border: 1px solid black;
 }
 #difficultyButton{
   margin-left:400px;
-  margin-top: 10px;
+  margin-top: 2px;
   height:50px;
 
 }
 #difficultyStrip{
   margin-left:215px;
-  margin-top:-20px;
+  margin-top:-10px;
 }
 #difficultyStrip label{
   cursor: pointer;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  /*box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);*/
   margin:0px auto;
 }
 /*

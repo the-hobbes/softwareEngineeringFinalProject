@@ -7,16 +7,23 @@
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script>
-			//document ready function (note that $ replaces jQuery().ready)
+			//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
 			$(function($){
 				//hide the radio buttons
 				$('#characterForm input:radio').addClass('input_hidden');
 				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
 				$('#characterForm label').click(function(){
-					$('#character1').removeClass('selected').nextAll().removeClass('selected');
-					$('#character4').removeClass('selected').nextAll().removeClass('selected');
-				    $(this).addClass('selected');
+					$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
+					$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
+				    $(this).addClass('glowing');
+
+				    var glow = $('.glowing');
+				    setInterval(function(){
+					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+					}, 2000);
+
 				});
+
 			});
 
 			//handle clicks for each radiobutton in order to change the central image
@@ -62,24 +69,3 @@
 
 	</body>
 </html>
-
-
-				<!-- <div id="characterStrip">
-					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage(1)"/>
-			        <label for="character1"><img src="images/testThumb.png"/></label>
-
-					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage(2)"/>
-			        <label for="character2"><img src="images/testThumb.png"/></label>
-
-					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage(3)"/>
-			        <label for="character3"><img src="images/testThumb.png"/></label>
-
-					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage(4)"/>
-			        <label for="character4"><img src="images/testThumb.png"/></label>
-
-					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage(5)"/>
-			        <label for="character5"><img src="images/testThumb.png"/></label>
-
-					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage(6)"/>
-			        <label for="character6"><img src="images/testThumb.png"/></label>
-				</div> -->
