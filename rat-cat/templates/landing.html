@@ -43,16 +43,8 @@
 	  	<a href="#"><button id="creditsButton" class="shadow ">Credits</button></a>
 		{% include "credits.html" %}
 
-
-	  	<!-- Rules Button Lightbox-->
-	  	<div id="rulesBox">
-	  		<a href="#"><button id="rulesButton" class="shadow ">Rules</button></a>
-	  	</div><!-- end rulesBox-->
-		<div class="jqmWindow hideMe" id="rulesDialog">
-			<a href="#" class="jqmClose">Close</a>
-			<p>This is a lightbox for the rules thing. Fill this up with rules.</p>
-		</div><!-- end startDialog-->
-	  	<!-- End Rules Button Lightbox-->
+  		<a href="#"><button id="rulesButton" class="shadow ">Rules</button></a>
+  		{% include "rules.html" %}
 
 	  	<div id="scoresBox">
 	  		<a href="/scores"><button class="shadow">Scores</button></a>

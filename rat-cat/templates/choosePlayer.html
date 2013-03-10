@@ -21,16 +21,15 @@
 				    setInterval(function(){
 					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 					}, 2000);
-
 				});
-
 			});
 
 			//handle clicks for each radiobutton in order to change the central image
 			function changeMainImage(selector){
 				// console.log(selector)
-				// $("#imageBox").attr("src", "path/to/newImage.jpg");
-				$("#imageBox").text("The image should be #: " + selector);
+				$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
+				// console.log("images/characters/" + selector)
+				// $("#imageBox").text("The image should be #: " + selector);
 			}
 		</script>
 	</head>
@@ -41,25 +40,25 @@
 			<form id="characterForm" method="post">
 
 				<div id="characterStripLeft">
-					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage(1)"/>
-			        <label for="character1"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg')"/>
+			        <label for="character1"><img src="images/characters/thumbs/bettyThumb.png"/></label>
 
-					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage(2)"/>
-			        <label for="character2"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg')"/>
+			        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png"/></label>
 
-					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage(3)"/>
-			        <label for="character3"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg')"/>
+			        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png"/></label>
 				</div><!--end characterStripLeft-->
 
 			     <div id="characterStripRight">
-					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage(4)"/>
-			        <label for="character4"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg')"/>
+			        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png"/></label>
 
-					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage(5)"/>
-			        <label for="character5"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg')"/>
+			        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png"/></label>
 
-					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage(6)"/>
-			        <label for="character6"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg')"/>
+			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
 				</div><!--end characterStripRight-->
  				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
 

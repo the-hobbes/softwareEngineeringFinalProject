@@ -26,6 +26,8 @@ body {
   background-color: white;
   margin:0px auto;
   margin-bottom: 25px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 #startBox{
   margin-right: 5px;
