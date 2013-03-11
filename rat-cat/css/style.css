@@ -186,17 +186,15 @@ submitButton:active{position:relative;top:2px;}
 }
 #characterButton{
   clear: both;
-  margin-left:220px;
-  margin-top: 70px;
 }
 .input_hidden{
     position: absolute;
     left: -9999px;
 }
-/*.selected{
+.selected{
     background-color: #1BA5E0;
     box-shadow: 0 0 10px #1BA5E0;
-}*/
+}
 #characterForm label {
     /*display: inline-block;*/
     display: block;
@@ -208,6 +206,17 @@ submitButton:active{position:relative;top:2px;}
   margin-left:2px;
   margin-right: 2px;
   border:1px solid black;
+}
+#characterInfo{
+  text-align: center;
+}
+#characterInfo h2{
+  text-decoration: underline;
+  margin: 0px;
+}
+#characterInfo p{
+  font-size: 80%; 
+  margin: 0px;
 }
 /*
   Styling for the difficulty choice page.

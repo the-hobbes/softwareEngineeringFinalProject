@@ -28,6 +28,10 @@
 			function changeMainImage(selector){
 				// console.log(selector)
 				$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
+				//We could load this information from somewhere either async, or have it sent out to the
+				//page into the value of the labels maybe?
+				$('#characterName').text(selector);
+				$('#characterDescription').text("Description for " + selector);
 				// console.log("images/characters/" + selector)
 				// $("#imageBox").text("The image should be #: " + selector);
 			}
@@ -61,8 +65,13 @@
 			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
 				</div><!--end characterStripRight-->
  				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+ 				<div id="characterInfo" class="shadow">
+ 					<h2 id="characterName">Character Name</h2>
+ 					<p id="characterDescription">This is a brief description of the character</p>
+ 					<input id="characterButton" class="submitButton" type="submit">
+ 				</div>
 
-				<input id="characterButton" class="submitButton" type="submit">
+				
 			</form><!-- end characterForm-->
 		</div><!-- end container-->
 
