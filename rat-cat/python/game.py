@@ -15,9 +15,15 @@ class GameHandler(Handler):
 	def get(self):
 		'''
 		get
-		You got your basic get method right here.
+		You got your basic get method right here, but with a twist. 
+		This method perfoms the intialization of the game state, creating the json objects that represent the game and
+		json encoding them. It then renders them on the game template with jinja. 
 		'''
 		self.render("game.html")
+		#do the encoding
+		#for the initial, pass in null for the oldstate
+		#in the template, var gamestate = new JSONOBJECT({{{the object}}})
+		#render(gamestate)
 
 	def post(self):
 		'''
@@ -25,4 +31,3 @@ class GameHandler(Handler):
 		Responds to post requests for the resource.
 		'''
 		self.write("You posted. Good for you.")
-
