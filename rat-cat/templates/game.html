@@ -81,6 +81,7 @@
 		{% include "rules.html" %}
 		{% include "credits.html" %}
 
+
 		<script>
 		var currentState;
 		//Test code:
@@ -98,9 +99,16 @@
 						 "displayCard" : {image : "0", active : 0}, 
 						 "knockState" : 0 | 1, 
 						 "state" : "state specified by specs that will go to a statement" };
+
 		currentState = renderState(null,testSon);
+
+
+		//commenting out for now because I'm working on this (sorry phelan)
+		//Actual code to be used
+		//currentState = renderState({{oldState}},{{newState}})
+		
 		//End Test Code
-		</script
+		</script>
 
 	</body>
 </html>
