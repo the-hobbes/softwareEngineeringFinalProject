@@ -6,6 +6,7 @@
  */
 
 /*waitingForDraw: This function causes the board to update to the right glowing state
+ *			Which means glowing the discard and deck
  *	state: The JSON representative of the game board, this is a JSON
  *		   object which has the following high level pairs:
  *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
@@ -13,7 +14,17 @@
  *	returns: The updated state
  */
 function waitingForDraw(state){
-	alert('waitingForDraw state');
+	alert('stateChange.js 17: waitingForDraw state');
+
+	$('#deck').addClass('glowing');
+	$('#discardPile').addClass('glowing');
+
+	var glow = $('.glowing');
+	
+	setInterval(function(){
+	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+	}, 2000);
+
 	return state;
 }
 
@@ -26,7 +37,7 @@ function waitingForDraw(state){
  *	returns: The updated state
  */
 function waitingForPCard(state){
-	alert('waitingForPCard state');
+	alert(' stateChange.js 40: waitingForPCard state');
 	return state;
 }
 

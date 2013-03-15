@@ -62,7 +62,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		newState.state = "waitingForDraw";
 
  		//Update the state of the board to show the appropriate state (call stateChange.js function)
- 		handleState(newState.state);
+ 		handleState(newState);
 
  		return newState;
  	}
