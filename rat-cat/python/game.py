@@ -6,8 +6,9 @@
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
-import json
+import cgi
 import logging
+import simplejson as json
 
 class GameHandler(Handler):
 	'''
@@ -43,12 +44,17 @@ class GameHandler(Handler):
 		# derp = json.dumps(oldState)
 
 		###### 
-		# this doesn't work
-		state = json.loads(self.request.get("state"))
-		self.write(state)
+		#this works, the problem was that the json on the client side wasnt actually json
+		jdata = json.loads(cgi.escape(self.request.body))
+		logging.info(jdata)
 
-		#this kind of works
+		push = json.dumps(jdata)
+		self.write(push)
+		#this crap kind of works
 		# self.write(self.request.body)
+		# or
+		# s = self.request.get('compCard')
+		# self.write(s)
 
 	def initEncode(self):
 		'''
