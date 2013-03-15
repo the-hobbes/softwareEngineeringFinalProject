@@ -11,24 +11,6 @@
 		<script src="scripts/gameRender.js"></script>
 		<script>
 
-		//Test code:
-		var testSon = {  "compCard" : [
-						 {"opCard1" : {image : "13", active : 0}}, 
-						 {"opCard2" : {image : "13", active : 0}}, 
-						 {"opCard3" : {image : "13", active : 0}},
-						 {"opCard4" : {image : "13", active : 0}}], 
-						 "discard" : [0,1,2], "desk" : [2,3,4], 
-						 "playCard" : [
-						 {"playerCard1" : {image : "13", active : 0}},
-						 {"playerCard2" : {image : "13", active : 0}},
-						 {"playerCard3" : {image : "13", active : 0}},
-						 {"playerCard4" : {image : "13", active : 0}}],
-						 "displayCard" : {image : "0", active : 0}, 
-						 "knockState" : 0 | 1, 
-						 "state" : "state specified by specs that will go to a statement" };
-		renderState(testSon,testSon);
-		//End Test Code
-
 		jQuery().ready(function($){
 
 			//initialize each hidden dialog div with before it can be shown
@@ -97,6 +79,28 @@
 
 		{% include "rules.html" %}
 		{% include "credits.html" %}
+
+		<script>
+		var currentState;
+		//Test code:
+		var testSon = {  "compCard" : [
+						 {image : "13", active : 0}, 
+						 {image : "13", active : 0}, 
+						 {image : "13", active : 0},
+						 {image : "13", active : 0}], 
+						 "discard" : [0,1,2], "deck" : [3,4,5], 
+						 "playCard" : [
+						 {image : "13", active : 0}, 
+						 {image : "13", active : 0}, 
+						 {image : "13", active : 0},
+						 {image : "13", active : 0}], 
+						 "displayCard" : {image : "0", active : 0}, 
+						 "knockState" : 0 | 1, 
+						 "state" : "state specified by specs that will go to a statement" };
+		currentState = renderState(null,testSon);
+		alert(currentState);
+		//End Test Code
+		</script
 
 	</body>
 </html>
