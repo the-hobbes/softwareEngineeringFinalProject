@@ -23,7 +23,7 @@ function initialState(state){
 	$('#playerCard1').css("background-image", 'url(images/cards/smallCards/'+ state.playCard[0].image +'.png)');
 	$('#playerCard4').css("background-image", 'url(images/cards/smallCards/'+ state.playCard[3].image +'.png)');
 
-	//The function below fades out the card and then fades it back in
+	//The function below fades out the card and then fades it back in with a function callback
 	$('#playerCard1').animate({opacity : 0},4000,function(){ $('#playerCard1').animate({opacity : 1},1000)});
 	$('#playerCard4').animate({opacity : 0},4000,function(){ $('#playerCard4').animate({opacity : 1},1000)});
 
@@ -37,8 +37,9 @@ function initialState(state){
 	state.state = 'waitingForDraw';
 
 	//We need some timing here so that the glow for the next state doesn't happen immediately
+	setTimeout(function(){waitingForDraw(state);},5000);
 
-	return handleState(state);
+	return state;
 
 }
 
