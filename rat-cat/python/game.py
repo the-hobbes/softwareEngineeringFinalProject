@@ -43,7 +43,7 @@ class GameHandler(Handler):
 		# render the template with the new state
 		# derp = json.dumps(oldState)
 
-		###### 
+		#http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
 		#this works, the problem was that the json on the client side wasnt actually json
 		jdata = json.loads(cgi.escape(self.request.body))
 		logging.info(jdata)

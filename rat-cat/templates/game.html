@@ -82,6 +82,7 @@
 
 		<script>
 		var currentState;
+		currentState = renderState({{oldState}},{{newState}});
 		//Test code:		
 		function testJson(){
 			// var testSon = {  "compCard" : [
@@ -101,7 +102,7 @@
 
 			// console.log("got here!!!!111")
 			// data: JSON.stringify([{val1: 'herp', val2:'derp', val3:'lerp'}]),
-			currentState = renderState({{oldState}},{{newState}});
+			// currentState = renderState({{oldState}},{{newState}});
 
 			$.ajax('/game',
 				{
@@ -114,6 +115,7 @@
 						// console.log(data);
 					}
 				}); 
+
 		}
 
 		
