@@ -34,6 +34,8 @@ class GameHandler(Handler):
 		'''
 			post
 			Responds to post requests for the resource.
+			This is essentially the model. Takes in the json object passed by the view, and modifies the data based on the 
+			current state. Then sends back the data, formatted as json.
 		'''
 		self.write("You posted. Good for you.")
 
