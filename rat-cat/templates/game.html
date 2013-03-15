@@ -9,6 +9,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="scripts/jqModal.js"></script>
 		<script src="scripts/gameRender.js"></script>
+
 		<script>
 
 		jQuery().ready(function($){
@@ -98,9 +99,13 @@
 						 "displayCard" : {image : "0", active : 0}, 
 						 "knockState" : 0 | 1, 
 						 "state" : "state specified by specs that will go to a statement" };
+
 		// currentState = renderState(null,testSon);
 		currentState = renderState({{oldState}},{{newState}})
 		alert(currentState);
+
+
+		// currentState = renderState(null,testSon);
 		//End Test Code
 		</script>
 
