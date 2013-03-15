@@ -29,13 +29,22 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		//Read each state and put the proper image out for the opponent cards:
  		for(var i=0; i < 4; i++){
  			var imgId = newState.compCard[i].image;
- 			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			if(newState.compCard[i].visible){
+ 				$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			}else{
+ 				$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
+ 			}
  		}
 
  		//Update the images for the player Cards
  		for(var i=0; i < 4; i++){
  			var imgId = newState.playCard[i].image;
- 			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			if(newState.playCard[i].visible){
+ 				$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
+ 			}else{
+ 				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
+ 			}
+ 			
  		}
 
  		//Show the discard pile card:
@@ -59,15 +68,16 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		newState.knockState = 0;
 
  		//Set the initial state
- 		newState.state = "waitingForDraw";
+ 		newState.state = "initial";
 
  		//Update the state of the board to show the appropriate state (call stateChange.js function)
- 		handleState(newState);
+ 		return handleState(newState);
 
- 		return newState;
  	}
 
  	//If the old state is not null then we really only need to update whatever differs between them.
+ 	//Start with the computer cards:
+ 	
  }
 
 
