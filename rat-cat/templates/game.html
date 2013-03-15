@@ -12,7 +12,20 @@
 		<script>
 
 		//Test code:
-		var testSon = { "Deck" : {}, "Discard" : {}, "CompCard" : {}, "PlayCard" : {},"DisplayCard" : {}, "KnockState" : 0 | 1, "State" : "state specified by specs" };
+		var testSon = {  "Deck" : 
+						["opCard1" : {image : "13", active : 0}, 
+						 "opCard2" : {image : "13", active : 0}, 
+						 "opCard3" : {image : "13", active : 0},
+						 "opCard4" : {image : "13", active : 0}], 
+						 "Discard" : [0,1,2], "CompCard" : [2,3,4], 
+						 "PlayCard" : 
+						["playerCard1" : {image : "13", active : 0},
+						 "playerCard2" : {image : "13", active : 0},
+						 "playerCard3" : {image : "13", active : 0},
+						 "playerCard4" : {image : "13", active : 0}],
+						 "DisplayCard" : {image : "0", active : 0}, 
+						 "KnockState" : 0 | 1, 
+						 "State" : "state specified by specs that will go to a statement" };
 		renderState(testSon,testSon);
 		//End Test Code
 
