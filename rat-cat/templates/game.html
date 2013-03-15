@@ -59,7 +59,7 @@
 			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<a href="#"><button id="knockButton" class="shadow">Knock</button></a><!--end knockButton-->
+			<button id="knockButton" class="shadow" onclick="testJson()">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -82,8 +82,9 @@
 
 		<script>
 		var currentState;
-		//Test code:
-		var testSon = {  "compCard" : [
+		//Test code:		
+		function testJson(){
+			var testSon = {  "compCard" : [
 						 {image : "1", active : 0,'visible' : 0}, 
 						 {image : "2", active : 0,'visible' : 0}, 
 						 {image : "3", active : 0,'visible' : 0},
@@ -98,7 +99,20 @@
 						 "knockState" : 0 | 1, 
 						 "state" : "state specified by specs that will go to a statement" };
 
-		
+			// console.log("got here!!!!111")
+			$.ajax('/game',
+				{
+					type: 'POST',
+					data: {
+							'state' : testSon
+						  },
+					success: function(data){
+						// alert(data);
+						console.log(data);
+					}
+				}); 
+		}
+
 		currentState = renderState({{oldState}},{{newState}});
 
 		// currentState = renderState(null,testSon);

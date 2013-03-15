@@ -7,6 +7,7 @@
 from handler import *
 from random import shuffle
 import json
+import logging
 
 class GameHandler(Handler):
 	'''
@@ -29,10 +30,23 @@ class GameHandler(Handler):
 		'''
 			post
 			Responds to post requests for the resource.
-			This is essentially the model. Takes in the json object passed by the view, and modifies the data based on the 
-			current state. Then sends back the data, formatted as json.
+			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
-		self.write("You posted. Good for you.")
+		# get the json object passed in by the view (assuming it is called currentState)
+		# oldState = json.loads(self.request.get('state'))
+		# logging.info(oldState)
+
+		# send the object to the state parser, and get the new state of the gameboard
+		# newState = parseState(oldState)
+
+		# render the template with the new state
+		# derp = json.dumps(oldState)
+
+
+		state = self.request.get("knockState")
+
+		self.write(state)
+		# self.write(self.request.body)
 
 	def initEncode(self):
 		'''
@@ -64,3 +78,17 @@ class GameHandler(Handler):
 				}
 		# encode it
 		return json.dumps(newState)
+
+	def parseState(self, oldState):
+		'''
+			parseState
+			Determines the state passed in by the view, then executes the appropriate function to handle that state.
+			Parameters:
+				oldState, the state passed in by the view
+			Returns:
+				newstate, the modified state
+		'''
+
+	# function to take in the json from the view
+	# function to modify that json according to the state (switch statement here) <== this is the model
+	# function to return the massaged data to the view
