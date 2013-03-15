@@ -100,10 +100,13 @@
 			// 			 "state" : "state specified by specs that will go to a statement" };
 
 			// console.log("got here!!!!111")
+			// data: JSON.stringify([{val1: 'herp', val2:'derp', val3:'lerp'}]),
+			currentState = renderState({{oldState}},{{newState}});
+
 			$.ajax('/game',
 				{
 					type: 'POST',
-					data: JSON.stringify([{val1: 'herp', val2:'derp', val3:'lerp'}]),
+					data: JSON.stringify(currentState),
 					contentType: "application/json",
 				    dataType: 'json',
 					success: function(data){
@@ -113,7 +116,7 @@
 				}); 
 		}
 
-		currentState = renderState({{oldState}},{{newState}});
+		
 
 		// currentState = renderState(null,testSon);
 		//End Test Code
