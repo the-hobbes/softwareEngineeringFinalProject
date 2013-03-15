@@ -25,11 +25,6 @@ class GameHandler(Handler):
 		newState = self.initEncode()
 		self.render("game.html", oldState='null', newState=newState)
 
-		# TODO
-		# the json object is showing up weirdly because it is being escaped twice (once by json.dumps and once by autoescape =true)
-		# got to find a way around that
-		# also, need to massage ethan's script so it can deal with the 'visible' property i've added
-
 	def post(self):
 		'''
 			post
