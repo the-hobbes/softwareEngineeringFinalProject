@@ -36,6 +36,8 @@ function initialState(state){
 	//No real need for an ajax call we'll just update things here
 	state.state = 'waitingForDraw';
 
+	//We need some timing here so that the glow for the next state doesn't happen immediately
+
 	return handleState(state);
 
 }

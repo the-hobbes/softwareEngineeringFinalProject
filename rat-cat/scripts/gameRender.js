@@ -71,12 +71,13 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		newState.state = "initial";
 
  		//Update the state of the board to show the appropriate state (call stateChange.js function)
- 		handleState(newState);
+ 		return handleState(newState);
 
- 		return newState;
  	}
 
  	//If the old state is not null then we really only need to update whatever differs between them.
+ 	//Start with the computer cards:
+ 	
  }
 
 
