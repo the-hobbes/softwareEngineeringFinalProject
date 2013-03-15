@@ -42,10 +42,12 @@ class GameHandler(Handler):
 		# render the template with the new state
 		# derp = json.dumps(oldState)
 
-
-		state = self.request.get("knockState")
-
+		###### 
+		# this doesn't work
+		state = json.loads(self.request.get("state"))
 		self.write(state)
+
+		#this kind of works
 		# self.write(self.request.body)
 
 	def initEncode(self):
