@@ -72,6 +72,11 @@ function waitingForDraw(state){
 	$('.waitingForDrawAJAX').click(function(){
 		//Use ajax to yell over to the server that something has happened
 		 // fire off the request to /form.php
+
+		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
+		// this in documentation going forward, and modify our current code to accomodate for it. 
+		currentState.playerClicks.push(this.id);
+		// console.log(currentState);
 	    var request = $.ajax({
 	        url: "/game",
 	        type: 'POST',
@@ -85,7 +90,7 @@ function waitingForDraw(state){
 	        console.log('Returned from waitingForDrawAJAX callback');
 	        // console.log(response);
 	        handleState(response);
-	        alert('derp');
+	        // alert('derp');
 	    });
 
 	    // callback handler that will be called on failure
