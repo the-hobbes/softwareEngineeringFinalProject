@@ -70,15 +70,16 @@ function waitingForDraw(state){
 		 // fire off the request to /form.php
 	    var request = $.ajax({
 	        url: "/game",
-	        type: "post",
-	        data: state
+	        type: 'POST',
+			data: JSON.stringify(currentState),
+			contentType: "application/json",
+			dataType: 'json'
 	    });
 
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
 	        // log a message to the console
 	        alert(response);
-	        alert('gah');
 	    });
 
 	    // callback handler that will be called on failure
