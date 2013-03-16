@@ -6,7 +6,9 @@
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
-import json
+import cgi
+import logging
+import simplejson as json
 
 class GameHandler(Handler):
 	'''
@@ -29,12 +31,32 @@ class GameHandler(Handler):
 		'''
 			post
 			Responds to post requests for the resource.
-			This is essentially the model. Takes in the json object passed by the view, and modifies the data based on the 
-			current state. Then sends back the data, formatted as json.
+			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
-		#State is given by ajax
-		state = self.request.get('state');
-		self.write(state)
+
+		# get the json object passed in by the view (assuming it is called currentState)
+		# oldState = json.loads(self.request.get('state'))
+		# logging.info(oldState)
+
+		# send the object to the state parser, and get the new state of the gameboard
+		# newState = parseState(oldState)
+
+		# render the template with the new state
+		# derp = json.dumps(oldState)
+
+		#http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
+		#this works, the problem was that the json on the client side wasnt actually json
+		jdata = json.loads(cgi.escape(self.request.body))
+		logging.info(jdata)
+
+		push = json.dumps(jdata)
+		self.write(push)
+		#this crap kind of works
+		# self.write(self.request.body)
+		# or
+		# s = self.request.get('compCard')
+		# self.write(s)
+
 
 	def initEncode(self):
 		'''
@@ -66,3 +88,17 @@ class GameHandler(Handler):
 				}
 		# encode it
 		return json.dumps(newState)
+
+	def parseState(self, oldState):
+		'''
+			parseState
+			Determines the state passed in by the view, then executes the appropriate function to handle that state.
+			Parameters:
+				oldState, the state passed in by the view
+			Returns:
+				newstate, the modified state
+		'''
+
+	# function to take in the json from the view
+	# function to modify that json according to the state (switch statement here) <== this is the model
+	# function to return the massaged data to the view
