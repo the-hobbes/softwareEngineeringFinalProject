@@ -111,7 +111,7 @@ class GameHandler(Handler):
 		'''
 			waitingForDraw
 			This function updates the state in accordance to the parameters of the Waiting for Draw state and what the 
-			player has clicked. It then returns the new state, encoded as JSON.
+			player has clicked. It then returns the new state, to be later encoded as JSON.
 			Parameters: 
 				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
 			Returns:
@@ -151,7 +151,54 @@ class GameHandler(Handler):
 
 			return statePassedIn
 
+	def waitingForPCard(self, statePassedIn):
+		'''
+			waitingForPCard
+			This state handler is used to update the state in accordance with the results of the player's choice (what the
+			user clicked on the gameboard). 
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
 
+	def HAL(self, statePassedIn):
+		'''
+			HAL
+			This state handler is used to manage the play of the AI. The level of bad-assery which HAL possesses is determined
+			by the user's choice in the difficulty choice menu page, and as such this level must be retrieved from the 
+			datastore.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the computer's choices.
+		'''
+		pass
+
+	def playerChoice(self, statePassedIn):
+		'''
+			playerChoice
+			This state means a player has drawn any card from the deck and must choose to either discard or use it. We get the
+			player's decision and modify the state appropriately. 
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
+
+	def draw2PlayerChoice(self, statePassedIn):
+		'''
+			draw2PlayerChoice
+			Due to the nature of the draw 2 power card, the user is able to draw multiple cards and process each of those states 
+			while in this state.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
 		
 
 		
