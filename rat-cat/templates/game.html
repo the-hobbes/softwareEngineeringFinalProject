@@ -59,7 +59,7 @@
 			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<a href="#"><button id="knockButton" class="shadow">Knock</button></a><!--end knockButton-->
+			<button id="knockButton" class="shadow" onclick="testJson()">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -82,27 +82,8 @@
 
 		<script>
 		var currentState;
-		//Test code:
-		var testSon = {  "compCard" : [
-						 {image : "1", active : 0,'visible' : 0}, 
-						 {image : "2", active : 0,'visible' : 0}, 
-						 {image : "3", active : 0,'visible' : 0},
-						 {image : "4", active : 0,'visible' : 0}], 
-						 "discard" : [0,1,2], "deck" : [3,4,5], 
-						 "playCard" : [
-						 {image : "0", active : 0,'visible' : 0}, 
-						 {image : "5", active : 0,'visible' : 0}, 
-						 {image : "6", active : 0,'visible' : 0},
-						 {image : "7", active : 0,'visible' : 0}], 
-						 "displayCard" : {image : "0", active : 0}, 
-						 "knockState" : 0 | 1, 
-						 "state" : "state specified by specs that will go to a statement" };
-
-		
 		currentState = renderState({{oldState}},{{newState}});
 
-		// currentState = renderState(null,testSon);
-		//End Test Code
 		</script>
 
 	</body>
