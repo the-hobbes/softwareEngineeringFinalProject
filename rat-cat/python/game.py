@@ -81,7 +81,7 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
-					"discard" : [displayCard], 
+					"discard" : [discardCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
