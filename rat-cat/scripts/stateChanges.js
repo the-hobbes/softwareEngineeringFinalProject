@@ -78,6 +78,7 @@ function waitingForDraw(state){
 	    request.done(function (response, textStatus, jqXHR){
 	        // log a message to the console
 	        alert(response);
+	        alert('gah');
 	    });
 
 	    // callback handler that will be called on failure

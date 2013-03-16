@@ -33,7 +33,6 @@ class GameHandler(Handler):
 			Responds to post requests for the resource.
 			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
-
 		# get the json object passed in by the view (assuming it is called currentState)
 		# oldState = json.loads(self.request.get('state'))
 		# logging.info(oldState)
