@@ -32,7 +32,9 @@ class GameHandler(Handler):
 			This is essentially the model. Takes in the json object passed by the view, and modifies the data based on the 
 			current state. Then sends back the data, formatted as json.
 		'''
-		self.write("You posted. Good for you.")
+		#State is given by ajax
+		state = self.request.get('state');
+		self.write(state)
 
 	def initEncode(self):
 		'''

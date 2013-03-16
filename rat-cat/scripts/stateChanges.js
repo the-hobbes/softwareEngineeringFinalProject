@@ -53,8 +53,6 @@ function initialState(state){
  *	returns: The updated state
  */
 function waitingForDraw(state){
-	//alert('stateChange.js : waitingForDraw state');
-
 	//Add glow to whatever the user will interact with
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
@@ -69,7 +67,28 @@ function waitingForDraw(state){
 	//and will also remove the glow
 	$('#deck').click(function(){
 		//Use ajax to yell over to the server that something has happened
+		 // fire off the request to /form.php
+	    var request = $.ajax({
+	        url: "/game",
+	        type: "post",
+	        data: state
+	    });
 
+	    // callback handler that will be called on success
+	    request.done(function (response, textStatus, jqXHR){
+	        // log a message to the console
+	        alert(response);
+	    });
+
+	    // callback handler that will be called on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	        // log the error to the console
+	        console.error(
+	            "The following error occured: "+
+	            textStatus, errorThrown
+	        );
+	    });
+		
 		//Remove the glow
 		$(this).removeClass('glowing');
 	});
