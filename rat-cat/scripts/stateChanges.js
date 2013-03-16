@@ -57,6 +57,10 @@ function waitingForDraw(state){
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
 
+	//Add waitingForDraw handler
+	$('#deck').addClass('waitingForDrawAJAX');
+	$('#discardPile').addClass('waitingForDrawAJAX');
+
 	//This actually causes the glow
 	var glow = $('.glowing');
 	setInterval(function(){
@@ -65,7 +69,7 @@ function waitingForDraw(state){
 
 	//Add listeners for clicks that will fire off whatever interaction we need
 	//and will also remove the glow
-	$('#deck').click(function(){
+	$('.waitingForDrawAJAX').click(function(){
 		//Use ajax to yell over to the server that something has happened
 		 // fire off the request to /form.php
 	    var request = $.ajax({
@@ -78,8 +82,9 @@ function waitingForDraw(state){
 
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
-	        // log a message to the console
-	        alert(response);
+	        console.log('Returned from waitingForDrawAJAX callback');
+	        handleState(response);
+	        alert('derp');
 	    });
 
 	    // callback handler that will be called on failure
@@ -91,16 +96,12 @@ function waitingForDraw(state){
 	        );
 	    });
 		
-		//Remove the glow
+		//Remove the glow from both glowing pieces in this state
 		$(this).removeClass('glowing');
+		$('#discardPile').removeClass('glowing');
+		$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	});
 
-	$('#discardPile').click(function(){
-		//Use ajax to yell over to the server that something has happened
-
-		//Remove the glow
-		$(this).removeClass('glowing');
-	});
 
 	return state;
 }
