@@ -145,6 +145,7 @@ class GameHandler(Handler):
 				drawnCard = statePassedIn['deck'].pop()
 			except:
 				# no cards left in the deck. The round ends, so we should probably have a round end state? 
+				# It would probs need to be something similar to a knock state, which we may have to do as well.
 				pass
 
 			# add the card to the display card 
@@ -191,6 +192,9 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+		# has the player chosen to use or discard?
+
+		# if discard, add the card to the user's 
 		pass
 
 	def draw2PlayerChoice(self, statePassedIn):
