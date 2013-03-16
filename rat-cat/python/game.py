@@ -6,6 +6,7 @@
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
+from random import choice
 import cgi
 import logging
 import simplejson as json
@@ -64,9 +65,10 @@ class GameHandler(Handler):
 			Returns:
 				initialState, the initial state of the gameboard
 		'''
-		# make a list of lists of cards, flatten it, then shuffle it
+		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
 		listOfLists = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9, [10]*3, [11]*3, [12]*3 ]
 		deck = sum(listOfLists, [])
+		discardCard = str(deck.pop(choice(deck[0:45]))) # initial discard card can't be a power card
 		shuffle(deck)
 
 		newState = {"compCard" : [
@@ -79,7 +81,7 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
-					"discard" : [], 
+					"discard" : [displayCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 

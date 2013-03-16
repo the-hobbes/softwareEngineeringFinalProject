@@ -83,6 +83,7 @@ function waitingForDraw(state){
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from waitingForDrawAJAX callback');
+	        // console.log(response);
 	        handleState(response);
 	        alert('derp');
 	    });
