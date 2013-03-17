@@ -83,6 +83,8 @@ class GameHandler(Handler):
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
 					"state" : "waitingForDraw",
+					"score" : 0,
+					"gameOver" :0,
 					"playerClicks" : []
 				}
 		# encode it
@@ -193,9 +195,80 @@ class GameHandler(Handler):
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
 		# has the player chosen to use or discard?
+		userChoice = statePassedIn['playerClicks'][0]
+		# and what is the card they have made this decision about?
+		currentCard = statePassedIn['displayCard']['image']
 
-		# if discard, add the card to the user's 
-		pass
+		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
+		if(userChoice == 'discardPile'):
+			# take the card the user has decided about and add it to the discard
+			statePassedIn['discard'].append(currentCard)
+			# reset displayCard
+			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+			# clear the player clicks queue
+			statePassedIn['playerClicks'] = []
+			# the user's turn is now over, so it is up to HAL to take over as the new state
+			statePassedIn['state'] = 'HAL'
+
+			return statePassedIn
+
+		# otherwise, the choice is use. Determine if it is a number card or a power card first
+		else:
+			if(int(currentCard) <= 9):
+				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
+				# 	as well as updating the discard pile with the card they swapped out for.
+
+				# NOTE: This is a VERY clunky way to do this. A better option would be to add a k/v pair to each playcard
+				#	slot of the div id, allowing us to simply do this=> statePassedIn['playCard'][userChoice] = whatever.
+				if(userChoice == 'playerCard1'):
+					# first, discard the card they have chosen to replace
+					statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
+					# next, update thier hand with the card they have decided upon
+					statePassedIn['playCard'][0]['image'] = currentCard
+
+				elif(userChoice == 'playerCard2'):
+					statePassedIn['discard'].append(statePassedIn['playCard'][1]['image'])
+					statePassedIn['playCard'][1]['image'] = currentCard
+
+				elif(userChoice == 'playerCard3'):
+					statePassedIn['discard'].append(statePassedIn['playCard'][2]['image'])
+					statePassedIn['playCard'][2]['image'] = currentCard 
+
+				else:
+					statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
+					statePassedIn['playCard'][3]['image'] = currentCard 
+
+				statePassedIn['playerClicks'] = []
+				statePassedIn['state'] = 'HAL'
+				return statePassedIn
+
+			else:
+				# this is a power card. What kind of power card are we talking about?
+				if(int(currentCard) == 10):
+					# a draw 2 power card
+					pass
+				elif(int(currentCard) == 11):
+					# this is a peek power card. Set the card they wanted to peek at to be visible. 
+					if(userChoice == 'playerCard1'):
+						statePassedIn['playCard'][0]['visible'] = 1
+					elif(userChoice == 'playerCard2'):
+						statePassedIn['playCard'][1]['visible'] = 1
+					elif(userChoice == 'playerCard3'):
+						statePassedIn['playCard'][2]['visible'] = 1
+					else:
+						statePassedIn['playCard'][3]['visible'] = 1
+				else:
+					# this is a 12, or swap power card
+					pass
+
+				# put the power card in the discard pile
+				statePassedIn['discard'].append(currentCard)
+				# reset the displaycard and playclicks 
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				statePassedIn['playerClicks'] = []
+				
+				return statePassedIn
+
 
 	def draw2PlayerChoice(self, statePassedIn):
 		'''
@@ -209,5 +282,15 @@ class GameHandler(Handler):
 		'''
 		pass
 		
-
+	def endGame(self, statePassedIn):
+		'''
+			endGame
+			State handler used to sum of the scores of a round and add them to the total score value in the state JSON.
+			Also decides if the game is over or just the round is over.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
 		
