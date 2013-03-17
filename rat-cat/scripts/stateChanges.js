@@ -57,22 +57,19 @@ function waitingForDraw(state){
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
 
-	//Add waitingForDraw handler
-	$('#deck').addClass('waitingForDrawAJAX');
-	$('#discardPile').addClass('waitingForDrawAJAX');
-
 	//This actually causes the glow
 	var glow = $('.glowing');
 	setInterval(function(){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
-
+	var stopMulti = 0;
+	
 	//Add listeners for clicks that will fire off whatever interaction we need
 	//and will also remove the glow
-	$('.waitingForDrawAJAX').click(function(){
+	$('#deck').click(function(){
 		//Use ajax to yell over to the server that something has happened
 		 // fire off the request to /form.php
-	    var request = $.ajax({
+	    requestDeck = $.ajax({
 	        url: "/game",
 	        type: 'POST',
 			data: JSON.stringify(currentState),
@@ -80,15 +77,19 @@ function waitingForDraw(state){
 			dataType: 'json'
 	    });
 
+	    
+
 	    // callback handler that will be called on success
-	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from waitingForDrawAJAX callback');
-	        handleState(response);
-	        alert('derp');
+	    requestDeck.done(function (response, textStatus, jqXHR){
+	    	if(stopMulti == 0){
+	    		console.log('Returned from deck callback');
+	        	handleState(response);
+	        	alert(state.state);
+	    	}
 	    });
 
 	    // callback handler that will be called on failure
-	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    requestDeck.fail(function (jqXHR, textStatus, errorThrown){
 	        // log the error to the console
 	        console.error(
 	            "The following error occured: "+
@@ -99,9 +100,40 @@ function waitingForDraw(state){
 		//Remove the glow from both glowing pieces in this state
 		$(this).removeClass('glowing');
 		$('#discardPile').removeClass('glowing');
-		$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	});
 
+	
+	$('#discardPile').click(function(){
+		//Use ajax to yell over to the server that something has happened
+		 // fire off the request to /form.php
+	    requestDiscard = $.ajax({
+	        url: "/game",
+	        type: 'POST',
+			data: JSON.stringify(currentState),
+			contentType: "application/json",
+			dataType: 'json'
+	    });
+
+	    // callback handler that will be called on success
+	    requestDiscard.done(function (response, textStatus, jqXHR){
+	        console.log('Returned from deck callback');
+	        handleState(response);
+	        alert(state.state);
+	    });
+
+	    // callback handler that will be called on failure
+	    requestDiscard.fail(function (jqXHR, textStatus, errorThrown){
+	        // log the error to the console
+	        console.error(
+	            "The following error occured: "+
+	            textStatus, errorThrown
+	        );
+	    });
+		
+		//Remove the glow
+		$(this).removeClass('glowing');
+		$('#deck').removeClass('glowing');
+	});
 
 	return state;
 }
