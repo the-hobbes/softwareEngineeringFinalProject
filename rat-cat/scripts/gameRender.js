@@ -75,7 +75,8 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
-
+ 	alert(oldState.state);
+ 	alert(newState.state);
  	//If the old state is not null then we really only need to update whatever differs between them.
  	//Start with the computer cards:
  	

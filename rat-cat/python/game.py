@@ -48,8 +48,10 @@ class GameHandler(Handler):
 		#this works, the problem was that the json on the client side wasnt actually json
 		jdata = json.loads(cgi.escape(self.request.body))
 		logging.info(jdata)
-
+		jdata['state'] = "playerChoice"
+		logging.info(jdata)
 		push = json.dumps(jdata)
+
 		self.write(push)
 		#this crap kind of works
 		# self.write(self.request.body)

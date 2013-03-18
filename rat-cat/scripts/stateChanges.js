@@ -75,6 +75,7 @@ function waitingForDraw(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
+		currentState = state;
 		// console.log(currentState);
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
@@ -95,6 +96,7 @@ function waitingForDraw(state){
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
 	        state = handleState(response);      
+	        renderState(currentState,state);
 	    });
 
 	    // callback handler that will be called on failure
@@ -102,7 +104,7 @@ function waitingForDraw(state){
 	        // log the error to the console
 	        console.error(
 	            "The following error occured: "+
-	            textStatus + errorThrown
+	            textStatus, errorThrown
 	        );
 	    });
 
