@@ -88,8 +88,8 @@ function waitingForDraw(state){
 		currentState = state;
 		// console.log(currentState);
 		//Use ajax to yell over to the server that something has happened
-	    var requestDeck = $.ajax({
 
+	    var requestDeck = $.ajax({
 	        url: "/game",
 	        type: 'POST',
 			data: JSON.stringify(state),
@@ -107,6 +107,7 @@ function waitingForDraw(state){
 	    	$('.waitingForDrawAJAX').unbind('click');
 	        state = handleState(response);      
 	        renderState(currentState,state);
+
 	    });
 
 	    // callback handler that will be called on failure
