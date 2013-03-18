@@ -258,7 +258,7 @@ class GameHandler(Handler):
 					else:
 						statePassedIn['playCard'][3]['visible'] = 1
 				else:
-					# this is a 12, or swap power card
+					# this is a 12, or swap power card.
 					pass
 
 				# put the power card in the discard pile
