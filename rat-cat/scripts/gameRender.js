@@ -45,7 +45,6 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  			}else{
  				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
  			}
- 			
  		}
 
  		//Show the discard pile card:
@@ -75,11 +74,66 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
- 	alert(oldState.state);
- 	alert(newState.state);
+
  	//If the old state is not null then we really only need to update whatever differs between them.
  	//Start with the computer cards:
- 	
+	for(var i=0; i < 4; i++){
+ 		var imgId = newState.compCard[i].image;
+ 		//Are they different?
+ 		if(imgId != oldState.compCard[i].image || oldState.compCard[i].visible != newState.compCard[i].visible){
+			if(newState.compCard[i].visible){
+				$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+			}else{
+				$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
+			}
+ 		}
+ 	} 	
+
+ 	//Update thos player cards if they need to be changed!
+	for(var i=0; i < 4; i++){
+		var imgId = newState.playCard[i].image;
+		if(imgId != oldState.playCard[i].image || oldState.playCard[i].visible != newState.playCard[i].visible){
+			if(newState.playCard[i].visible){
+				$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
+			}else{
+				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
+			}
+		}
+	}
+
+	//Show the discard pile card if its different than before:
+	if(oldState.discard[0] != newState.discard[0]){
+		if(newState.discard[0] == null){
+			$('#discardPile').css("background-image", 'url(images/placeholderCard.png)');
+		}else{
+			$('#discardPile').css("background-image", 'url(images/cards/smallCards/' + newState.discard[0] + '.png)');
+		}
+	}
+	
+
+	//Display either the bottom of a card or a placeholder if we managed to run out of deck cards
+	if(newState.deck[0] != oldState.deck[0]){
+ 		if(newState.deck[0] == null){
+ 			$('#deck').css("background-image", 'url(images/placeholderCard.png)');
+ 		}else{
+ 			$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');
+ 		}
+ 	}
+
+ 	//Display whatever the currently displayed card is
+ 	if(newState.displayCard.image != oldState.displayCard.image){
+ 		$('#currentCard').css("background-image", "url(images/cards/" + newState.displayCard.image + ".png)");
+ 	}		
+
+ 	//Check the knock state
+ 	if(newState.knockState){
+ 		//We should have some type of pop up or some type of change that says it's the user's last turn.
+ 		alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 	}
+
+ 	//We return newState for no particular reason. keep it in the space I guess 
+ 	return newState;
+
  }
 
 

@@ -3,6 +3,15 @@
  * Authors:
  * 	Ethan
  *
+ * The purpose of this file is to provide the changes to the view upon each change of state. The following functions
+ * are defined here:
+ *	initialState(state)
+ *	waitingForDraw(state)
+ *	waitingForPCard
+ * 	HAL(state)
+ *	playerChoice(state)
+ *	draw2PlayerChoice
+ *	handleState(state)
  */
 
 
@@ -15,7 +24,7 @@
  *	returns: The updated state
  */
 function initialState(state){
-	//alert('initialState');
+	console.log('initialState entered');
 
 	//Any fancy animations for shuffling and dealing go here, such as tweening cards from the deck to the players hands
 
@@ -53,6 +62,7 @@ function initialState(state){
  *	returns: The updated state
  */
 function waitingForDraw(state){
+	console.log("waitingForDraw state entered");
 	//Add glow to whatever the user will interact with
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
@@ -126,7 +136,7 @@ function waitingForDraw(state){
  *	returns: The updated state
  */
 function waitingForPCard(state){
-	alert(' stateChange.js : waitingForPCard state');
+	console.log('waitingForPCard state entered');
 	return state;
 }
 
@@ -139,7 +149,7 @@ function waitingForPCard(state){
  *	returns: The updated state
  */
 function HAL(state){
-	alert('HAL state');
+	console.log('HAL state entered');
 	return state;
 }
 
@@ -151,7 +161,7 @@ function HAL(state){
  *	returns: The updated state
  */
 function playerChoice(state){
-	alert('playerChoice state');
+	console.log("playerChoice State entered");
 	return state;
 }
 
@@ -163,7 +173,7 @@ function playerChoice(state){
  *	returns: The updated state
  */
 function draw2PlayerChoice(state){
-	alert('draw2PlayerChoice state');
+	console.log('draw2PlayerChoice state entered');
 	return state;
 }
 
