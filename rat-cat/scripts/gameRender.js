@@ -7,6 +7,7 @@
 
 //JavaScript 'includes', if we use ajax the page loads async and we might not have  our dependencies
 document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'></script>");
+
 //document.writeln("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>");
 //The above is commented out because it produces an error on $('#creditsDialog').jqm(); in game.html
 

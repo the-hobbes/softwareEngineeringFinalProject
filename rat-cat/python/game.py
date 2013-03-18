@@ -6,6 +6,7 @@
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
+from random import choice
 import cgi
 import logging
 import simplejson as json
@@ -64,11 +65,18 @@ class GameHandler(Handler):
 			Returns:
 				initialState, the initial state of the gameboard
 		'''
-		# make a list of lists of cards, flatten it, then shuffle it
-		listOfLists = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9, [10]*3, [11]*3, [12]*3 ]
-		deck = sum(listOfLists, [])
+		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
+		# also, dang this is ugly.  Seriously ugly.
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		deck = sum(numberCards, [])
 		shuffle(deck)
+		subDeck = sum(powerCards, [])
+		shuffle(subDeck)
+		discardCard = str(deck.pop(choice(deck)))
+		deck.append(subDeck)
 
+		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
 						{"image" : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
@@ -79,11 +87,12 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
-					"discard" : [], 
+					"discard" : [discardCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
-					"state" : "waitingForDraw" 
+					"state" : "waitingForDraw",
+					"playerClicks" : []
 				}
 		# encode it
 		return json.dumps(newState)

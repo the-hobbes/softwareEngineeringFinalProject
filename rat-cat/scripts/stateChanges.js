@@ -57,35 +57,44 @@ function waitingForDraw(state){
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
 
+	//Add Ajax class to things that will be responsive to user input
+	$('#deck').addClass('waitingForDrawAJAX');
+	$('#discardPile').addClass('waitingForDrawAJAX');
+
 	//This actually causes the glow
 	var glow = $('.glowing');
 	setInterval(function(){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
-	var stopMulti = 0;
+	
 	
 	//Add listeners for clicks that will fire off whatever interaction we need
 	//and will also remove the glow
-	$('#deck').click(function(){
+
+	$('.waitingForDrawAJAX').bind('click',function(){
+		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
+		// this in documentation going forward, and modify our current code to accomodate for it. 
+		state.playerClicks.push(this.id);
+		// console.log(currentState);
 		//Use ajax to yell over to the server that something has happened
-		 // fire off the request to /form.php
-	    requestDeck = $.ajax({
+	    var requestDeck = $.ajax({
+
 	        url: "/game",
 	        type: 'POST',
-			data: JSON.stringify(currentState),
+			data: JSON.stringify(state),
 			contentType: "application/json",
 			dataType: 'json'
 	    });
 
-	    
-
 	    // callback handler that will be called on success
 	    requestDeck.done(function (response, textStatus, jqXHR){
-	    	if(stopMulti == 0){
-	    		console.log('Returned from deck callback');
-	        	handleState(response);
-	        	alert(state.state);
-	    	}
+	        console.log('Returned from waitingForDrawAJAX callback');
+	        // console.log(response);
+
+	        //Remove the click so we don't send a ajax request to the server while this 
+	        //click shouldn't do anything
+	    	$('.waitingForDrawAJAX').unbind('click');
+	        state = handleState(response);      
 	    });
 
 	    // callback handler that will be called on failure
@@ -93,47 +102,15 @@ function waitingForDraw(state){
 	        // log the error to the console
 	        console.error(
 	            "The following error occured: "+
-	            textStatus, errorThrown
+	            textStatus + errorThrown
 	        );
 	    });
-		
+
 		//Remove the glow from both glowing pieces in this state
-		$(this).removeClass('glowing');
+		$('#deck').removeClass('glowing');
 		$('#discardPile').removeClass('glowing');
 	});
 
-	
-	$('#discardPile').click(function(){
-		//Use ajax to yell over to the server that something has happened
-		 // fire off the request to /form.php
-	    requestDiscard = $.ajax({
-	        url: "/game",
-	        type: 'POST',
-			data: JSON.stringify(currentState),
-			contentType: "application/json",
-			dataType: 'json'
-	    });
-
-	    // callback handler that will be called on success
-	    requestDiscard.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from deck callback');
-	        handleState(response);
-	        alert(state.state);
-	    });
-
-	    // callback handler that will be called on failure
-	    requestDiscard.fail(function (jqXHR, textStatus, errorThrown){
-	        // log the error to the console
-	        console.error(
-	            "The following error occured: "+
-	            textStatus, errorThrown
-	        );
-	    });
-		
-		//Remove the glow
-		$(this).removeClass('glowing');
-		$('#deck').removeClass('glowing');
-	});
 
 	return state;
 }
