@@ -201,6 +201,11 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the computer's choices.
 		'''
+
+		# what is the difficulty level?
+		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
+		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
+		#	in the database, or perhaps just in a variable here, or even in the json. 
 		pass
 
 	def playerChoice(self, statePassedIn):
@@ -259,6 +264,7 @@ class GameHandler(Handler):
 
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = 'HAL'
+
 				return statePassedIn
 
 			else:
@@ -266,6 +272,7 @@ class GameHandler(Handler):
 				if(int(currentCard) == 10):
 					# a draw 2 power card
 					statePassedIn['state'] = 'draw2PlayerChoice'
+
 				elif(int(currentCard) == 11):
 					# this is a peek power card. Set the card they wanted to peek at to be visible. 
 					if(userChoice == 'playerCard1'):
@@ -278,6 +285,7 @@ class GameHandler(Handler):
 						statePassedIn['playCard'][3]['visible'] = 1
 					# their turn is over, so send in the AI state
 					statePassedIn['state'] = 'HAL'
+					
 				else:
 					# this is a 12, or swap power card.
 					# players cards glow, as do opponents cards
