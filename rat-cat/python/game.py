@@ -46,7 +46,7 @@ class GameHandler(Handler):
 
 		#TESTING DATA --Ethan
 		if newState['state'] == "playerChoice":
-			newState['state'] = 'waitingForDraw'
+			newState['state'] = 'waitingForPCard'
 		else:
 			newState['state'] = "playerChoice"
 		

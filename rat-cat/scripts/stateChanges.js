@@ -105,8 +105,7 @@ function waitingForDraw(state){
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
-	    	$('#deck').removeClass('waitingForDrawAJAX');
-			$('#discardPile').removeClass('waitingForDrawAJAX');
+			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
 	        renderState(currentState,state);
 
@@ -133,7 +132,8 @@ function waitingForDraw(state){
 }
 
 
-/*waitingForPCard: This function causes the board to update to the right glowing state
+/*waitingForPCard: This function causes the board to update to the right glowing state, which is having
+ *			each of the players cards glow
  *	state: The JSON representative of the game board, this is a JSON
  *		   object which has the following high level pairs:
  *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
@@ -142,6 +142,68 @@ function waitingForDraw(state){
  */
 function waitingForPCard(state){
 	console.log('waitingForPCard state entered');
+	
+	//Iterate through each div within playerCards and add the glowing class
+	var $divs = $('#playerCards').children('div').each(function(){
+		$(this).addClass('glowing');
+		$(this).addClass('waitingForPCardAJAX');
+	});
+
+	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
+	//Seem to put the glowing into a function without it ceasing functioning. Weird.
+	//This will be refactored at a later date.
+	var glow = $('.glowing');
+	setInterval(function(){
+	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+	}, 2000);
+
+	//Define the AJAX call to the server 
+	$('.waitingForPCardAJAX').bind('click',function(){
+		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
+		// this in documentation going forward, and modify our current code to accomodate for it. 
+		state.playerClicks.push(this.id);
+		currentState = state;
+		//Use ajax to yell over to the server that something has happened
+
+	    var request = $.ajax({
+	        url: "/game",
+	        type: 'POST',
+			data: JSON.stringify(state),
+			contentType: "application/json",
+			dataType: 'json'
+	    });
+
+	    // callback handler that will be called on success
+	    request.done(function (response, textStatus, jqXHR){
+	        console.log('Returned from waitingForPCardAJAX callback');
+	        // console.log(response);
+
+	        //Remove the click so we don't send a ajax request to the server while this 
+	        //click shouldn't do anything
+	    	$('.waitingForPCardAJAX').unbind('click');
+	    	$('.waitingForPCardAJAX').removeClass('waitingForPCardAJAX');
+	        state = handleState(response);      
+	        renderState(currentState,state);
+
+	    });
+
+	    // callback handler that will be called on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	        // log the error to the console
+	        console.error(
+	            "The following error occured: "+
+	            textStatus, errorThrown
+	        );
+	    });
+
+		//Remove the glow from player cards
+		$('#discardPile').removeClass('glowing');
+		var $divs = $('#playerCards').children('div').each(function(){
+			$(this).removeClass('glowing');
+		
+		});
+	});
+
 	return state;
 }
 
@@ -196,7 +258,7 @@ function playerChoice(state){
 		// console.log(currentState);
 		//Use ajax to yell over to the server that something has happened
 
-	    var requestDeck = $.ajax({
+	    var request = $.ajax({
 	        url: "/game",
 	        type: 'POST',
 			data: JSON.stringify(state),
@@ -205,7 +267,7 @@ function playerChoice(state){
 	    });
 
 	    // callback handler that will be called on success
-	    requestDeck.done(function (response, textStatus, jqXHR){
+	    request.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from playerChoiceAJAX callback');
 	        // console.log(response);
 
@@ -219,7 +281,7 @@ function playerChoice(state){
 	    });
 
 	    // callback handler that will be called on failure
-	    requestDeck.fail(function (jqXHR, textStatus, errorThrown){
+	    request.fail(function (jqXHR, textStatus, errorThrown){
 	        // log the error to the console
 	        console.error(
 	            "The following error occured: "+
