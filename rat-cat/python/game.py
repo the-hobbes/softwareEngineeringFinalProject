@@ -145,6 +145,9 @@ class GameHandler(Handler):
 				statePassedIn['message']['visible'] = 1
 				return statePassedIn
 
+			# set all of the user's cards to active, so they are glown
+			for pCard in newState['playCard']:
+				pCard['active'] = 1
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
@@ -260,7 +263,7 @@ class GameHandler(Handler):
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
 					# a draw 2 power card
-					pass
+					statePassedIn['state'] = 'draw2PlayerChoice'
 				elif(int(currentCard) == 11):
 					# this is a peek power card. Set the card they wanted to peek at to be visible. 
 					if(userChoice == 'playerCard1'):
@@ -275,7 +278,11 @@ class GameHandler(Handler):
 					statePassedIn['state'] = 'HAL'
 				else:
 					# this is a 12, or swap power card.
-					pass
+					# players cards glow, as do opponents cards
+					for pCard in newState['playCard']:
+						pCard['active'] = 1
+					for cCard in newState['compCard']:
+						cCard['active'] = 1
 
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
