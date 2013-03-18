@@ -6,7 +6,10 @@
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
-import json
+from random import choice
+import cgi
+import logging
+import simplejson as json
 
 class GameHandler(Handler):
 	'''
@@ -29,10 +32,25 @@ class GameHandler(Handler):
 		'''
 			post
 			Responds to post requests for the resource.
-			This is essentially the model. Takes in the json object passed by the view, and modifies the data based on the 
-			current state. Then sends back the data, formatted as json.
+			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
-		self.write("You posted. Good for you.")
+		# get the json object passed in by the view (assuming it is called currentState)
+		oldState = json.loads(cgi.escape(self.request.body))
+		# logging.info(oldState['playCard'])
+
+		# send the object to the state parser, and get the new state of the gameboard
+		newState = self.parseState(oldState)
+
+		#http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
+		#this works, the problem was that the json on the client side wasnt actually json
+
+		#TESTING DATA --Ethan
+		newState['state'] = "playerChoice"
+		
+		#write the new data out as a response for the view to render
+		newState = json.dumps(newState)
+		self.write(newState)
+
 
 	def initEncode(self):
 		'''
@@ -41,11 +59,19 @@ class GameHandler(Handler):
 			Returns:
 				initialState, the initial state of the gameboard
 		'''
-		# make a list of lists of cards, flatten it, then shuffle it
-		listOfLists = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9, [10]*3, [11]*3, [12]*3 ]
-		deck = sum(listOfLists, [])
-		shuffle(deck)
+		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
+		# also, dang this is ugly.  Seriously ugly.
 
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		deck = sum(numberCards, [])
+		shuffle(deck)
+		subDeck = sum(powerCards, [])
+		shuffle(subDeck)
+		discardCard = str(deck.pop(choice(deck)))
+		deck.append(subDeck)
+
+		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
 						{"image" : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
@@ -56,11 +82,148 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
-					"discard" : [], 
+					"discard" : [discardCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
-					"state" : "waitingForDraw" 
+					"state" : "waitingForDraw",
+					"playerClicks" : []
 				}
 		# encode it
 		return json.dumps(newState)
+
+	def parseState(self, oldState):
+		'''
+			parseState
+			Determines the state passed in by the view, then executes the appropriate function to handle that state.
+			Parameters:
+				oldState, the state passed in by the view
+			Returns:
+				newstate, the modified state
+		'''
+		statePassedIn = oldState['state']
+
+		if (statePassedIn == 'waitingForDraw'):
+			return self.waitingForDraw(oldState)
+		elif (statePassedIn == 'waitingForPCard'):
+			pass
+		elif (statePassedIn == 'HAL'):
+			pass
+		elif (statePassedIn == 'playerChoice'):
+			pass
+		elif (statePassedIn == 'draw2PlayerChoice'):
+			pass
+		else:
+			return statePassedIn
+
+	def waitingForDraw(self, statePassedIn):
+		'''
+			waitingForDraw
+			This function updates the state in accordance to the parameters of the Waiting for Draw state and what the 
+			player has clicked. It then returns the new state, to be later encoded as JSON.
+			Parameters: 
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		# the div id of what the player clicked (either deck, or discardPile)
+		userChoice = statePassedIn['playerClicks'][0]
+
+		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
+		if (userChoice == 'discardPile'):
+			# what was the card they picked? 
+			try:
+				selectedCard = statePassedIn['discard'].pop()
+			except:
+				#This could happen if the opponent takes the discard pile and then the user tries to
+				#We can solve this by having the view not add a glow to the deck at all (probably a good way to do it)
+				#Or we can handle the code here and return to the waitingForDraw state again maybe with some type of
+				#message to the user --we could add some type of message field to the game state json like this: 
+				# message : {visible : 0 | 1, text : "Bad User Bad!"} and the view could check the visibility of this
+				#message and then pop it up to the user... I like both of these ideas, your thoughts?
+				#statePassedIn['message'] = { 'visible : 1, 'text' : "There is no card to be selected here"}
+				selectedCard = 13
+
+
+			# set that as the displayCard
+			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
+			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
+			statePassedIn['playerClicks'] = []
+			# set the new state of the game to be "waitingForPCard", as per our documentation (this will glow the players' cards, etc)
+			statePassedIn['state'] = 'waitingForPCard'
+
+			return statePassedIn
+
+		# if the user has chosen a card from the deck:
+		else:
+			# what was the card they picked from the deck? Note that we must also handle the case of the deck being empty 
+			try:
+				drawnCard = statePassedIn['deck'].pop()
+			except:
+				# no cards left in the deck. The round ends, so we should probably have a round end state? 
+				# It would probs need to be something similar to a knock state, which we may have to do as well.
+				pass
+
+			# add the card to the display card 
+			statePassedIn['displayCard'] =  {'image' : str(drawnCard), 'active' : 0}
+			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
+			statePassedIn['playerClicks'] = []
+			# set the new state of the game to be "playerChoice", as per our documentation
+			statePassedIn['state'] = 'playerChoice'
+
+			return statePassedIn
+
+	def waitingForPCard(self, statePassedIn):
+		'''
+			waitingForPCard
+			This state handler is used to update the state in accordance with the results of the player's choice (what the
+			user clicked on the gameboard). 
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
+
+	def HAL(self, statePassedIn):
+		'''
+			HAL
+			This state handler is used to manage the play of the AI. The level of bad-assery which HAL possesses is determined
+			by the user's choice in the difficulty choice menu page, and as such this level must be retrieved from the 
+			datastore.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the computer's choices.
+		'''
+		pass
+
+	def playerChoice(self, statePassedIn):
+		'''
+			playerChoice
+			This state means a player has drawn any card from the deck and must choose to either discard or use it. We get the
+			player's decision and modify the state appropriately. 
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		# has the player chosen to use or discard?
+
+		# if discard, add the card to the user's 
+		pass
+
+	def draw2PlayerChoice(self, statePassedIn):
+		'''
+			draw2PlayerChoice
+			Due to the nature of the draw 2 power card, the user is able to draw multiple cards and process each of those states 
+			while in this state.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		pass
+		
+
+		
