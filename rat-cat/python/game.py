@@ -89,7 +89,8 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
-					"playerClicks" : []
+					"playerClicks" : [],
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
 				}
 		# encode it
 		return json.dumps(newState)
@@ -137,15 +138,12 @@ class GameHandler(Handler):
 			try:
 				selectedCard = statePassedIn['discard'].pop()
 			except:
-				#This could happen if the opponent takes the discard pile and then the user tries to
-				#We can solve this by having the view not add a glow to the deck at all (probably a good way to do it)
-				#Or we can handle the code here and return to the waitingForDraw state again maybe with some type of
-				#message to the user --we could add some type of message field to the game state json like this: 
-				# message : {visible : 0 | 1, text : "Bad User Bad!"} and the view could check the visibility of this
-				#message and then pop it up to the user... I like both of these ideas, your thoughts?
-				#statePassedIn['message'] = { 'visible : 1, 'text' : "There is no card to be selected here"}
-				selectedCard = 13
-
+				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
+				# 	to compensate for this. Set the message visible, then simply pass back the state. 
+				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
+				statePassedIn['playerClicks'] = []
+				statePassedIn['message']['visible'] = 1
+				return statePassedIn
 
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
@@ -210,7 +208,7 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
-		# has the player chosen to use or discard?
+		# has the player chosen to use or discard? (If they have chosen to use, this will also tell you what they have clicked)
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
 		currentCard = statePassedIn['displayCard']['image']
@@ -234,8 +232,8 @@ class GameHandler(Handler):
 				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
 				# 	as well as updating the discard pile with the card they swapped out for.
 
-				# NOTE: This is a VERY clunky way to do this. A better option would be to add a k/v pair to each playcard
-				#	slot of the div id, allowing us to simply do this=> statePassedIn['playCard'][userChoice] = whatever.
+				# NOTE: This seems like a clunky way to do this. A better option would be to add a k/v pair to each playcard
+				#	slot of the div id, allowing us to simply do this=> statePassedIn['playCard'][userChoice] = whatever?
 				if(userChoice == 'playerCard1'):
 					# first, discard the card they have chosen to replace
 					statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
@@ -273,6 +271,8 @@ class GameHandler(Handler):
 						statePassedIn['playCard'][2]['visible'] = 1
 					else:
 						statePassedIn['playCard'][3]['visible'] = 1
+					# their turn is over, so send in the AI state
+					statePassedIn['state'] = 'HAL'
 				else:
 					# this is a 12, or swap power card.
 					pass
