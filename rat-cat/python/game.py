@@ -45,10 +45,10 @@ class GameHandler(Handler):
 		#this works, the problem was that the json on the client side wasnt actually json
 
 		#TESTING DATA --Ethan
-		if newState['state'] == "playerChoice":
-			newState['state'] = 'waitingForPCard'
-		else:
-			newState['state'] = "playerChoice"
+		# if newState['state'] == "playerChoice":
+		# 	newState['state'] = 'waitingForPCard'
+		# else:
+		# 	newState['state'] = "playerChoice"
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
@@ -134,6 +134,7 @@ class GameHandler(Handler):
 		# the div id of what the player clicked (either deck, or discardPile)
 		userChoice = statePassedIn['playerClicks'][0]
 
+		logging.info("got here")
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
@@ -148,7 +149,7 @@ class GameHandler(Handler):
 				return statePassedIn
 
 			# set all of the user's cards to active, so they are glown
-			for pCard in newState['playCard']:
+			for pCard in statePassedIn['playCard']:
 				pCard['active'] = 1
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
@@ -285,13 +286,13 @@ class GameHandler(Handler):
 						statePassedIn['playCard'][3]['visible'] = 1
 					# their turn is over, so send in the AI state
 					statePassedIn['state'] = 'HAL'
-					
+
 				else:
 					# this is a 12, or swap power card.
 					# players cards glow, as do opponents cards
-					for pCard in newState['playCard']:
+					for pCard in statePassedIn['playCard']:
 						pCard['active'] = 1
-					for cCard in newState['compCard']:
+					for cCard in statePassedIn['compCard']:
 						cCard['active'] = 1
 
 				# put the power card in the discard pile
