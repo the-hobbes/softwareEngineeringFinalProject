@@ -132,7 +132,19 @@ class GameHandler(Handler):
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
-			selectedCard = statePassedIn['discard'].pop()
+			try:
+				selectedCard = statePassedIn['discard'].pop()
+			except:
+				#This could happen if the opponent takes the discard pile and then the user tries to
+				#We can solve this by having the view not add a glow to the deck at all (probably a good way to do it)
+				#Or we can handle the code here and return to the waitingForDraw state again maybe with some type of
+				#message to the user --we could add some type of message field to the game state json like this: 
+				# message : {visible : 0 | 1, text : "Bad User Bad!"} and the view could check the visibility of this
+				#message and then pop it up to the user... I like both of these ideas, your thoughts?
+				#statePassedIn['message'] = { 'visible : 1, 'text' : "There is no card to be selected here"}
+				selectedCard = 13
+
+
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
