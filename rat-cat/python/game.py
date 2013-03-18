@@ -45,7 +45,10 @@ class GameHandler(Handler):
 		#this works, the problem was that the json on the client side wasnt actually json
 
 		#TESTING DATA --Ethan
-		newState['state'] = "playerChoice"
+		if newState['state'] == "playerChoice":
+			newState['state'] = 'waitingForPCard'
+		else:
+			newState['state'] = "playerChoice"
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
@@ -116,8 +119,7 @@ class GameHandler(Handler):
 			pass
 		elif (statePassedIn == 'draw2PlayerChoice'):
 			pass
-		else:
-			return statePassedIn
+		return oldState
 
 	def waitingForDraw(self, statePassedIn):
 		'''
