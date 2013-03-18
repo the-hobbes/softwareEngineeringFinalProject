@@ -105,8 +105,11 @@ function waitingForDraw(state){
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
+	    	$('#deck').removeClass('waitingForDrawAJAX');
+			$('#discardPile').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
 	        renderState(currentState,state);
+
 
 	    });
 
@@ -122,6 +125,7 @@ function waitingForDraw(state){
 		//Remove the glow from both glowing pieces in this state
 		$('#deck').removeClass('glowing');
 		$('#discardPile').removeClass('glowing');
+		
 	});
 
 
@@ -163,6 +167,75 @@ function HAL(state){
  */
 function playerChoice(state){
 	console.log("playerChoice State entered");
+	
+	//Add glow to the players cards
+	$('#discardPile').addClass('glowing');
+	$('#discardPile').addClass('playerChoiceAJAX');
+
+	//Iterate through each div within playerCards and add the glowing class
+	var $divs = $('#playerCards').children('div').each(function(){
+		$(this).addClass('glowing');
+		$(this).addClass('playerChoiceAJAX');
+	});
+
+	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
+	//Seem to put the glowing into a function without it ceasing functioning. Weird.
+	//This will be refactored at a later date.
+	var glow = $('.glowing');
+	setInterval(function(){
+	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+	}, 2000);
+
+
+	//Define the AJAX call to the server 
+	$('.playerChoiceAJAX').bind('click',function(){
+		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
+		// this in documentation going forward, and modify our current code to accomodate for it. 
+		state.playerClicks.push(this.id);
+		currentState = state;
+		// console.log(currentState);
+		//Use ajax to yell over to the server that something has happened
+
+	    var requestDeck = $.ajax({
+	        url: "/game",
+	        type: 'POST',
+			data: JSON.stringify(state),
+			contentType: "application/json",
+			dataType: 'json'
+	    });
+
+	    // callback handler that will be called on success
+	    requestDeck.done(function (response, textStatus, jqXHR){
+	        console.log('Returned from playerChoiceAJAX callback');
+	        // console.log(response);
+
+	        //Remove the click so we don't send a ajax request to the server while this 
+	        //click shouldn't do anything
+	    	$('.playerChoiceAJAX').unbind('click');
+	    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+	        state = handleState(response);      
+	        renderState(currentState,state);
+
+	    });
+
+	    // callback handler that will be called on failure
+	    requestDeck.fail(function (jqXHR, textStatus, errorThrown){
+	        // log the error to the console
+	        console.error(
+	            "The following error occured: "+
+	            textStatus, errorThrown
+	        );
+	    });
+
+		//Remove the glow from discard and player cards
+		$('#discardPile').removeClass('glowing');
+		var $divs = $('#playerCards').children('div').each(function(){
+			$(this).removeClass('glowing');
+		
+		});
+	});
+
+
 	return state;
 }
 
