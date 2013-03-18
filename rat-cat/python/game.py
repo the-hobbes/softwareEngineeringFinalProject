@@ -11,6 +11,8 @@ import cgi
 import logging
 import simplejson as json
 
+ENDGAME_SCORE = 60
+
 class GameHandler(Handler):
 	'''
 		GameHandler
@@ -112,11 +114,11 @@ class GameHandler(Handler):
 		if (statePassedIn == 'waitingForDraw'):
 			return self.waitingForDraw(oldState)
 		elif (statePassedIn == 'waitingForPCard'):
-			pass
+			return self.waitingForPCard(oldState)
 		elif (statePassedIn == 'HAL'):
 			pass
 		elif (statePassedIn == 'playerChoice'):
-			pass
+			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
 			pass
 		return oldState
@@ -134,7 +136,6 @@ class GameHandler(Handler):
 		# the div id of what the player clicked (either deck, or discardPile)
 		userChoice = statePassedIn['playerClicks'][0]
 
-		logging.info("got here")
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
@@ -148,9 +149,10 @@ class GameHandler(Handler):
 				statePassedIn['message']['visible'] = 1
 				return statePassedIn
 
-			# set all of the user's cards to active, so they are glown
+			# set all of the user's cards to active, so they are glown. Also remove visibility from them.
 			for pCard in statePassedIn['playCard']:
 				pCard['active'] = 1
+				pCard['visible'] = 0
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
@@ -226,6 +228,7 @@ class GameHandler(Handler):
 
 		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
 		if(userChoice == 'discardPile'):
+			logging.info('Choice was to discard it')
 			# take the card the user has decided about and add it to the discard
 			statePassedIn['discard'].append(currentCard)
 			# reset displayCard
@@ -239,6 +242,7 @@ class GameHandler(Handler):
 
 		# otherwise, the choice is use. Determine if it is a number card or a power card first
 		else:
+			logging.info('Choice was to use it')
 			if(int(currentCard) <= 9):
 				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
 				# 	as well as updating the discard pile with the card they swapped out for.
@@ -263,6 +267,7 @@ class GameHandler(Handler):
 					statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
 					statePassedIn['playCard'][3]['image'] = currentCard 
 
+				# housekeeping
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = 'HAL'
 
@@ -326,5 +331,28 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
-		pass
-		
+		# what is the total score of each player's hand?
+		pScore = 0
+		cScore = 0
+		# set the cards to visible at this time as well
+		for pCard in statePassedIn['playCard']:
+			pScore += int(pCard['image'])
+			pCard['visible'] = 1
+		for cCard in statePassedIn['compCard']:
+			cScore += int(cCard['image'])
+			cCard['visible'] = 1
+
+		# who wins?
+		if pScore > cScore:
+			# player wins
+		elif pScore < cScore:
+			# computer wins
+		else:
+			# tie
+
+		# add each player's scores to the running total of their score for the game so far
+
+		# is the game over? (is either player's total score over or at 60?)
+		statePassedIn['state'] = 'endGame'
+		return statePassedIn
+
