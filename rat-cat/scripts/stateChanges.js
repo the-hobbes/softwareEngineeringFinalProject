@@ -3,6 +3,15 @@
  * Authors:
  * 	Ethan
  *
+ * The purpose of this file is to provide the changes to the view upon each change of state. The following functions
+ * are defined here:
+ *	initialState(state)
+ *	waitingForDraw(state)
+ *	waitingForPCard
+ * 	HAL(state)
+ *	playerChoice(state)
+ *	draw2PlayerChoice
+ *	handleState(state)
  */
 
 
@@ -15,7 +24,7 @@
  *	returns: The updated state
  */
 function initialState(state){
-	//alert('initialState');
+	console.log('initialState entered');
 
 	//Any fancy animations for shuffling and dealing go here, such as tweening cards from the deck to the players hands
 
@@ -53,11 +62,12 @@ function initialState(state){
  *	returns: The updated state
  */
 function waitingForDraw(state){
+	console.log("waitingForDraw state entered");
 	//Add glow to whatever the user will interact with
 	$('#deck').addClass('glowing');
 	$('#discardPile').addClass('glowing');
 
-	//Add waitingForDraw handler
+	//Add Ajax class to things that will be responsive to user input
 	$('#deck').addClass('waitingForDrawAJAX');
 	$('#discardPile').addClass('waitingForDrawAJAX');
 
@@ -66,46 +76,52 @@ function waitingForDraw(state){
 	setInterval(function(){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
-
+	
+	
 	//Add listeners for clicks that will fire off whatever interaction we need
 	//and will also remove the glow
-	$('.waitingForDrawAJAX').click(function(){
-		//Use ajax to yell over to the server that something has happened
-		 // fire off the request to /form.php
 
+	$('.waitingForDrawAJAX').bind('click',function(){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
-		currentState.playerClicks.push(this.id);
+		state.playerClicks.push(this.id);
+		currentState = state;
 		// console.log(currentState);
-	    var request = $.ajax({
+		//Use ajax to yell over to the server that something has happened
+
+	    var requestDeck = $.ajax({
 	        url: "/game",
 	        type: 'POST',
-			data: JSON.stringify(currentState),
+			data: JSON.stringify(state),
 			contentType: "application/json",
 			dataType: 'json'
 	    });
 
 	    // callback handler that will be called on success
-	    request.done(function (response, textStatus, jqXHR){
+	    requestDeck.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from waitingForDrawAJAX callback');
 	        // console.log(response);
-	        handleState(response);
-	        // alert('derp');
+
+	        //Remove the click so we don't send a ajax request to the server while this 
+	        //click shouldn't do anything
+	    	$('.waitingForDrawAJAX').unbind('click');
+	        state = handleState(response);      
+	        renderState(currentState,state);
+
 	    });
 
 	    // callback handler that will be called on failure
-	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    requestDeck.fail(function (jqXHR, textStatus, errorThrown){
 	        // log the error to the console
 	        console.error(
 	            "The following error occured: "+
 	            textStatus, errorThrown
 	        );
 	    });
-		
+
 		//Remove the glow from both glowing pieces in this state
-		$(this).removeClass('glowing');
+		$('#deck').removeClass('glowing');
 		$('#discardPile').removeClass('glowing');
-		$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	});
 
 
@@ -121,7 +137,7 @@ function waitingForDraw(state){
  *	returns: The updated state
  */
 function waitingForPCard(state){
-	alert(' stateChange.js : waitingForPCard state');
+	console.log('waitingForPCard state entered');
 	return state;
 }
 
@@ -134,7 +150,7 @@ function waitingForPCard(state){
  *	returns: The updated state
  */
 function HAL(state){
-	alert('HAL state');
+	console.log('HAL state entered');
 	return state;
 }
 
@@ -146,7 +162,7 @@ function HAL(state){
  *	returns: The updated state
  */
 function playerChoice(state){
-	alert('playerChoice state');
+	console.log("playerChoice State entered");
 	return state;
 }
 
@@ -158,7 +174,7 @@ function playerChoice(state){
  *	returns: The updated state
  */
 function draw2PlayerChoice(state){
-	alert('draw2PlayerChoice state');
+	console.log('draw2PlayerChoice state entered');
 	return state;
 }
 

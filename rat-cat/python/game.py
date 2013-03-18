@@ -41,13 +41,16 @@ class GameHandler(Handler):
 		# send the object to the state parser, and get the new state of the gameboard
 		newState = self.parseState(oldState)
 
-		# render the template with the new state
+		#http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
+		#this works, the problem was that the json on the client side wasnt actually json
+
+		#TESTING DATA --Ethan
+		newState['state'] = "playerChoice"
+		
+		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
 		self.write(newState)
-		# http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
-		# the problem was that the json on the client side wasnt actually json
-		# push = json.dumps(jdata)
-		# self.write(push)
+
 
 	def initEncode(self):
 		'''
@@ -57,7 +60,8 @@ class GameHandler(Handler):
 				initialState, the initial state of the gameboard
 		'''
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		# also, dang this is ugly. 
+		# also, dang this is ugly.  Seriously ugly.
+
 		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
 		powerCards = [ [10]*3, [11]*3, [12]*3 ]
 		deck = sum(numberCards, [])
@@ -130,7 +134,19 @@ class GameHandler(Handler):
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
-			selectedCard = statePassedIn['discard'].pop()
+			try:
+				selectedCard = statePassedIn['discard'].pop()
+			except:
+				#This could happen if the opponent takes the discard pile and then the user tries to
+				#We can solve this by having the view not add a glow to the deck at all (probably a good way to do it)
+				#Or we can handle the code here and return to the waitingForDraw state again maybe with some type of
+				#message to the user --we could add some type of message field to the game state json like this: 
+				# message : {visible : 0 | 1, text : "Bad User Bad!"} and the view could check the visibility of this
+				#message and then pop it up to the user... I like both of these ideas, your thoughts?
+				#statePassedIn['message'] = { 'visible : 1, 'text' : "There is no card to be selected here"}
+				selectedCard = 13
+
+
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
