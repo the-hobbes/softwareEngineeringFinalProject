@@ -19,7 +19,7 @@ package-list
 *.pyc
 rat-cat/*pyc 	
 
-#Bryans ignores
+#bryans stuff
 dev/
 engineapp/
 rat-cat/engineapp/

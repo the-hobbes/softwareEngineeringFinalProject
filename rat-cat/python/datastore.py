@@ -63,4 +63,3 @@ class MyHandler(Handler):
 		)
 		player.put()
 		self.write(player.name)
-		#self.redirect('/')

@@ -221,6 +221,7 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+
 		# has the player chosen to use or discard? (If they have chosen to use, this will also tell you what they have clicked)
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
