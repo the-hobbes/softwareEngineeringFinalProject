@@ -65,12 +65,13 @@ body {
     -ms-transition: box-shadow 1s linear;
     -o-transition: box-shadow 1s linear;
     transition: box-shadow 1s linear;
-    background-color: #1BA5E5;
+    background-color: #FF0000;
 }
 
 .glowing:hover,
 .glowing.glow {
-    box-shadow: 0 0 10px 2px #1BA5E0;
+    box-shadow: 0 0 10px 7px #FF0000;
+    /*1BA5E0;*/
 }
 .shadow{
   /*box-shadow: 5px 5px 15px #000;*/
