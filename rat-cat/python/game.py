@@ -201,16 +201,16 @@ class GameHandler(Handler):
 
 		# put the active card into the hand at the position the swapCard was at, and discard the other
 		if(swapCard == 'playerCard1'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][0]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
 			statePassedIn['playCard'][0]['image'] = activeCard['image']
 		elif(swapCard == 'playerCard2'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][1]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][1]['image'])
 			statePassedIn['playCard'][1]['image'] = activeCard['image']
 		elif(swapCard == 'playerCard3'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][2]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][2]['image'])
 			statePassedIn['playCard'][2]['image'] = activeCard['image']	
 		else:
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][3]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
 			statePassedIn['playCard'][3]['image'] = activeCard['image']
 
 		# reset the activecard, reset the clicks list, set the new state
