@@ -203,11 +203,11 @@ class GameHandler(Handler):
 		if(swapCard == 'playerCard1'):
 			statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
 			statePassedIn['playCard'][0]['image'] = activeCard['image']
-		elif(swapCard == 'discard'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][1]['image'])
+		elif(swapCard == 'playerCard2'):
+			statePassedIn['discard'].append(statePassedIn['playCard'][1]['image'])
 			statePassedIn['playCard'][1]['image'] = activeCard['image']
-		elif(swapCard == 'discard'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][2]['image'])
+		elif(swapCard == 'playerCard3'):
+			statePassedIn['discard'].append(statePassedIn['playCard'][2]['image'])
 			statePassedIn['playCard'][2]['image'] = activeCard['image']	
 		else:
 			statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
