@@ -147,6 +147,7 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				statePassedIn['message']['visible'] = 1
+				
 				return statePassedIn
 
 			# set all of the user's cards to active, so they are glown. Also remove visibility from them.
