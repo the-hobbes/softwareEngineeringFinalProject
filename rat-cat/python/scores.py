@@ -18,8 +18,13 @@ class ScoresHandler(Handler):
 			Default get method. Called when a user lands on /scores. Used to get the top 10 scores from the database,
 			then render the template with those top scores.
 		'''
-		topTen, sortedKeys = self.getTopScores()
-		self.renderScores(topTen, sortedKeys)
+		# topTen, sortedKeys = self.getTopScores()
+		# self.renderScores(topTen, sortedKeys)
+		players = db.GqlQuery(
+			"SELECT * FROM Players "
+			"ORDER BY scoreTotal DESC LIMIT 10"
+		)
+		self.render("scores.html",players=players)
 
 	def getTopScores(self):
 		'''

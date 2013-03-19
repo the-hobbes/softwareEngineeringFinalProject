@@ -7,7 +7,9 @@
 
 from handler import *
 from google.appengine.ext import db
-from google.appengine.ext import webapp
+import logging
+
+#from google.appengine.ext import webapp
 from google.appengine.ext.webapp \
 	import template
 
@@ -15,6 +17,7 @@ from google.appengine.ext.webapp \
 class Players(db.Model):
 	# playerID = db.IntegerProperty(required=True)
 	name = db.StringProperty(required=True)
+	scoreTotal = db.FloatProperty()
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
 	games = db.FloatProperty()
@@ -23,7 +26,6 @@ class Players(db.Model):
 	roundsTotal = db.FloatProperty()
 	roundsWonTotal = db.FloatProperty()
 	roundsLostTotal = db.FloatProperty()
-	scoreTotal = db.StringProperty()
 	catCardsTotal = db.IntegerProperty()
 	ratCardsTotal = db.IntegerProperty()
 	powerCardsTotal = db.IntegerProperty()
@@ -31,7 +33,7 @@ class Players(db.Model):
 # Database table for Games
 class Games(db.Model):
     # gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.IntegerProperty()
+    Players_playerID = db.StringProperty()
     gameStart = db.DateTimeProperty(auto_now_add=True)
     win = db.BooleanProperty()
     score = db.FloatProperty()
@@ -46,8 +48,8 @@ class MyHandler(Handler):
 
 	def get(self):
 		players = db.GqlQuery(
-			'SELECT * FROM Players'
-			'ORDER BY scoreTotal DESC LIMIT 10'
+			"SELECT * FROM Players "
+			"ORDER BY scoreTotal DESC LIMIT 10"
 		)
 		values = {'players': players}
 
@@ -55,11 +57,11 @@ class MyHandler(Handler):
 			template.render('scores.html',
 				values)
 		)
-	
+
 	def post(self):
 		player = Players(
 			name=self.request.get('name'),
-			scoreTotal=self.request.get('scoreTotal')
+			scoreTotal=float(self.request.get('scoreTotal'))
 		)
 		player.put()
-		self.write(player.name)
+		self.redirect('/scores')

@@ -16,17 +16,18 @@
 				<form action="/datastore" method="post">
 					<p>Name: <input type="text"
 							name="name" value="" id="name"></p>
-					<p>Score: <input type="text"
+					<p>Score: <input type="number"
 							name="scoreTotal" value="" id="scoreTotal"></p>
 					<p><input type="submit" value="Insert Player"></p>
 				</form>
+				<hr>
 				<ul>
 				{% for player in players %}
-					<div>
-						{{player.name}}
+					<li>
+						<span style="color:pink">{{player.name}}</span>,
 						with a score of
-						{{player.scoreTotal}}
-					</div>
+						<span style="color:pink">{{player.scoreTotal}}</span>
+					</li>
 				{% endfor %}
 				</ul>
 				<a href="/"><button id="homeButton" class="shadow">Home</button></a>
