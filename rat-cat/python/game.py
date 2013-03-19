@@ -193,7 +193,7 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
-		# what is the card they want to swap with? well i dunno?!
+		# what is the card they want to swap with? well i dunno?!!
 		swapCard = statePassedIn['playerClicks'][0]
 
 		# get the active card 
