@@ -7,6 +7,7 @@
 
 //JavaScript 'includes', if we use ajax the page loads async and we might not have  our dependencies
 document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'></script>");
+
 //document.writeln("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>");
 //The above is commented out because it produces an error on $('#creditsDialog').jqm(); in game.html
 
@@ -29,13 +30,21 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		//Read each state and put the proper image out for the opponent cards:
  		for(var i=0; i < 4; i++){
  			var imgId = newState.compCard[i].image;
- 			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			if(newState.compCard[i].visible){
+ 				$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			}else{
+ 				$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
+ 			}
  		}
 
  		//Update the images for the player Cards
  		for(var i=0; i < 4; i++){
  			var imgId = newState.playCard[i].image;
- 			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+ 			if(newState.playCard[i].visible){
+ 				$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
+ 			}else{
+ 				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
+ 			}
  		}
 
  		//Show the discard pile card:
@@ -59,15 +68,72 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		newState.knockState = 0;
 
  		//Set the initial state
- 		newState.state = "waitingForDraw";
+ 		newState.state = "initial";
 
  		//Update the state of the board to show the appropriate state (call stateChange.js function)
- 		handleState(newState);
+ 		return handleState(newState);
 
- 		return newState;
  	}
 
  	//If the old state is not null then we really only need to update whatever differs between them.
+ 	//Start with the computer cards:
+	for(var i=0; i < 4; i++){
+ 		var imgId = newState.compCard[i].image;
+ 		//Are they different?
+ 		if(imgId != oldState.compCard[i].image || oldState.compCard[i].visible != newState.compCard[i].visible){
+			if(newState.compCard[i].visible){
+				$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+			}else{
+				$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
+			}
+ 		}
+ 	} 	
+
+ 	//Update thos player cards if they need to be changed!
+	for(var i=0; i < 4; i++){
+		var imgId = newState.playCard[i].image;
+		if(imgId != oldState.playCard[i].image || oldState.playCard[i].visible != newState.playCard[i].visible){
+			if(newState.playCard[i].visible){
+				$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
+			}else{
+				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
+			}
+		}
+	}
+
+	//Show the discard pile card if its different than before:
+	if(oldState.discard[0] != newState.discard[0]){
+		if(newState.discard[0] == null){
+			$('#discardPile').css("background-image", 'url(images/placeholderCard.png)');
+		}else{
+			$('#discardPile').css("background-image", 'url(images/cards/smallCards/' + newState.discard[0] + '.png)');
+		}
+	}
+	
+
+	//Display either the bottom of a card or a placeholder if we managed to run out of deck cards
+	if(newState.deck[0] != oldState.deck[0]){
+ 		if(newState.deck[0] == null){
+ 			$('#deck').css("background-image", 'url(images/placeholderCard.png)');
+ 		}else{
+ 			$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');
+ 		}
+ 	}
+
+ 	//Display whatever the currently displayed card is
+ 	if(newState.displayCard.image != oldState.displayCard.image){
+ 		$('#currentCard').css("background-image", "url(images/cards/" + newState.displayCard.image + ".png)");
+ 	}		
+
+ 	//Check the knock state
+ 	if(newState.knockState){
+ 		//We should have some type of pop up or some type of change that says it's the user's last turn.
+ 		alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 	}
+
+ 	//We return newState for no particular reason. keep it in the space I guess 
+ 	return newState;
+
  }
 
 

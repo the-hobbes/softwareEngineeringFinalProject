@@ -8,12 +8,13 @@
 		<link rel="stylesheet" href="css/jqModal.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="scripts/jqModal.js"></script>
+		<script src="scripts/stateChanges.js"></script>
 		<script src="scripts/gameRender.js"></script>
 
 		<script>
 
 		jQuery().ready(function($){
-
+			//LIGHTBOX CODE:
 			//initialize each hidden dialog div with before it can be shown
 			// $('#startDialog').jqm();
 			$('#creditsDialog').jqm();
@@ -37,7 +38,7 @@
 	 	<div id="infoBox">
 	 		<a href="#"><p id="rulesLink">Rules</p></a>
 			<a href="#"><p id="creditsLink">Credits</p></a>
-			<p><a href="/scores">Here is a link to the scores</a></p>
+			<p><a href="/scores" target="_blank">Here is a link to the scores</a></p>
 	 		<p><a href="https://github.com/the-hobbes/softwareEngineeringFinalProject">Here is a link quit</a></p>
 	 	</div><!--end infobox-->
 		<div id="container" class="shadow" style="margin-top:30px;">
@@ -59,7 +60,7 @@
 			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<a href="#"><button id="knockButton" class="shadow">Knock</button></a><!--end knockButton-->
+			<button id="knockButton" class="shadow" onclick="">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -77,37 +78,13 @@
 			</div><!--end playerCards-->
 		</div><!-- end container -->
 
-
 		{% include "rules.html" %}
 		{% include "credits.html" %}
 
-
 		<script>
 		var currentState;
-		//Test code:
-		var testSon = {  "compCard" : [
-						 {image : "13", active : 0}, 
-						 {image : "13", active : 0}, 
-						 {image : "13", active : 0},
-						 {image : "13", active : 0}], 
-						 "discard" : [0,1,2], "deck" : [3,4,5], 
-						 "playCard" : [
-						 {image : "13", active : 0}, 
-						 {image : "13", active : 0}, 
-						 {image : "13", active : 0},
-						 {image : "13", active : 0}], 
-						 "displayCard" : {image : "0", active : 0}, 
-						 "knockState" : 0 | 1, 
-						 "state" : "state specified by specs that will go to a statement" };
+		currentState = renderState({{oldState}},{{newState}});
 
-		currentState = renderState(null,testSon);
-
-
-		//commenting out for now because I'm working on this (sorry phelan)
-		//Actual code to be used
-		//currentState = renderState({{oldState}},{{newState}})
-		
-		//End Test Code
 		</script>
 
 	</body>
