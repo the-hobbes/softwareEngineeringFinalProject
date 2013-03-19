@@ -83,10 +83,10 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}],  
 					"playCard" : [
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}, 
+						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
+						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
 					"discard" : [discardCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
@@ -116,7 +116,7 @@ class GameHandler(Handler):
 		elif (statePassedIn == 'waitingForPCard'):
 			return self.waitingForPCard(oldState)
 		elif (statePassedIn == 'HAL'):
-			pass
+			return self.HAL(oldState)
 		elif (statePassedIn == 'playerChoice'):
 			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
@@ -236,7 +236,8 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
-		pass
+		statePassedIn['state'] = 'waitingForDraw'
+		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
 		'''
