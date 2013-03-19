@@ -2,7 +2,7 @@
 # Created 4MAR2013 
 # Authors:
 # 	Phelan
-# 
+# 	SUUUP
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
