@@ -345,10 +345,13 @@ class GameHandler(Handler):
 		# who wins?
 		if pScore > cScore:
 			# player wins
+			pass
 		elif pScore < cScore:
 			# computer wins
+			pass
 		else:
 			# tie
+			pass
 
 		# add each player's scores to the running total of their score for the game so far
 
