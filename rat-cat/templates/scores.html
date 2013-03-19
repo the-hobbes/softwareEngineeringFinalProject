@@ -6,30 +6,31 @@
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 	</head>
-
 	<body>
-
 		<div id="container" class="shadow">
-
 			<div id="topTen" class="shadow">
 				<h2>Top 10 Players</h2>
 				<hr>
 				<!-- print out each of the top ten, and their score -->
 				<!-- also, use a counter to set an item as even or odd for styling purposes -->
+				<form action="/datastore" method="post">
+					<p>Name: <input type="text"
+							name="name" value="" id="name"></p>
+					<p>Score: <input type="text"
+							name="scoreTotal" value="" id="scoreTotal"></p>
+					<p><input type="submit" value="Insert Player"></p>
+				</form>
 				<ul>
-				{%for key in sortedKeys%}
-					<li class="{{ loop.cycle('odd', 'even') }}">
-						<span class="playerName">{{key}}</span>
-						<span>, with a score of </span> 
-						<span class="playerScore">{{topTen[key]}}</span>
-					</li>
+				{% for player in players %}
+					<div>
+						{{player.name}}
+						with a score of
+						{{player.scoreTotal}}
+					</div>
 				{% endfor %}
 				</ul>
 				<a href="/"><button id="homeButton" class="shadow">Home</button></a>
 			</div><!--end topten-->
-
-			
 		</div><!--end container-->
-
 	</body>
 </html>

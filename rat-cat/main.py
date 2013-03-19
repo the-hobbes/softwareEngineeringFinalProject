@@ -9,7 +9,7 @@
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
+# distribfrom python.datastore import *uted under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -19,12 +19,14 @@
 # 	Ethan, Phelan
 # 
 # This is the main app driver file. Requests will hit here when users first enter the page
+
 from python.handler import *
 from python.game import *
 from python.scores import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
+from python.datastore import *
 
 class MasterControlProgram(Handler):
 	'''
@@ -55,5 +57,6 @@ app = webapp2.WSGIApplication([
 	('/scores',ScoresHandler),
 	('/playerinfo',PlayerInfoHandler),
 	('/difficulty',DifficultyHandler),
-	('/characterchoice',CharacterHandler)
+	('/characterchoice',CharacterHandler),
+	('/datastore',MyHandler)
 ], debug=True)

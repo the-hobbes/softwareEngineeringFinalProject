@@ -58,3 +58,6 @@ class ScoresHandler(Handler):
 		'''
 
 		self.render("scores.html", topTen = topTen, sortedKeys = sortedKeys)
+
+	def post(self):
+		pass
