@@ -8,9 +8,13 @@
 		<link rel="stylesheet" href="css/jqModal.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="scripts/jqModal.js"></script>
-		<script>
-		jQuery().ready(function($){
+		<script src="scripts/stateChanges.js"></script>
+		<script src="scripts/gameRender.js"></script>
 
+		<script>
+
+		jQuery().ready(function($){
+			//LIGHTBOX CODE:
 			//initialize each hidden dialog div with before it can be shown
 			// $('#startDialog').jqm();
 			$('#creditsDialog').jqm();
@@ -56,7 +60,7 @@
 			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<a href="#"><button id="knockButton" class="shadow">Knock</button></a><!--end knockButton-->
+			<button id="knockButton" class="shadow" onclick="">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -74,9 +78,14 @@
 			</div><!--end playerCards-->
 		</div><!-- end container -->
 
-
 		{% include "rules.html" %}
 		{% include "credits.html" %}
+
+		<script>
+		var currentState;
+		currentState = renderState({{oldState}},{{newState}});
+
+		</script>
 
 	</body>
 </html>

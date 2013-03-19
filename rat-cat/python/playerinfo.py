@@ -8,6 +8,8 @@
 from handler import *
 #re = regular expresion module
 import re;
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
+
 
 class PlayerInfoHandler(Handler):
 	'''
