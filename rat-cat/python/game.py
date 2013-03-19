@@ -201,16 +201,16 @@ class GameHandler(Handler):
 
 		# put the active card into the hand at the position the swapCard was at, and discard the other
 		if(swapCard == 'playerCard1'):
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][0]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
 			statePassedIn['playCard'][0]['image'] = activeCard['image']
-		elif(swapCard == 'playerCard2'):
+		elif(swapCard == 'discard'):
 			statePassedIn['discardCard'].append(statePassedIn['playCard'][1]['image'])
 			statePassedIn['playCard'][1]['image'] = activeCard['image']
-		elif(swapCard == 'playerCard3'):
+		elif(swapCard == 'discard'):
 			statePassedIn['discardCard'].append(statePassedIn['playCard'][2]['image'])
 			statePassedIn['playCard'][2]['image'] = activeCard['image']	
 		else:
-			statePassedIn['discardCard'].append(statePassedIn['playCard'][3]['image'])
+			statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
 			statePassedIn['playCard'][3]['image'] = activeCard['image']
 
 		# reset the activecard, reset the clicks list, set the new state
@@ -303,8 +303,9 @@ class GameHandler(Handler):
 			else:
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
-					# a draw 2 power card
-					statePassedIn['state'] = 'draw2PlayerChoice'
+					# a draw 2 power card. SEE THE MEETING NOTES FOR 19 MAR as to why this is:
+					# statePassedIn['state'] = 'draw2PlayerChoice'
+					statePassedIn['state'] = 'playerChoice'
 
 				elif(int(currentCard) == 11):
 					# this is a peek power card. Set the card they wanted to peek at to be visible. 
@@ -345,6 +346,8 @@ class GameHandler(Handler):
 				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+
+			NO LONGER NECESSARY, see agenda for 19 march in the google drive.
 		'''
 		pass
 		
