@@ -85,8 +85,7 @@ function waitingForDraw(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		currentState = state;
-		// console.log(currentState);
+
 		//Use ajax to yell over to the server that something has happened
 
 	    var requestDeck = $.ajax({
@@ -107,7 +106,7 @@ function waitingForDraw(state){
 	    	$('.waitingForDrawAJAX').unbind('click');
 			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
-	        renderState(currentState,state);
+	        renderState(1,state);
 
 
 	    });
@@ -162,7 +161,6 @@ function waitingForPCard(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		currentState = state;
 		//Use ajax to yell over to the server that something has happened
 
 	    var request = $.ajax({
@@ -183,7 +181,7 @@ function waitingForPCard(state){
 	    	$('.waitingForPCardAJAX').unbind('click');
 	    	$('.waitingForPCardAJAX').removeClass('waitingForPCardAJAX');
 	        state = handleState(response);      
-	        renderState(currentState,state);
+	        renderState(1,state);
 
 	    });
 
@@ -226,7 +224,7 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
-
+	console.log(state);
 
 	return state;
 }
@@ -265,8 +263,7 @@ function playerChoice(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		currentState = state;
-		// console.log(currentState);
+		
 		//Use ajax to yell over to the server that something has happened
 
 	    var request = $.ajax({
@@ -287,8 +284,7 @@ function playerChoice(state){
 	    	$('.playerChoiceAJAX').unbind('click');
 	    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 	        state = handleState(response);      
-	        renderState(currentState,state);
-
+	        renderState(1,state);
 	    });
 
 	    // callback handler that will be called on failure
@@ -350,8 +346,7 @@ function draw2PlayerChoice(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		currentState = state;
-		// console.log(currentState);
+		
 		//Use ajax to yell over to the server that something has happened
 
 	    var request = $.ajax({
@@ -372,7 +367,7 @@ function draw2PlayerChoice(state){
 	    	$('.draw2PlayerChoiceAJAX').unbind('click');
 	    	$('.draw2PlayerChoiceAJAX').removeClass('draw2PlayerChoiceAJAX');
 	        state = handleState(response);      
-	        renderState(currentState,state);
+	        renderState(1,state);
 
 	    });
 

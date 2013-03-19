@@ -12,10 +12,9 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 //The above is commented out because it produces an error on $('#creditsDialog').jqm(); in game.html
 
 /*
- *renderState: This function takes the state of the game and it's transitioning state and 
- *			merges the two into the new state of the game. This functions depends on the 
- *			following ID's being present on the game.html page: 
- *				opCard1,opCard2,opCard3,opCard4,discardPile,deck,currentCard,knockButton,playerCard1,playerCard2,playerCard3,playerCard4
+ *renderState: This function takes the state of the game and a possible null flag that indicates if the 
+ *			game is just beginning or not. This functions depends on the following ID's being present on the game.html page: 
+ *			opCard1,opCard2,opCard3,opCard4,discardPile,deck,currentCard,knockButton,playerCard1,playerCard2,playerCard3,playerCard4
  *	state: The JSON representative of the game board, this is a JSON
  *		   object which has the following high level pairs:
  *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
@@ -55,7 +54,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		}
 
  		//Display either the bottom of a card or a placeholder if we managed to run out of deck cards
- 		if(newState.deck[0] == null){
+ 		if(newState.deck[newState.deck.length-1] == null){
  			$('#deck').css("background-image", 'url(images/placeholderCard.png)');
  		}else{
  			$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');
@@ -80,50 +79,44 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 	for(var i=0; i < 4; i++){
  		var imgId = newState.compCard[i].image;
  		//Are they different?
- 		if(imgId != oldState.compCard[i].image || oldState.compCard[i].visible != newState.compCard[i].visible){
-			if(newState.compCard[i].visible){
-				$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
-			}else{
-				$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
-			}
- 		}
+ 		if(newState.compCard[i].visible){
+			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
+		}else{
+			$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
+		}
  	} 	
 
  	//Update thos player cards if they need to be changed!
 	for(var i=0; i < 4; i++){
 		var imgId = newState.playCard[i].image;
-		if(imgId != oldState.playCard[i].image || oldState.playCard[i].visible != newState.playCard[i].visible){
-			if(newState.playCard[i].visible){
-				$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
-			}else{
-				$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
-			}
+		if(newState.playCard[i].visible){
+			$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
+		}else{
+			$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
 		}
 	}
 
-	//Show the discard pile card if its different than before:
-	if(oldState.discard[0] != newState.discard[0]){
-		if(newState.discard[0] == null){
-			$('#discardPile').css("background-image", 'url(images/placeholderCard.png)');
-		}else{
-			$('#discardPile').css("background-image", 'url(images/cards/smallCards/' + newState.discard[0] + '.png)');
-		}
+	//The below can stat index-ed at 0 to avoid a -1 index error and because we never remove the first element
+	//until we have just one to remove anyway
+	if(newState.discard[0] == null){
+		$('#discardPile').css("background-image", 'url(images/placeholderCard.png)');
+	}else{
+		$('#discardPile').css("background-image", 'url(images/cards/smallCards/' + newState.discard[newState.discard.length -1] + '.png)');
 	}
+	
 	
 
 	//Display either the bottom of a card or a placeholder if we managed to run out of deck cards
-	if(newState.deck[0] != oldState.deck[0]){
- 		if(newState.deck[0] == null){
- 			$('#deck').css("background-image", 'url(images/placeholderCard.png)');
- 		}else{
- 			$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');
- 		}
+	//this stays 0 for the same reason discard's check does
+ 	if(newState.deck[0] == null){
+ 		$('#deck').css("background-image", 'url(images/placeholderCard.png)');
+ 	}else{
+ 		$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');
  	}
-
+ 	
  	//Display whatever the currently displayed card is
- 	if(newState.displayCard.image != oldState.displayCard.image){
- 		$('#currentCard').css("background-image", "url(images/cards/" + newState.displayCard.image + ".png)");
- 	}		
+ 	$('#currentCard').css("background-image", "url(images/cards/" + newState.displayCard.image + ".png)");
+ 	
 
  	//Check the knock state
  	if(newState.knockState){

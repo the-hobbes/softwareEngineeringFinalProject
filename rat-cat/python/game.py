@@ -11,6 +11,8 @@ import cgi
 import logging
 import simplejson as json
 
+ENDGAME_SCORE = 60
+
 class GameHandler(Handler):
 	'''
 		GameHandler
@@ -45,10 +47,10 @@ class GameHandler(Handler):
 		#this works, the problem was that the json on the client side wasnt actually json
 
 		#TESTING DATA --Ethan
-		if newState['state'] == "playerChoice":
-			newState['state'] = 'waitingForPCard'
-		else:
-			newState['state'] = "playerChoice"
+		# if newState['state'] == "playerChoice":
+		# 	newState['state'] = 'waitingForPCard'
+		# else:
+		# 	newState['state'] = "playerChoice"
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
@@ -81,16 +83,19 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}],  
 					"playCard" : [
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}, 
+						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 1}], 
+						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
 					"discard" : [discardCard], 
 					"deck" : deck,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
 					"state" : "waitingForDraw",
-					"playerClicks" : []
+					"score" : 0,
+					"gameOver" :0,
+					"playerClicks" : [],
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
 				}
 		# encode it
 		return json.dumps(newState)
@@ -109,11 +114,11 @@ class GameHandler(Handler):
 		if (statePassedIn == 'waitingForDraw'):
 			return self.waitingForDraw(oldState)
 		elif (statePassedIn == 'waitingForPCard'):
-			pass
+			return self.waitingForPCard(oldState)
 		elif (statePassedIn == 'HAL'):
 			pass
 		elif (statePassedIn == 'playerChoice'):
-			pass
+			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
 			pass
 		return oldState
@@ -137,16 +142,17 @@ class GameHandler(Handler):
 			try:
 				selectedCard = statePassedIn['discard'].pop()
 			except:
-				#This could happen if the opponent takes the discard pile and then the user tries to
-				#We can solve this by having the view not add a glow to the deck at all (probably a good way to do it)
-				#Or we can handle the code here and return to the waitingForDraw state again maybe with some type of
-				#message to the user --we could add some type of message field to the game state json like this: 
-				# message : {visible : 0 | 1, text : "Bad User Bad!"} and the view could check the visibility of this
-				#message and then pop it up to the user... I like both of these ideas, your thoughts?
-				#statePassedIn['message'] = { 'visible : 1, 'text' : "There is no card to be selected here"}
-				selectedCard = 13
+				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
+				# 	to compensate for this. Set the message visible, then simply pass back the state. 
+				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
+				statePassedIn['playerClicks'] = []
+				statePassedIn['message']['visible'] = 1
+				return statePassedIn
 
-
+			# set all of the user's cards to active, so they are glown. Also remove visibility from them.
+			for pCard in statePassedIn['playCard']:
+				pCard['active'] = 1
+				pCard['visible'] = 0
 			# set that as the displayCard
 			statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
@@ -198,6 +204,11 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the computer's choices.
 		'''
+
+		# what is the difficulty level?
+		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
+		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
+		#	in the database, or perhaps just in a variable here, or even in the json. 
 		pass
 
 	def playerChoice(self, statePassedIn):
@@ -210,10 +221,93 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
-		# has the player chosen to use or discard?
+		# has the player chosen to use or discard? (If they have chosen to use, this will also tell you what they have clicked)
+		userChoice = statePassedIn['playerClicks'][0]
+		# and what is the card they have made this decision about?
+		currentCard = statePassedIn['displayCard']['image']
 
-		# if discard, add the card to the user's 
-		pass
+		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
+		if(userChoice == 'discardPile'):
+			logging.info('Choice was to discard it')
+			# take the card the user has decided about and add it to the discard
+			statePassedIn['discard'].append(currentCard)
+			# reset displayCard
+			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+			# clear the player clicks queue
+			statePassedIn['playerClicks'] = []
+			# the user's turn is now over, so it is up to HAL to take over as the new state
+			statePassedIn['state'] = 'HAL'
+
+			return statePassedIn
+
+		# otherwise, the choice is use. Determine if it is a number card or a power card first
+		else:
+			logging.info('Choice was to use it')
+			if(int(currentCard) <= 9):
+				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
+				# 	as well as updating the discard pile with the card they swapped out for.
+
+				# NOTE: This seems like a clunky way to do this. A better option would be to add a k/v pair to each playcard
+				#	slot of the div id, allowing us to simply do this=> statePassedIn['playCard'][userChoice] = whatever?
+				if(userChoice == 'playerCard1'):
+					# first, discard the card they have chosen to replace
+					statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
+					# next, update thier hand with the card they have decided upon
+					statePassedIn['playCard'][0]['image'] = currentCard
+
+				elif(userChoice == 'playerCard2'):
+					statePassedIn['discard'].append(statePassedIn['playCard'][1]['image'])
+					statePassedIn['playCard'][1]['image'] = currentCard
+
+				elif(userChoice == 'playerCard3'):
+					statePassedIn['discard'].append(statePassedIn['playCard'][2]['image'])
+					statePassedIn['playCard'][2]['image'] = currentCard 
+
+				else:
+					statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
+					statePassedIn['playCard'][3]['image'] = currentCard 
+
+				# housekeeping
+				statePassedIn['playerClicks'] = []
+				statePassedIn['state'] = 'HAL'
+
+				return statePassedIn
+
+			else:
+				# this is a power card. What kind of power card are we talking about?
+				if(int(currentCard) == 10):
+					# a draw 2 power card
+					statePassedIn['state'] = 'draw2PlayerChoice'
+
+				elif(int(currentCard) == 11):
+					# this is a peek power card. Set the card they wanted to peek at to be visible. 
+					if(userChoice == 'playerCard1'):
+						statePassedIn['playCard'][0]['visible'] = 1
+					elif(userChoice == 'playerCard2'):
+						statePassedIn['playCard'][1]['visible'] = 1
+					elif(userChoice == 'playerCard3'):
+						statePassedIn['playCard'][2]['visible'] = 1
+					else:
+						statePassedIn['playCard'][3]['visible'] = 1
+					# their turn is over, so send in the AI state
+					statePassedIn['state'] = 'HAL'
+
+				else:
+					# this is a 12, or swap power card.
+					# players cards glow, as do opponents cards
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
+					for cCard in statePassedIn['compCard']:
+						cCard['active'] = 1
+
+				# put the power card in the discard pile
+				statePassedIn['discard'].append(currentCard)
+				# reset the displaycard and playclicks 
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				statePassedIn['playerClicks'] = []
+				
+				return statePassedIn
+
 
 	def draw2PlayerChoice(self, statePassedIn):
 		'''
@@ -227,5 +321,41 @@ class GameHandler(Handler):
 		'''
 		pass
 		
+	def endGame(self, statePassedIn):
+		'''
+			endGame
+			State handler used to sum of the scores of a round and add them to the total score value in the state JSON.
+			Also decides if the game is over or just the round is over.
+			Parameters:
+				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
+			Returns:
+				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
+		'''
+		# what is the total score of each player's hand?
+		pScore = 0
+		cScore = 0
+		# set the cards to visible at this time as well
+		for pCard in statePassedIn['playCard']:
+			pScore += int(pCard['image'])
+			pCard['visible'] = 1
+		for cCard in statePassedIn['compCard']:
+			cScore += int(cCard['image'])
+			cCard['visible'] = 1
 
-		
+		# who wins?
+		if pScore > cScore:
+			# player wins
+			pass
+		elif pScore < cScore:
+			# computer wins
+			pass
+		else:
+			# tie
+			pass
+
+		# add each player's scores to the running total of their score for the game so far
+
+		# is the game over? (is either player's total score over or at 60?)
+		statePassedIn['state'] = 'endGame'
+		return statePassedIn
+
