@@ -224,6 +224,7 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
+	console.log(state)
 	state.state = 'waitingForDraw';	
 	state = handleState(1,state);
 

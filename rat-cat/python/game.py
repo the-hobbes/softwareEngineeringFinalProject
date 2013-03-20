@@ -100,6 +100,7 @@ class GameHandler(Handler):
 					"message": {"visible" : 0, 'text' : "There is no card to be selected here"},
 				}
 		# encode it
+		logging.info(newState)
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
