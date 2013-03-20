@@ -75,7 +75,9 @@ class GameHandler(Handler):
 		subDeck = sum(powerCards, [])
 		shuffle(subDeck)
 		discardCard = str(deck.pop(choice(deck)))
-		deck.append(subDeck)
+		for p in subDeck:
+			deck.append(p)
+		shuffle(deck)
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -96,7 +98,7 @@ class GameHandler(Handler):
 					"score" : 0,
 					"gameOver" :0,
 					"playerClicks" : [],
-					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"},
 				}
 		# encode it
 		return json.dumps(newState)
@@ -162,7 +164,6 @@ class GameHandler(Handler):
 			# set the new state of the game to be "waitingForPCard", as per our documentation (this will glow the players' cards, etc)
 			statePassedIn['state'] = 'waitingForPCard'
 
-			return statePassedIn
 
 		# if the user has chosen a card from the deck:
 		else:
@@ -181,7 +182,7 @@ class GameHandler(Handler):
 			# set the new state of the game to be "playerChoice", as per our documentation
 			statePassedIn['state'] = 'playerChoice'
 
-			return statePassedIn
+		return statePassedIn
 
 	def waitingForPCard(self, statePassedIn):
 		'''
@@ -267,8 +268,6 @@ class GameHandler(Handler):
 			# the user's turn is now over, so it is up to HAL to take over as the new state
 			statePassedIn['state'] = 'HAL'
 
-			return statePassedIn
-
 		# otherwise, the choice is use. Determine if it is a number card or a power card first
 		else:
 			logging.info('Choice was to use it')
@@ -299,8 +298,6 @@ class GameHandler(Handler):
 				# housekeeping
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = 'HAL'
-
-				return statePassedIn
 
 			else:
 				# this is a power card. What kind of power card are we talking about?
@@ -336,7 +333,7 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
-				return statePassedIn
+		return statePassedIn
 
 
 	def draw2PlayerChoice(self, statePassedIn):
