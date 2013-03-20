@@ -9,7 +9,8 @@ from random import shuffle
 from random import choice
 import cgi
 import logging
-import simplejson as json
+# import simplejson as json
+import json
 
 ENDGAME_SCORE = 60
 
