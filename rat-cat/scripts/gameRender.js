@@ -22,8 +22,6 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  *	returns: the new state of the game
  */
  function renderState(oldState,newState){
- 	console.log('GAH');
- 	console.log(newState);
  	if(oldState == null){
  		//Initializing the game so the newState is correct
  		//TODO: We need to decide the first state of the game and glow appropriate things
