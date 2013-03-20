@@ -74,7 +74,8 @@ class GameHandler(Handler):
 		subDeck = sum(powerCards, [])
 		shuffle(subDeck)
 		discardCard = str(deck.pop(choice(deck)))
-		deck.append(subDeck)
+		for p in subDeck:
+			deck.append(p)
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -95,9 +96,12 @@ class GameHandler(Handler):
 					"score" : 0,
 					"gameOver" :0,
 					"playerClicks" : [],
-					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"},
 				}
 		# encode it
+		logging.info(deck)
+		logging.info('nonononono')
+		logging.info(json.dumps(newState))
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
