@@ -2,7 +2,7 @@
 # Created 4MAR2013 
 # Authors:
 # 	Phelan
-# 
+# 	SUUUP
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
@@ -147,6 +147,7 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				statePassedIn['message']['visible'] = 1
+				
 				return statePassedIn
 
 			# set all of the user's cards to active, so they are glown. Also remove visibility from them.
@@ -184,6 +185,7 @@ class GameHandler(Handler):
 	def waitingForPCard(self, statePassedIn):
 		'''
 			waitingForPCard
+			The user has clicked on the discard pile and must now swap out a card. 
 			This state handler is used to update the state in accordance with the results of the player's choice (what the
 			user clicked on the gameboard). 
 			Parameters:
@@ -191,7 +193,32 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
-		pass
+		# what is the card they want to swap with? well i dunno?!!
+		swapCard = statePassedIn['playerClicks'][0]
+
+		# get the active card 
+		activeCard = statePassedIn['displayCard']
+
+		# put the active card into the hand at the position the swapCard was at, and discard the other
+		if(swapCard == 'playerCard1'):
+			statePassedIn['discardCard'].append(statePassedIn['playCard'][0]['image'])
+			statePassedIn['playCard'][0]['image'] = activeCard['image']
+		elif(swapCard == 'playerCard2'):
+			statePassedIn['discardCard'].append(statePassedIn['playCard'][1]['image'])
+			statePassedIn['playCard'][1]['image'] = activeCard['image']
+		elif(swapCard == 'playerCard3'):
+			statePassedIn['discardCard'].append(statePassedIn['playCard'][2]['image'])
+			statePassedIn['playCard'][2]['image'] = activeCard['image']	
+		else:
+			statePassedIn['discardCard'].append(statePassedIn['playCard'][3]['image'])
+			statePassedIn['playCard'][3]['image'] = activeCard['image']
+
+		# reset the activecard, reset the clicks list, set the new state
+		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+		statePassedIn['playerClicks'] = []
+		statePassedIn['state'] = 'HAL'
+
+		return statePassedIn
 
 	def HAL(self, statePassedIn):
 		'''
