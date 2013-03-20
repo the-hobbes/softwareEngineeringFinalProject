@@ -209,7 +209,8 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
-		pass
+		statePassedIn['state'] = 'waitingForDraw'
+		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
 		'''
