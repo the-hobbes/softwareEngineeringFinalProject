@@ -175,7 +175,8 @@ function waitingForPCard(state){
 	    request.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from waitingForPCardAJAX callback');
 	        // console.log(response);
-
+	        console.log('Phelan: this is the object sent back from the server');
+	    	console.log(response);
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForPCardAJAX').unbind('click');
@@ -224,8 +225,9 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
-	state.state = 'waitingForDraw';	
-	state = handleState(1,state);
+
+	state.state = "waitingForDraw";	
+	state = handleState(state); //before, we were calling handleState(1, state), but there was no parameter in handestate to take the '1' argument. 
 
 	return state;
 }
@@ -400,7 +402,7 @@ function draw2PlayerChoice(state){
  *	returns: The updated state
  */
 function handleState(state){
-	switch( state.state){
+	switch(state.state){
 		case 'waitingForDraw':
 			return waitingForDraw(state);
 		case 'waitingForPCard':
