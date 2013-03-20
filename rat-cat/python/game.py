@@ -116,7 +116,7 @@ class GameHandler(Handler):
 		elif (statePassedIn == 'waitingForPCard'):
 			return self.waitingForPCard(oldState)
 		elif (statePassedIn == 'HAL'):
-			pass
+			return self.HAL(oldState)
 		elif (statePassedIn == 'playerChoice'):
 			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
