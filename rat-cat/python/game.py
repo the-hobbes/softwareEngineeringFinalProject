@@ -36,9 +36,10 @@ class GameHandler(Handler):
 			Responds to post requests for the resource.
 			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
+		# logging.info(self.request.arguments())
+
 		# get the json object passed in by the view (assuming it is called currentState)
 		oldState = json.loads(cgi.escape(self.request.body))
-		# logging.info(oldState['playCard'])
 
 		# send the object to the state parser, and get the new state of the gameboard
 		newState = self.parseState(oldState)
@@ -88,7 +89,8 @@ class GameHandler(Handler):
 					"score" : 0,
 					"gameOver" :0,
 					"playerClicks" : [],
-					"message": {"visible" : 0, 'text' : "There is no card to be selected here"},
+					"draw2Counter" : 0,
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
 				}
 		# encode it
 		return json.dumps(newState)
@@ -340,10 +342,12 @@ class GameHandler(Handler):
 
 			THIS is what gets passed back after a player has made his draw2 decision on the game board (has drawn something).
 			now we need to know what that card is, and what the player wants to do with it.
+
 			there will be a post with the number of draws left (must grab extra variable from url). this state will increment or decrement (draw2Counter) max 2.
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
 			very similar to playerchoice, but has a counter that is incremented and decremented
 		'''
+		# what's the card the player has drawn as a result of playing his draw 2 action? 
 		pass
 		
 	def endGame(self, statePassedIn):
