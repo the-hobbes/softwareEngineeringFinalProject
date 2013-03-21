@@ -119,6 +119,7 @@ class GameHandler(Handler):
 	def waitingForDraw(self, statePassedIn):
 		'''
 			waitingForDraw
+			Result of waiting for the user to draw from the discard or draw pile.
 			This function updates the state in accordance to the parameters of the Waiting for Draw state and what the 
 			player has clicked. It then returns the new state, to be later encoded as JSON.
 			Parameters: 
@@ -336,7 +337,9 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 
-			NO LONGER NECESSARY, see agenda for 19 march in the google drive.
+			there will be a post with the number of draws left (must grab extra variable from url). this state will increment or decrement (draw2Counter) max 2.
+			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
+			very similar to playerchoice, but has a counter that is incremented and decremented
 		'''
 		pass
 		
