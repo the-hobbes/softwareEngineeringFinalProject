@@ -286,6 +286,7 @@ class GameHandler(Handler):
 					statePassedIn['playCard'][3]['image'] = currentCard 
 
 				# housekeeping
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = "HAL"
 
@@ -336,7 +337,9 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 
-			NO LONGER NECESSARY, see agenda for 19 march in the google drive.
+
+			THIS is what gets passed back after a player has made his draw2 decision on the game board (has drawn something).
+			now we need to know what that card is, and what the player wants to do with it.
 		'''
 		pass
 		
