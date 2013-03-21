@@ -81,8 +81,10 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
-					"discard" : [discardCard], 
+					"discard" : [discardCard],
+					"discardActivity" : 1,
 					"deck" : deck,
+					"deckActivity" : 1,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
 					"state" : "waitingForDraw",
@@ -92,6 +94,7 @@ class GameHandler(Handler):
 					"draw2Counter" : 0,
 					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
 				}
+
 		# encode it
 		return json.dumps(newState)
 
@@ -163,6 +166,25 @@ class GameHandler(Handler):
 			# what was the card they picked from the deck? Note that we must also handle the case of the deck being empty 
 			try:
 				drawnCard = statePassedIn['deck'].pop()
+
+				# here, we'll need to know if it is a kind of power card and indicate that to the view.
+				# 	the power cards we really care about, because they make glows appear differently on the gameboard, are the
+				#	draw2 and the swap cards. 
+				if(drawnCard == 10):
+					# draw 2. Glow the deck and discard
+					statePassedIn['deckActivity'] = 1
+				elif(drawnCard == 12):
+					# swap. glow the discard, opponents cards, and the player's cards.
+					statePassedIn['discardActivity'] = 1
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
+					for cCard in statePassedIn['compCard']:
+						cCard['active'] = 1
+				else:
+					# a number card or peek card was draw. glow deck and player's cards
+					statePassedIn['deckActivity'] = 1
+					for cCard in statePassedIn['compCard']:
+						cCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends, so we should probably have a round end state? 
 				# It would probs need to be something similar to a knock state, which we may have to do as well.
@@ -251,7 +273,7 @@ class GameHandler(Handler):
 
 		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
 		if(userChoice == 'discardPile'):
-			logging.info('Choice was to discard it')
+			# logging.info('Choice was to discard it')
 			# take the card the user has decided about and add it to the discard
 			statePassedIn['discard'].append(currentCard)
 			# reset displayCard
@@ -263,7 +285,7 @@ class GameHandler(Handler):
 
 		# otherwise, the choice is use. Determine if it is a number card or a power card first
 		else:
-			logging.info('Choice was to use it')
+			# logging.info('Choice was to use it')
 			if(int(currentCard) <= 9):
 				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
 				# 	as well as updating the discard pile with the card they swapped out for.
@@ -296,9 +318,10 @@ class GameHandler(Handler):
 			else:
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
-					# a draw 2 power card. SEE THE MEETING NOTES FOR 19 MAR as to why this is:
-					# statePassedIn['state'] = 'draw2PlayerChoice'
-					statePassedIn['state'] = 'playerChoice'
+					# a draw 2 power card. the deck and discard should glow (use or discard)
+					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
+					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
 					# this is a peek power card. Set the card they wanted to peek at to be visible. 
@@ -315,11 +338,32 @@ class GameHandler(Handler):
 
 				else:
 					# this is a 12, or swap power card.
-					# players cards glow, as do opponents cards
-					for pCard in statePassedIn['playCard']:
-						pCard['active'] = 1
-					for cCard in statePassedIn['compCard']:
-						cCard['active'] = 1
+					# we have to swap the cards the player clicked on, so that means there are two items in the clicks array
+					# get the items out of the array, find out what they are, and swap their positions
+					
+					# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
+					# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
+					if (card1[0] == 'p'):
+						# a player card that must be swapped out with an opponent's card
+
+						# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
+						playerIndex = int(str(card1[-1])) - 1
+						# get the index of the other card, which must be the opponent's card
+						oppIndex = int(str(card2[-1])) - 1
+						# swap the image values of these two cards in the dictionaries
+						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+						statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+						statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+					else:
+						# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers)
+						playerIndex = int(str(card2[-1])) - 1
+						oppIndex = int(str(card1[-1])) - 1
+						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+						statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+						statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+
+					# you've swapped, and now the turn is over
+					statePassedIn['state'] = "HAL"
 
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
@@ -343,11 +387,68 @@ class GameHandler(Handler):
 			THIS is what gets passed back after a player has made his draw2 decision on the game board (has drawn something).
 			now we need to know what that card is, and what the player wants to do with it.
 
-			there will be a post with the number of draws left (must grab extra variable from url). this state will increment or decrement (draw2Counter) max 2.
+			this state will increment or decrement (draw2Counter) max 2.
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
 			very similar to playerchoice, but has a counter that is incremented and decremented
 		'''
+		# how many draws does the player has left to them?
+		currentCounter = int(statePassedIn['draw2Counter'])
+
 		# what's the card the player has drawn as a result of playing his draw 2 action? 
+		currentCard = statePassedIn['displayCard']['image']
+
+		# have they chosen to use or discard it for another draw?
+		userChoice = statePassedIn['playerClicks'][0]
+
+		# If the user chose to discard the card they drew in the draw2 sequence, do this:
+		if(userChoice == 'discardPile'):
+			# take the card the user has decided about and add it to the discard
+			statePassedIn['discard'].append(currentCard)
+			# reset displayCard
+			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+			# clear the player clicks queue
+			statePassedIn['playerClicks'] = []
+			# decrement the draws the user has left
+			currentCounter -= 1
+			statePassedIn['draw2Counter'] = currentCounter
+
+			# if there are no more draws left, then pass it over to the AI. Otherwise, they draw again
+			if(currentCounter == 0):
+				statePassedIn['state'] = "HAL"
+			else:
+				statePassedIn['state'] = "draw2PlayerChoice"
+
+		# If the user chose to use the card they drew in the draw2 sequence, do this:
+		else:
+			# send back what the player can do with it, depending on the card. 
+			if(int(currentCard) <= 9):
+				# This is a regular number card. does the player want to use it, or discard it to draw again? 
+				# We must answer these questions for all of the cards drawn this way. This'll be done in draw2playeraction
+				
+				# set all of the user's cards to glow
+				for pCard in statePassedIn['playCard']:
+					pCard['active'] = 1
+				# the user has used thier card, so turn is over and its HAL time
+				statePassedIn['state'] = "HAL"
+
+			elif(int(currentCard) == 10):
+				# this is draw2 power card
+				pass
+			elif(int(currentCard) == 11):
+				# this is a peek power card
+				pass
+			else:
+				# this is a swap power card
+				pass	
+
+		return statePassedIn
+
+	def draw2PlayerAction(self, statePassedIn):
+		'''
+			draw2PlayerAction
+			What has the user decided to do with the card they drew during their draw2 sequence?
+		'''
+
 		pass
 		
 	def endGame(self, statePassedIn):
