@@ -2,14 +2,14 @@
 # Created 4MAR2013 
 # Authors:
 # 	Phelan
-# 	SUUUP
+# 	Ethan
 # This handler executes the actual game environment. 
 from handler import *
 from random import shuffle
 from random import choice
 import cgi
 import logging
-import simplejson as json
+import json
 
 ENDGAME_SCORE = 60
 
@@ -42,15 +42,6 @@ class GameHandler(Handler):
 
 		# send the object to the state parser, and get the new state of the gameboard
 		newState = self.parseState(oldState)
-
-		#http://stackoverflow.com/questions/14520782/decoding-json-with-python-using-appengine
-		#this works, the problem was that the json on the client side wasnt actually json
-
-		#TESTING DATA --Ethan
-		# if newState['state'] == "playerChoice":
-		# 	newState['state'] = 'waitingForPCard'
-		# else:
-		# 	newState['state'] = "playerChoice"
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
@@ -129,6 +120,7 @@ class GameHandler(Handler):
 	def waitingForDraw(self, statePassedIn):
 		'''
 			waitingForDraw
+			Result of waiting for the user to draw from the discard or draw pile.
 			This function updates the state in accordance to the parameters of the Waiting for Draw state and what the 
 			player has clicked. It then returns the new state, to be later encoded as JSON.
 			Parameters: 
@@ -162,7 +154,7 @@ class GameHandler(Handler):
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
 			statePassedIn['playerClicks'] = []
 			# set the new state of the game to be "waitingForPCard", as per our documentation (this will glow the players' cards, etc)
-			statePassedIn['state'] = 'waitingForPCard'
+			statePassedIn['state'] = "waitingForPCard"
 
 
 		# if the user has chosen a card from the deck:
@@ -180,7 +172,7 @@ class GameHandler(Handler):
 			# clear out the current list of the player's clicks, so that the new state has a fresh empty list to build into
 			statePassedIn['playerClicks'] = []
 			# set the new state of the game to be "playerChoice", as per our documentation
-			statePassedIn['state'] = 'playerChoice'
+			statePassedIn['state'] = "playerChoice"
 
 		return statePassedIn
 
@@ -218,7 +210,7 @@ class GameHandler(Handler):
 		# reset the activecard, reset the clicks list, set the new state
 		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 		statePassedIn['playerClicks'] = []
-		statePassedIn['state'] = 'HAL'
+		statePassedIn['state'] = "HAL" # change this to anything and it works. WHY?
 
 		return statePassedIn
 
@@ -238,7 +230,7 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
-		statePassedIn['state'] = 'waitingForDraw'
+		statePassedIn['state'] = "waitingForDraw"
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
@@ -266,7 +258,7 @@ class GameHandler(Handler):
 			# clear the player clicks queue
 			statePassedIn['playerClicks'] = []
 			# the user's turn is now over, so it is up to HAL to take over as the new state
-			statePassedIn['state'] = 'HAL'
+			statePassedIn['state'] = "HAL"
 
 		# otherwise, the choice is use. Determine if it is a number card or a power card first
 		else:
@@ -296,8 +288,9 @@ class GameHandler(Handler):
 					statePassedIn['playCard'][3]['image'] = currentCard 
 
 				# housekeeping
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
 				statePassedIn['playerClicks'] = []
-				statePassedIn['state'] = 'HAL'
+				statePassedIn['state'] = "HAL"
 
 			else:
 				# this is a power card. What kind of power card are we talking about?
@@ -317,7 +310,7 @@ class GameHandler(Handler):
 					else:
 						statePassedIn['playCard'][3]['visible'] = 1
 					# their turn is over, so send in the AI state
-					statePassedIn['state'] = 'HAL'
+					statePassedIn['state'] = "HAL"
 
 				else:
 					# this is a 12, or swap power card.
@@ -346,7 +339,11 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 
-			NO LONGER NECESSARY, see agenda for 19 march in the google drive.
+			THIS is what gets passed back after a player has made his draw2 decision on the game board (has drawn something).
+			now we need to know what that card is, and what the player wants to do with it.
+			there will be a post with the number of draws left (must grab extra variable from url). this state will increment or decrement (draw2Counter) max 2.
+			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
+			very similar to playerchoice, but has a counter that is incremented and decremented
 		'''
 		pass
 		
@@ -385,6 +382,6 @@ class GameHandler(Handler):
 		# add each player's scores to the running total of their score for the game so far
 
 		# is the game over? (is either player's total score over or at 60?)
-		statePassedIn['state'] = 'endGame'
+		statePassedIn['state'] = "endGame"
 		return statePassedIn
 
