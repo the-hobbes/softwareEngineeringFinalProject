@@ -327,7 +327,12 @@ class GameHandler(Handler):
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
-					drawnCard = statePassedIn['deck'].pop()
+					try:
+						drawnCard = statePassedIn['deck'].pop()
+					except:
+						# no cards left in the deck. The round ends, so we should probably have a round end state? 
+						# It would probs need to be something similar to a knock state, which we may have to do as well.
+						pass
 					statePassedIn['displayCard']['image'] = drawnCard
 
 					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
@@ -438,60 +443,85 @@ class GameHandler(Handler):
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
 			(Very similar to playerchoice, but has a counter that is incremented and decremented)
 		'''
-		# how many draws does the player has left to them?
-		currentCounter = int(statePassedIn['draw2Counter'])
-
-		# what's the card the player has drawn as a result of playing his draw 2 action? 
-		currentCard = statePassedIn['displayCard']['image']
-
-		# have they chosen to use or discard it for another draw?
+		# pull out the user's choice from playerclicks
 		userChoice = statePassedIn['playerClicks'][0]
 
-		# If the user chose to discard the card they drew in the draw2 sequence, do this:
+		# pull out currently displayed card
+		currentCard = statePassedIn['displayCard']['image']
+
+		# if the user's choice was to discard:
 		if(userChoice == 'discardPile'):
-			# take the card the user has decided about and add it to the discard
-			statePassedIn['discard'].append(currentCard)
-			# reset displayCard
-			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
-			# clear the player clicks queue
-			statePassedIn['playerClicks'] = []
-			# decrement the draws the user has left
-			currentCounter -= 1
-			statePassedIn['draw2Counter'] = currentCounter
 
-			# if there are no more draws left, then pass it over to the AI. Otherwise, they may draw again
-			if(currentCounter <= 0):
+			# what's the counter looking like? If it is 0, then the user has used up all of their discards and their turn is over.
+			if(statePassedIn['draw2Counter'] <= 0):
+				# put current display card into discard pile and reset it
+				statePassedIn['discard'].append(currentCard)
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+				# clear the player clicks queue
+				statePassedIn['playerClicks'] = []
+				# the user's turn is now over, so it is up to HAL to take over as the new state
 				statePassedIn['state'] = "HAL"
-				statePassedIn['draw2Counter'] = 0
-			else:
-				statePassedIn['state'] = "draw2PlayerChoice"
-				# let the user know they can draw again by glowing the deck
-				statePassedIn['deckActivity'] = 1
 
-		# If the user chose to use the card they drew in the draw2 sequence, do this:
+				return statePassedIn
+
+			# otherwise, the user still has some draw2 power left.
+			else:
+				# decrement the counter by 1
+				statePassedIn['draw2Counter'] -= 1
+				# put current display card into discard pile
+				statePassedIn['discard'].append(currentCard)
+				# pop out a new card for the user from the deck
+				try:
+					drawnCard = statePassedIn['deck'].pop()
+				except:
+					# no cards left in the deck. The round ends, so we should probably have a round end state? 
+					# It would probs need to be something similar to a knock state, which we may have to do as well.
+					pass
+				# set the display card to what we've just drawn
+				statePassedIn['displayCard']['image'] = drawnCard 
+				# reset playerclicks
+				statePassedIn['playerClicks'] = []
+
+				# depending on what that newly drawn card is, set the right things glowing
+
+				# set the state to draw2PlayerChoice again (or just leave as is i guess)
+
+				return statePassedIn
+
+		# otherwise, the user's choice must've been to use the card that was drawn
 		else:
-			# send back what the player can do with it, depending on the card. 
-			if(int(currentCard) <= 9):
-				# This is a regular number card. does the player want to use it, or discard it to draw again? 
-				# We must answer these questions for all of the cards drawn this way. This'll be done in draw2playeraction
-				
-				# set all of the user's cards to glow
-				for pCard in statePassedIn['playCard']:
-					pCard['active'] = 1
-				# the user has used thier card, so turn is over and its HAL time
-				statePassedIn['state'] = "HAL"
+			# we can learn about what the user clicked from the currently displayed card
+			
+			# if the card has a value of from 1 to 9, it is a regular number card
+				# swap it out with what the player clicked (from the playerClicks array)
+				# add the current card to discard
+				# reset the playerclicks array and the display card.
+				# return, with the state being set to HAL
 
-			elif(int(currentCard) == 10):
-				# this is draw2 power card
-				pass
-			elif(int(currentCard) == 11):
-				# this is a peek power card
-				pass
-			else:
-				# this is a swap power card
-				pass	
+			# if the card is a 10, then it is a draw 2 card
+				# this mean's they've clicked the deck.
+				# pop a new card from the deck
+				# clear the clicks array
+				# proceed as per the draw2 in playerChoice
 
-		return statePassedIn
+			# if the card is an 11, then it is a peek card
+				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
+				# set its visibility to 1
+				# put the active display card into the discard pile and reset that display card
+				# clear the clicks array
+				# return, with the state being set to HAL
+
+			# if the card is a 12, then it is a swap card.
+				# this means they've chosen two cards, on of theirs and one of their opponents
+				# get those two cards and perform the swap as in playerChoice. 
+				# clear the clicks array
+				# return, with the state being set to HAL.
+
+			# NOTE: I'll need to probably implement a cleanup function, which performs all of the reseting of clicks array etc
+			#	Also, it'd be good to have a reset active card function (to reset the display card and add it to the discard).
+			# 	ALSO, i think i will need to have something to set the active cards back to 0 that should be active. This could
+			#	probably go into the cleanup function. 
+			pass
 		
 	def endGame(self, statePassedIn):
 		'''
