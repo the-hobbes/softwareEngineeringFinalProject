@@ -367,30 +367,16 @@ class GameHandler(Handler):
 					statePassedIn['state'] = "HAL"
 
 				else:
-					# this is a 12, or swap power card.
+					# coming here means the user's card is a 12, or swap power card.
 					# We have to swap the cards the player clicked on, so that means there are two items in the clicks array
 					# 	get the items out of the array, find out what they are, and swap their positions.
-					
-					# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
-					# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
-					if (card1[0] == 'p'):
-						# a player card that must be swapped out with an opponent's card
 
-						# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
-						playerIndex = int(str(card1[-1])) - 1
-						# get the index of the other card, which must be the opponent's card
-						oppIndex = int(str(card2[-1])) - 1
-						# swap the image values of these two cards in the dictionaries, using a temp variable
-						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-						statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-						statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
-					else:
-						# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
-						playerIndex = int(str(card2[-1])) - 1
-						oppIndex = int(str(card1[-1])) - 1
-						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-						statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-						statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+					# get the items out of the player clicks array
+					card1 = newState['playerClicks'].pop()
+					card2 = newState['playerClicks'].pop()
+					
+					# do the swap
+					statePassedIn = self.swapCards(card1, card2, statePassedIn)
 
 					# you've swapped, and now the turn is over
 					statePassedIn['state'] = "HAL"
@@ -401,6 +387,37 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
+		return statePassedIn
+
+	def swapCards(self, card1, card2, statePassedIn):
+		'''
+			swapCards
+			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
+			Parameters:
+				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
+				statePassedIn, the current state of the game
+		'''
+		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
+		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
+		if (card1[0] == 'p'):
+			# a player card that must be swapped out with an opponent's card
+
+			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
+			playerIndex = int(str(card1[-1])) - 1
+			# get the index of the other card, which must be the opponent's card
+			oppIndex = int(str(card2[-1])) - 1
+			# swap the image values of these two cards in the dictionaries, using a temp variable
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+		else:
+			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
+			playerIndex = int(str(card2[-1])) - 1
+			oppIndex = int(str(card1[-1])) - 1
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+
 		return statePassedIn
 
 
