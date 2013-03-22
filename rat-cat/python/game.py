@@ -205,6 +205,8 @@ class GameHandler(Handler):
 			The user has clicked on the discard pile and must now swap out a card. 
 			This state handler is used to update the state in accordance with the results of the player's choice (what the
 			user clicked on the gameboard). 
+			Note that this automatically handles the case of a power card drawn from the discard pile, as there simply is no
+			logic built into this function to handle them. 
 			Parameters:
 				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
 			Returns:
@@ -318,9 +320,37 @@ class GameHandler(Handler):
 			else:
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
-					# a draw 2 power card. the deck and discard should glow (use or discard)
-					statePassedIn['deckActivity'] = 1
+					# a draw 2 power card. the deck and discard should glow (use or discard).
+					# this is the start of the draw2 sequence. Helpful to start here when trying to visualize the series of events,
+					#	and realize that when playerChoice is called, it is processing the results of a player's choice to draw from
+					#	the deck.
+					
+					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
+					statePassedIn['discard'].append(currentCard)
+					drawnCard = statePassedIn['deck'].pop()
+					statePassedIn['displayCard']['image'] = drawnCard
+
+					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
 					statePassedIn['discardActivity'] = 1
+
+					if(drawnCard <= 9 or drawnCard == 11):
+						# if the card is a number card or peek card, then glow the player's 4 cards
+						for pCard in statePassedIn['playCard']:
+							pCard['active'] = 1
+
+					elif(drawnCard == 12):
+						# if the card is a swap card, then glow the player's 4 cards and the opponent's 4 cards
+						for pCard in statePassedIn['playCard']:
+							pCard['active'] = 1
+						for cCard in statePassedIn['compCard']:
+							cCard['active'] = 1
+					else:
+						# if the cards is a draw2 card, then glow the deck again
+						statePassedIn['deckActivity'] = 1
+
+					# set the draw2 counter to 2, the initial value for a draw2 series
+					statePassedIn['draw2Counter'] = 2
+
 					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
@@ -338,8 +368,8 @@ class GameHandler(Handler):
 
 				else:
 					# this is a 12, or swap power card.
-					# we have to swap the cards the player clicked on, so that means there are two items in the clicks array
-					# get the items out of the array, find out what they are, and swap their positions
+					# We have to swap the cards the player clicked on, so that means there are two items in the clicks array
+					# 	get the items out of the array, find out what they are, and swap their positions.
 					
 					# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
 					# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
@@ -350,12 +380,12 @@ class GameHandler(Handler):
 						playerIndex = int(str(card1[-1])) - 1
 						# get the index of the other card, which must be the opponent's card
 						oppIndex = int(str(card2[-1])) - 1
-						# swap the image values of these two cards in the dictionaries
+						# swap the image values of these two cards in the dictionaries, using a temp variable
 						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
 						statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
 						statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
 					else:
-						# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers)
+						# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
 						playerIndex = int(str(card2[-1])) - 1
 						oppIndex = int(str(card1[-1])) - 1
 						tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
@@ -389,7 +419,7 @@ class GameHandler(Handler):
 
 			this state will increment or decrement (draw2Counter) max 2.
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
-			very similar to playerchoice, but has a counter that is incremented and decremented
+			(Very similar to playerchoice, but has a counter that is incremented and decremented)
 		'''
 		# how many draws does the player has left to them?
 		currentCounter = int(statePassedIn['draw2Counter'])
@@ -412,11 +442,14 @@ class GameHandler(Handler):
 			currentCounter -= 1
 			statePassedIn['draw2Counter'] = currentCounter
 
-			# if there are no more draws left, then pass it over to the AI. Otherwise, they draw again
-			if(currentCounter == 0):
+			# if there are no more draws left, then pass it over to the AI. Otherwise, they may draw again
+			if(currentCounter <= 0):
 				statePassedIn['state'] = "HAL"
+				statePassedIn['draw2Counter'] = 0
 			else:
 				statePassedIn['state'] = "draw2PlayerChoice"
+				# let the user know they can draw again by glowing the deck
+				statePassedIn['deckActivity'] = 1
 
 		# If the user chose to use the card they drew in the draw2 sequence, do this:
 		else:
@@ -442,14 +475,6 @@ class GameHandler(Handler):
 				pass	
 
 		return statePassedIn
-
-	def draw2PlayerAction(self, statePassedIn):
-		'''
-			draw2PlayerAction
-			What has the user decided to do with the card they drew during their draw2 sequence?
-		'''
-
-		pass
 		
 	def endGame(self, statePassedIn):
 		'''
