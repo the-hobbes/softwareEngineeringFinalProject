@@ -473,7 +473,7 @@ class GameHandler(Handler):
 
 				# reset the playerclicks array and the display card.
 				statePassedIn['playerClicks'] = []
-				statePassedIn['image'] = 13
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 
 				# return, with the state being set to HAL
 				statePassedIn['state'] = 'HAL'
@@ -511,15 +511,22 @@ class GameHandler(Handler):
 			# if the card is an 11, then it is a peek card
 			elif(currentCard == 11):
 				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
+				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
 				# set its visibility to 1
+				statePassedIn[cardArray][idx]["visible"] = 1
 				# put the active display card into the discard pile and reset that display card
+				statePassedIn['discard'].append(currentCard)
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				# clear the clicks array
+				statePassedIn['playerClicks'] = []
 				# return, with the state being set to HAL
-				pass
-
+				statePassedIn['state'] = "HAL"
+				
+				return statePassedIn
+				
 			# then the card is a 12, which means it is a swap card.
 			else:
-				# this means they've chosen two cards, on of theirs and one of their opponents
+				# this means they've chosen two cards, one of theirs and one of their opponents
 				# get those two cards and perform the swap as in playerChoice. 
 				# clear the clicks array
 				# return, with the state being set to HAL.
@@ -642,16 +649,22 @@ class GameHandler(Handler):
 			resetActiveFlags
 			This function sets all of the active flags in the JSON array to 0, effectively removing the glow from each element
 			and preparing the state to receive new glow elements. 
+
+			It also resets the visibility of cards, making them non-visible
+
 			Parameters:
 				statePassedIn, the state passed in by the view.
 			Return:
 				statePassedIn, the state with all of the active flags set to 0
+
 		'''
-		# reset computer and user card active flags
+		# reset computer and user card active and visible flags
 		for pCard in statePassedIn['playCard']:
 			pCard['active'] = 0
+			pCard['visible'] = 0
 		for cCard in statePassedIn['compCard']:
 			cCard['active'] = 0
+			cCard['visible'] = 0
 
 		# reset deck and discard flags
 		statePassedIn['discardActivity'] = 0
