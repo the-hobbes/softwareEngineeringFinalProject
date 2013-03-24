@@ -526,14 +526,19 @@ class GameHandler(Handler):
 				
 			# then the card is a 12, which means it is a swap card.
 			else:
-				# this means they've chosen two cards, one of theirs and one of their opponents
-				# get those two cards and perform the swap as in playerChoice. 
+				# This means they've chosen two cards, one of theirs and one of their opponents. Get those two cards and 
+				#	perform the swap as in playerChoice. 
+				# get the items out of the player clicks array
+				card1 = statePassedIn['playerClicks'].pop()
+				card2 = statePassedIn['playerClicks'].pop()
+				# do the swap
+				statePassedIn = self.swapCards(card1, card2, statePassedIn)
 				# clear the clicks array
+				statePassedIn['playerClicks'] = []
 				# return, with the state being set to HAL.
-				pass
-			# NOTE: I'll need to probably implement a cleanup function, which performs all of the reseting of clicks array etc
-			#	Also, it'd be good to have a reset active card function (to reset the display card and add it to the discard).
+				statePassedIn['state'] = "HAL"
 
+				return statePassedIn
 		
 	def endGame(self, statePassedIn):
 		'''
