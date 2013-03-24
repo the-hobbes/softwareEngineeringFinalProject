@@ -325,7 +325,7 @@ class GameHandler(Handler):
 			else:
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
-					# a draw 2 power card. the deck and discard should glow (use or discard).
+					# a draw 2 power card. the deck and discard should glow ('use' or 'discard').
 					# this is the start of the draw2 sequence. Helpful to start here when trying to visualize the series of events,
 					#	and realize that when playerChoice is called, it is processing the results of a player's choice to draw from
 					#	the deck.
@@ -333,11 +333,14 @@ class GameHandler(Handler):
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
 					try:
+						# draw a card for the player
 						drawnCard = statePassedIn['deck'].pop()
 					except:
 						# no cards left in the deck. The round ends, so we should probably have a round end state? 
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
 						pass
+
+					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
 
 					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
@@ -404,7 +407,7 @@ class GameHandler(Handler):
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
 			(Very similar to playerchoice, but has a counter that is incremented and decremented)
 		'''
-		# pull out the user's choice from playerclicks
+		# pull out the user's choice of what to do from playerclicks
 		userChoice = statePassedIn['playerClicks'][0]
 
 		# pull out currently displayed card
@@ -448,38 +451,58 @@ class GameHandler(Handler):
 				statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
-				#	newly drawn card
+				#	newly drawn card.
 				return statePassedIn
 
 		# otherwise, the user's choice must've been to use the card that was drawn
 		else:
-			# we can learn about what the user clicked from the currently displayed card
+			# we can learn about what the user clicked (how they decided to use the card) from the currently displayed card...
 			
-			# if the card has a value of from 1 to 9, it is a regular number card
-				# swap it out with what the player clicked (from the playerClicks array)
+			# if the card has a value of from 1 to 9, it is a regular number card. Therefore, they chose to swap it out with
+			#	another card in their spread. 
+			if(currentCard <= 9):
 				# add the current card to discard
+				statePassedIn['discard'].append(currentCard)
+
+				# what was the card that the user clicked (translated from the value in the playerclicks array), and what was its
+				#	index position?
+				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
+
+				# put the (up until now) currently displayed card into what the player clicked
+				statePassedIn[cardArray][idx]['image'] = currentCard
+
 				# reset the playerclicks array and the display card.
+				statePassedIn['playerClicks'] = []
+				statePassedIn['image'] = 13
+
 				# return, with the state being set to HAL
+				statePassedIn['state'] = 'HAL'
+				return statePassedIn
 
 			# if the card is a 10, then it is a draw 2 card
+			elif(currentCard == 10):
 				# this mean's they've clicked the deck.
 				# pop a new card from the deck
 				# clear the clicks array
 				# proceed as per the draw2 in playerChoice
+				pass
 
 			# if the card is an 11, then it is a peek card
+			elif(currentCard == 11):
 				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
 				# set its visibility to 1
 				# put the active display card into the discard pile and reset that display card
 				# clear the clicks array
 				# return, with the state being set to HAL
+				pass
 
-			# if the card is a 12, then it is a swap card.
+			# then the card is a 12, which means it is a swap card.
+			else:
 				# this means they've chosen two cards, on of theirs and one of their opponents
 				# get those two cards and perform the swap as in playerChoice. 
 				# clear the clicks array
 				# return, with the state being set to HAL.
-
+				pass
 			# NOTE: I'll need to probably implement a cleanup function, which performs all of the reseting of clicks array etc
 			#	Also, it'd be good to have a reset active card function (to reset the display card and add it to the discard).
 
@@ -522,6 +545,11 @@ class GameHandler(Handler):
 		# is the game over? (is either player's total score over or at 60?)
 		statePassedIn['state'] = "endGame"
 		return statePassedIn
+
+	'''
+		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated
+		from the handlers themselves for the sake of modularity and readability. 
+	'''
 
 	def swapCards(self, card1, card2, statePassedIn):
 		'''
@@ -613,3 +641,40 @@ class GameHandler(Handler):
 		statePassedIn['displayCard']['active'] = 0
 
 		return statePassedIn
+
+	def translateDivToCard(self, divToTranslate, statePassedIn):
+		'''
+			translateDivToInt
+			Function used to take a click the user made and determine what card it represents. 
+			Parameters:
+				divToTranslate, the name of the div that the user clicked. This is taken from the playerClicks array.
+				statePassedIn, the current state of the game.
+			Return:
+				cardIndex, the position in the card array the card occupies.
+				cardArray, the type (player of computer) of array the card belongs to.
+				cardChoice, the card object that the divToTranslate represented.
+		'''
+		# What is the position of the card in whatever card array it is found. The position is from 0 to 3.
+		cardIndex = int(str(divToTranslate[-1])) - 1
+		cardArray = ""
+
+		# determine if the card was a user or computer card
+		if (divToTranslate[0] == 'p'):
+			# this is a playerCard. 
+			cardChoice = statePassedIn['playCard'][cardIndex]
+			cardArray = 'playCard'
+
+		elif(divToTranslate[0] == 'o'):
+			# this is a computer card.
+			cardChoice = statePassedIn['compCard'][cardIndex]
+			cardArray = 'compCard'
+		else:
+			# something went wrong
+			logging.info("something went wrong")
+
+		return cardIndex, cardArray, cardChoice
+
+
+
+
+
