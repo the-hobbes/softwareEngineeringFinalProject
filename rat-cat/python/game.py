@@ -346,7 +346,7 @@ class GameHandler(Handler):
 					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
 					statePassedIn['discardActivity'] = 1
 
-					# # depending on what that newly drawn card is, set the right things glowing 
+					# depending on what that newly drawn card is, set the right things glowing 
 					statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
@@ -479,13 +479,34 @@ class GameHandler(Handler):
 				statePassedIn['state'] = 'HAL'
 				return statePassedIn
 
-			# if the card is a 10, then it is a draw 2 card
+			# if the card is a 10, then it is a draw 2 card. This also means they've clicked the deck.
 			elif(currentCard == 10):
-				# this mean's they've clicked the deck.
 				# pop a new card from the deck
+				try:
+					drawnCard = statePassedIn['deck'].pop()
+				except:
+					# no cards left in the deck. The round ends, so we should probably have a round end state? 
+					# It would probs need to be something similar to a knock state, which we may have to do as well.
+					pass
+
 				# clear the clicks array
-				# proceed as per the draw2 in playerChoice
-				pass
+				statePassedIn['playerClicks'] = []
+
+				# proceed as per the draw2 in playerChoice...
+				# set the display card to the newly drawn card
+				statePassedIn['displayCard']['image'] = drawnCard
+
+				# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
+				statePassedIn['discardActivity'] = 1
+
+				# depending on what that newly drawn card is, set the right things glowing 
+				statePassedIn = self.glowCards(drawnCard, statePassedIn)
+
+				# set the draw2 counter to 2, the initial value for a draw2 series (since we are beginning again)
+				statePassedIn['draw2Counter'] = 2
+
+				statePassedIn['state'] = 'draw2PlayerChoice'
+				return statePassedIn
 
 			# if the card is an 11, then it is a peek card
 			elif(currentCard == 11):
@@ -506,7 +527,6 @@ class GameHandler(Handler):
 			# NOTE: I'll need to probably implement a cleanup function, which performs all of the reseting of clicks array etc
 			#	Also, it'd be good to have a reset active card function (to reset the display card and add it to the discard).
 
-			pass
 		
 	def endGame(self, statePassedIn):
 		'''
@@ -564,7 +584,7 @@ class GameHandler(Handler):
 		# NOTE: The game breaks here because playerClicks only contains only one item. This is because items are only added
 		# 			to it in line 350 of stateChanges.js (draw2PlayerChoice function) once. That is, not ALL of the clicks made 
 		#			on the board are recorded, only the one that causes the (draw2PlayerChoiceAJAX').bind event to fire. 
-		#		We need to have a way to gather all of the gameboard clicks for this particular event. 
+		#		We need to have a way to gather all of the gameboard clicks for this particular event (the swap cards event). 
 
 		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
 		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
