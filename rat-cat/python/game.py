@@ -2,8 +2,9 @@
 # Created 4MAR2013 
 # Authors:
 # 	Phelan
-# 	SUUUP
+#
 # This handler executes the actual game environment. 
+
 from handler import *
 from random import shuffle
 from random import choice
@@ -40,6 +41,9 @@ class GameHandler(Handler):
 
 		# get the json object passed in by the view (assuming it is called currentState)
 		oldState = json.loads(cgi.escape(self.request.body))
+
+		# reset all of the active flags in the json (to remove all glowing effects and prepare for new ones)
+		oldState = self.resetActiveFlags(oldState)
 
 		# send the object to the state parser, and get the new state of the gameboard
 		newState = self.parseState(oldState)
@@ -268,6 +272,7 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+
 		# has the player chosen to use or discard? (If they have chosen to use, this will also tell you what they have clicked)
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
@@ -338,20 +343,8 @@ class GameHandler(Handler):
 					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
 					statePassedIn['discardActivity'] = 1
 
-					if(drawnCard <= 9 or drawnCard == 11):
-						# if the card is a number card or peek card, then glow the player's 4 cards
-						for pCard in statePassedIn['playCard']:
-							pCard['active'] = 1
-
-					elif(drawnCard == 12):
-						# if the card is a swap card, then glow the player's 4 cards and the opponent's 4 cards
-						for pCard in statePassedIn['playCard']:
-							pCard['active'] = 1
-						for cCard in statePassedIn['compCard']:
-							cCard['active'] = 1
-					else:
-						# if the cards is a draw2 card, then glow the deck again
-						statePassedIn['deckActivity'] = 1
+					# # depending on what that newly drawn card is, set the right things glowing 
+					statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
 					statePassedIn['draw2Counter'] = 2
@@ -377,8 +370,8 @@ class GameHandler(Handler):
 					# 	get the items out of the array, find out what they are, and swap their positions.
 
 					# get the items out of the player clicks array
-					card1 = newState['playerClicks'].pop()
-					card2 = newState['playerClicks'].pop()
+					card1 = statePassedIn['playerClicks'].pop()
+					card2 = statePassedIn['playerClicks'].pop()
 					
 					# do the swap
 					statePassedIn = self.swapCards(card1, card2, statePassedIn)
@@ -393,38 +386,6 @@ class GameHandler(Handler):
 				statePassedIn['playerClicks'] = []
 				
 		return statePassedIn
-
-	def swapCards(self, card1, card2, statePassedIn):
-		'''
-			swapCards
-			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
-			Parameters:
-				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
-				statePassedIn, the current state of the game
-		'''
-		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
-		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
-		if (card1[0] == 'p'):
-			# a player card that must be swapped out with an opponent's card
-
-			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
-			playerIndex = int(str(card1[-1])) - 1
-			# get the index of the other card, which must be the opponent's card
-			oppIndex = int(str(card2[-1])) - 1
-			# swap the image values of these two cards in the dictionaries, using a temp variable
-			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
-		else:
-			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
-			playerIndex = int(str(card2[-1])) - 1
-			oppIndex = int(str(card1[-1])) - 1
-			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
-
-		return statePassedIn
-
 
 	def draw2PlayerChoice(self, statePassedIn):
 		'''
@@ -477,15 +438,17 @@ class GameHandler(Handler):
 					# no cards left in the deck. The round ends, so we should probably have a round end state? 
 					# It would probs need to be something similar to a knock state, which we may have to do as well.
 					pass
+
 				# set the display card to what we've just drawn
 				statePassedIn['displayCard']['image'] = drawnCard 
 				# reset playerclicks
 				statePassedIn['playerClicks'] = []
 
-				# depending on what that newly drawn card is, set the right things glowing
+				# depending on what that newly drawn card is, set the right things glowing 
+				statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
-				# set the state to draw2PlayerChoice again (or just leave as is i guess)
-
+				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
+				#	newly drawn card
 				return statePassedIn
 
 		# otherwise, the user's choice must've been to use the card that was drawn
@@ -519,8 +482,7 @@ class GameHandler(Handler):
 
 			# NOTE: I'll need to probably implement a cleanup function, which performs all of the reseting of clicks array etc
 			#	Also, it'd be good to have a reset active card function (to reset the display card and add it to the discard).
-			# 	ALSO, i think i will need to have something to set the active cards back to 0 that should be active. This could
-			#	probably go into the cleanup function. 
+
 			pass
 		
 	def endGame(self, statePassedIn):
@@ -561,3 +523,93 @@ class GameHandler(Handler):
 		statePassedIn['state'] = "endGame"
 		return statePassedIn
 
+	def swapCards(self, card1, card2, statePassedIn):
+		'''
+			swapCards
+			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
+			Parameters:
+				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
+				statePassedIn, the current state of the game
+			Returns:
+				statePassedIn, the gamestate modified by the swap
+		'''
+		# NOTE: The game breaks here because playerClicks only contains only one item. This is because items are only added
+		# 			to it in line 350 of stateChanges.js (draw2PlayerChoice function) once. That is, not ALL of the clicks made 
+		#			on the board are recorded, only the one that causes the (draw2PlayerChoiceAJAX').bind event to fire. 
+		#		We need to have a way to gather all of the gameboard clicks for this particular event. 
+
+		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
+		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
+		if (card1[0] == 'p'):
+			# a player card that must be swapped out with an opponent's card
+			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
+			playerIndex = int(str(card1[-1])) - 1
+			# get the index of the other card, which must be the opponent's card
+			oppIndex = int(str(card2[-1])) - 1
+			# swap the image values of these two cards in the dictionaries, using a temp variable
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+		else:
+			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
+			playerIndex = int(str(card2[-1])) - 1
+			oppIndex = int(str(card1[-1])) - 1
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+
+		return statePassedIn
+
+	def glowCards(self, drawnCard, statePassedIn):
+		'''
+			glowCards
+			This function is used to set a flag (active, in the JSON) in elements of the gameboard to indicate to
+			the view that they should glow. This glow is a signal to the player of what options they have available
+			to them. 
+			Parameters:
+				drawnCard, the card they player has just drawn from the deck, which dictates what should glowCards
+			Returns:
+				statePassedIn, the modified JSON of the gamestate with the active flag set in the appropriate areas
+		'''
+		if(drawnCard == 10):
+			# draw 2. Glow the deck and discard
+			statePassedIn['deckActivity'] = 1
+		elif(drawnCard == 12):
+			# swap. glow the discard, opponents cards, and the player's cards.
+			statePassedIn['discardActivity'] = 1
+			for pCard in statePassedIn['playCard']:
+				pCard['active'] = 1
+			for cCard in statePassedIn['compCard']:
+				cCard['active'] = 1
+		else:
+			# a number card or peek card was draw. glow deck and player's cards
+			statePassedIn['deckActivity'] = 1
+			for cCard in statePassedIn['compCard']:
+				cCard['active'] = 1
+
+		return statePassedIn
+
+	def resetActiveFlags(self, statePassedIn):
+		'''
+			resetActiveFlags
+			This function sets all of the active flags in the JSON array to 0, effectively removing the glow from each element
+			and preparing the state to receive new glow elements. 
+			Parameters:
+				statePassedIn, the state passed in by the view.
+			Return:
+				statePassedIn, the state with all of the active flags set to 0
+		'''
+		# reset computer and user card active flags
+		for pCard in statePassedIn['playCard']:
+			pCard['active'] = 0
+		for cCard in statePassedIn['compCard']:
+			cCard['active'] = 0
+
+		# reset deck and discard flags
+		statePassedIn['discardActivity'] = 0
+		statePassedIn['deckActivity'] = 0
+
+		# reset displayCard flag
+		statePassedIn['displayCard']['active'] = 0
+
+		return statePassedIn

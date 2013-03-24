@@ -346,8 +346,7 @@ function draw2PlayerChoice(state){
 
 	//Define the AJAX call to the server 
 	$('.draw2PlayerChoiceAJAX').bind('click',function(){
-		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
-		// this in documentation going forward, and modify our current code to accomodate for it. 
+		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
 		
 		//Use ajax to yell over to the server that something has happened
