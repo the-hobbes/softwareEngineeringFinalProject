@@ -2,7 +2,7 @@
 # Created 4MAR2013 
 # Authors:
 # 	Phelan
-#
+# 	Ethan
 # This handler executes the actual game environment. 
 
 from handler import *
@@ -100,6 +100,7 @@ class GameHandler(Handler):
 				}
 
 		# encode it
+		logging.info(newState)
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
