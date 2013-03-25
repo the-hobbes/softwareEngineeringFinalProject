@@ -4,6 +4,7 @@
 # 	Phelan
 # 	Ethan
 # This handler executes the actual game environment. 
+
 from handler import *
 from random import shuffle
 from random import choice
@@ -36,9 +37,13 @@ class GameHandler(Handler):
 			Responds to post requests for the resource.
 			Takes in the json object from the view and, according to the state, executes the necessary data changes.
 		'''
+		# logging.info(self.request.arguments())
+
 		# get the json object passed in by the view (assuming it is called currentState)
 		oldState = json.loads(cgi.escape(self.request.body))
-		# logging.info(oldState['playCard'])
+
+		# reset all of the active flags in the json (to remove all glowing effects and prepare for new ones)
+		oldState = self.resetActiveFlags(oldState)
 
 		# send the object to the state parser, and get the new state of the gameboard
 		newState = self.parseState(oldState)
@@ -80,16 +85,20 @@ class GameHandler(Handler):
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
 						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
-					"discard" : [discardCard], 
+					"discard" : [discardCard],
+					"discardActivity" : 1,
 					"deck" : deck,
+					"deckActivity" : 1,
 					"displayCard" : {'image' : "13", 'active' : 0}, 
 					"knockState" : 0, 
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
 					"playerClicks" : [],
-					"message": {"visible" : 0, 'text' : "There is no card to be selected here"},
+					"draw2Counter" : 0,
+					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
 				}
+
 		# encode it
 		logging.info(newState)
 		return json.dumps(newState)
@@ -162,6 +171,25 @@ class GameHandler(Handler):
 			# what was the card they picked from the deck? Note that we must also handle the case of the deck being empty 
 			try:
 				drawnCard = statePassedIn['deck'].pop()
+
+				# here, we'll need to know if it is a kind of power card and indicate that to the view.
+				# 	the power cards we really care about, because they make glows appear differently on the gameboard, are the
+				#	draw2 and the swap cards. 
+				if(drawnCard == 10):
+					# draw 2. Glow the deck and discard
+					statePassedIn['deckActivity'] = 1
+				elif(drawnCard == 12):
+					# swap. glow the discard, opponents cards, and the player's cards.
+					statePassedIn['discardActivity'] = 1
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
+					for cCard in statePassedIn['compCard']:
+						cCard['active'] = 1
+				else:
+					# a number card or peek card was draw. glow deck and player's cards
+					statePassedIn['deckActivity'] = 1
+					for cCard in statePassedIn['compCard']:
+						cCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends, so we should probably have a round end state? 
 				# It would probs need to be something similar to a knock state, which we may have to do as well.
@@ -182,6 +210,8 @@ class GameHandler(Handler):
 			The user has clicked on the discard pile and must now swap out a card. 
 			This state handler is used to update the state in accordance with the results of the player's choice (what the
 			user clicked on the gameboard). 
+			Note that this automatically handles the case of a power card drawn from the discard pile, as there simply is no
+			logic built into this function to handle them. 
 			Parameters:
 				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
 			Returns:
@@ -243,6 +273,7 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+
 		# has the player chosen to use or discard? (If they have chosen to use, this will also tell you what they have clicked)
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
@@ -250,7 +281,7 @@ class GameHandler(Handler):
 
 		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
 		if(userChoice == 'discardPile'):
-			logging.info('Choice was to discard it')
+			# logging.info('Choice was to discard it')
 			# take the card the user has decided about and add it to the discard
 			statePassedIn['discard'].append(currentCard)
 			# reset displayCard
@@ -262,7 +293,7 @@ class GameHandler(Handler):
 
 		# otherwise, the choice is use. Determine if it is a number card or a power card first
 		else:
-			logging.info('Choice was to use it')
+			# logging.info('Choice was to use it')
 			if(int(currentCard) <= 9):
 				# this is a number card. Update the value of the card in thier hand they clicked on with this new value, 
 				# 	as well as updating the discard pile with the card they swapped out for.
@@ -295,9 +326,34 @@ class GameHandler(Handler):
 			else:
 				# this is a power card. What kind of power card are we talking about?
 				if(int(currentCard) == 10):
-					# a draw 2 power card. SEE THE MEETING NOTES FOR 19 MAR as to why this is:
-					# statePassedIn['state'] = 'draw2PlayerChoice'
-					statePassedIn['state'] = 'playerChoice'
+					# a draw 2 power card. the deck and discard should glow ('use' or 'discard').
+					# this is the start of the draw2 sequence. Helpful to start here when trying to visualize the series of events,
+					#	and realize that when playerChoice is called, it is processing the results of a player's choice to draw from
+					#	the deck.
+					
+					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
+					statePassedIn['discard'].append(currentCard)
+					try:
+						# draw a card for the player
+						drawnCard = statePassedIn['deck'].pop()
+					except:
+						# no cards left in the deck. The round ends, so we should probably have a round end state? 
+						# It would probs need to be something similar to a knock state, which we may have to do as well.
+						pass
+
+					# set the display card to the newly drawn card
+					statePassedIn['displayCard']['image'] = drawnCard
+
+					# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
+					statePassedIn['discardActivity'] = 1
+
+					# depending on what that newly drawn card is, set the right things glowing 
+					statePassedIn = self.glowCards(drawnCard, statePassedIn)
+
+					# set the draw2 counter to 2, the initial value for a draw2 series
+					statePassedIn['draw2Counter'] = 2
+
+					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
 					# this is a peek power card. Set the card they wanted to peek at to be visible. 
@@ -313,12 +369,19 @@ class GameHandler(Handler):
 					statePassedIn['state'] = "HAL"
 
 				else:
-					# this is a 12, or swap power card.
-					# players cards glow, as do opponents cards
-					for pCard in statePassedIn['playCard']:
-						pCard['active'] = 1
-					for cCard in statePassedIn['compCard']:
-						cCard['active'] = 1
+					# coming here means the user's card is a 12, or swap power card.
+					# We have to swap the cards the player clicked on, so that means there are two items in the clicks array
+					# 	get the items out of the array, find out what they are, and swap their positions.
+
+					# get the items out of the player clicks array
+					card1 = statePassedIn['playerClicks'].pop()
+					card2 = statePassedIn['playerClicks'].pop()
+					
+					# do the swap
+					statePassedIn = self.swapCards(card1, card2, statePassedIn)
+
+					# you've swapped, and now the turn is over
+					statePassedIn['state'] = "HAL"
 
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
@@ -327,7 +390,6 @@ class GameHandler(Handler):
 				statePassedIn['playerClicks'] = []
 				
 		return statePassedIn
-
 
 	def draw2PlayerChoice(self, statePassedIn):
 		'''
@@ -341,11 +403,143 @@ class GameHandler(Handler):
 
 			THIS is what gets passed back after a player has made his draw2 decision on the game board (has drawn something).
 			now we need to know what that card is, and what the player wants to do with it.
-			there will be a post with the number of draws left (must grab extra variable from url). this state will increment or decrement (draw2Counter) max 2.
+
+			this state will increment or decrement (draw2Counter) max 2.
 			this will either pass back draw2PlayerChoice or HAL, depending on what the player has drawn and decided to do.
-			very similar to playerchoice, but has a counter that is incremented and decremented
+			(Very similar to playerchoice, but has a counter that is incremented and decremented)
 		'''
-		pass
+		# pull out the user's choice of what to do from playerclicks
+		userChoice = statePassedIn['playerClicks'][0]
+
+		# pull out currently displayed card
+		currentCard = statePassedIn['displayCard']['image']
+
+		# if the user's choice was to discard:
+		if(userChoice == 'discardPile'):
+
+			# what's the counter looking like? If it is 0, then the user has used up all of their discards and their turn is over.
+			if(statePassedIn['draw2Counter'] <= 0):
+				# put current display card into discard pile and reset it
+				statePassedIn['discard'].append(currentCard)
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+				# clear the player clicks queue
+				statePassedIn['playerClicks'] = []
+				# the user's turn is now over, so it is up to HAL to take over as the new state
+				statePassedIn['state'] = "HAL"
+
+				return statePassedIn
+
+			# otherwise, the user still has some draw2 power left.
+			else:
+				# decrement the counter by 1
+				statePassedIn['draw2Counter'] -= 1
+				# put current display card into discard pile
+				statePassedIn['discard'].append(currentCard)
+				# pop out a new card for the user from the deck
+				try:
+					drawnCard = statePassedIn['deck'].pop()
+				except:
+					# no cards left in the deck. The round ends, so we should probably have a round end state? 
+					# It would probs need to be something similar to a knock state, which we may have to do as well.
+					pass
+
+				# set the display card to what we've just drawn
+				statePassedIn['displayCard']['image'] = drawnCard 
+				# reset playerclicks
+				statePassedIn['playerClicks'] = []
+
+				# depending on what that newly drawn card is, set the right things glowing 
+				statePassedIn = self.glowCards(drawnCard, statePassedIn)
+
+				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
+				#	newly drawn card.
+				return statePassedIn
+
+		# otherwise, the user's choice must've been to use the card that was drawn
+		else:
+			# we can learn about what the user clicked (how they decided to use the card) from the currently displayed card...
+			
+			# if the card has a value of from 1 to 9, it is a regular number card. Therefore, they chose to swap it out with
+			#	another card in their spread. 
+			if(currentCard <= 9):
+				# add the current card to discard
+				statePassedIn['discard'].append(currentCard)
+
+				# what was the card that the user clicked (translated from the value in the playerclicks array), and what was its
+				#	index position?
+				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
+
+				# put the (up until now) currently displayed card into what the player clicked
+				statePassedIn[cardArray][idx]['image'] = currentCard
+
+				# reset the playerclicks array and the display card.
+				statePassedIn['playerClicks'] = []
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+
+				# return, with the state being set to HAL
+				statePassedIn['state'] = 'HAL'
+				return statePassedIn
+
+			# if the card is a 10, then it is a draw 2 card. This also means they've clicked the deck.
+			elif(currentCard == 10):
+				# pop a new card from the deck
+				try:
+					drawnCard = statePassedIn['deck'].pop()
+				except:
+					# no cards left in the deck. The round ends, so we should probably have a round end state? 
+					# It would probs need to be something similar to a knock state, which we may have to do as well.
+					pass
+
+				# clear the clicks array
+				statePassedIn['playerClicks'] = []
+
+				# proceed as per the draw2 in playerChoice...
+				# set the display card to the newly drawn card
+				statePassedIn['displayCard']['image'] = drawnCard
+
+				# depending on the card they just drew, we need to glow certain areas. However, we always need to glow the discard pile
+				statePassedIn['discardActivity'] = 1
+
+				# depending on what that newly drawn card is, set the right things glowing 
+				statePassedIn = self.glowCards(drawnCard, statePassedIn)
+
+				# set the draw2 counter to 2, the initial value for a draw2 series (since we are beginning again)
+				statePassedIn['draw2Counter'] = 2
+
+				statePassedIn['state'] = 'draw2PlayerChoice'
+				return statePassedIn
+
+			# if the card is an 11, then it is a peek card
+			elif(currentCard == 11):
+				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
+				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
+				# set its visibility to 1
+				statePassedIn[cardArray][idx]["visible"] = 1
+				# put the active display card into the discard pile and reset that display card
+				statePassedIn['discard'].append(currentCard)
+				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				# clear the clicks array
+				statePassedIn['playerClicks'] = []
+				# return, with the state being set to HAL
+				statePassedIn['state'] = "HAL"
+				
+				return statePassedIn
+				
+			# then the card is a 12, which means it is a swap card.
+			else:
+				# This means they've chosen two cards, one of theirs and one of their opponents. Get those two cards and 
+				#	perform the swap as in playerChoice. 
+				# get the items out of the player clicks array
+				card1 = statePassedIn['playerClicks'].pop()
+				card2 = statePassedIn['playerClicks'].pop()
+				# do the swap
+				statePassedIn = self.swapCards(card1, card2, statePassedIn)
+				# clear the clicks array
+				statePassedIn['playerClicks'] = []
+				# return, with the state being set to HAL.
+				statePassedIn['state'] = "HAL"
+
+				return statePassedIn
 		
 	def endGame(self, statePassedIn):
 		'''
@@ -384,4 +578,142 @@ class GameHandler(Handler):
 		# is the game over? (is either player's total score over or at 60?)
 		statePassedIn['state'] = "endGame"
 		return statePassedIn
+
+	'''
+		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated
+		from the handlers themselves for the sake of modularity and readability. 
+	'''
+
+	def swapCards(self, card1, card2, statePassedIn):
+		'''
+			swapCards
+			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
+			Parameters:
+				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
+				statePassedIn, the current state of the game
+			Returns:
+				statePassedIn, the gamestate modified by the swap
+		'''
+		# NOTE: The game breaks here because playerClicks only contains only one item. This is because items are only added
+		# 			to it in line 350 of stateChanges.js (draw2PlayerChoice function) once. That is, not ALL of the clicks made 
+		#			on the board are recorded, only the one that causes the (draw2PlayerChoiceAJAX').bind event to fire. 
+		#		We need to have a way to gather all of the gameboard clicks for this particular event (the swap cards event). 
+
+		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
+		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
+		if (card1[0] == 'p'):
+			# a player card that must be swapped out with an opponent's card
+			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
+			playerIndex = int(str(card1[-1])) - 1
+			# get the index of the other card, which must be the opponent's card
+			oppIndex = int(str(card2[-1])) - 1
+			# swap the image values of these two cards in the dictionaries, using a temp variable
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+		else:
+			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
+			playerIndex = int(str(card2[-1])) - 1
+			oppIndex = int(str(card1[-1])) - 1
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+
+		return statePassedIn
+
+	def glowCards(self, drawnCard, statePassedIn):
+		'''
+			glowCards
+			This function is used to set a flag (active, in the JSON) in elements of the gameboard to indicate to
+			the view that they should glow. This glow is a signal to the player of what options they have available
+			to them. 
+			Parameters:
+				drawnCard, the card they player has just drawn from the deck, which dictates what should glowCards
+			Returns:
+				statePassedIn, the modified JSON of the gamestate with the active flag set in the appropriate areas
+		'''
+		if(drawnCard == 10):
+			# draw 2. Glow the deck and discard
+			statePassedIn['deckActivity'] = 1
+		elif(drawnCard == 12):
+			# swap. glow the discard, opponents cards, and the player's cards.
+			statePassedIn['discardActivity'] = 1
+			for pCard in statePassedIn['playCard']:
+				pCard['active'] = 1
+			for cCard in statePassedIn['compCard']:
+				cCard['active'] = 1
+		else:
+			# a number card or peek card was draw. glow deck and player's cards
+			statePassedIn['deckActivity'] = 1
+			for cCard in statePassedIn['compCard']:
+				cCard['active'] = 1
+
+		return statePassedIn
+
+	def resetActiveFlags(self, statePassedIn):
+		'''
+			resetActiveFlags
+			This function sets all of the active flags in the JSON array to 0, effectively removing the glow from each element
+			and preparing the state to receive new glow elements. 
+
+			It also resets the visibility of cards, making them non-visible
+
+			Parameters:
+				statePassedIn, the state passed in by the view.
+			Return:
+				statePassedIn, the state with all of the active flags set to 0
+
+		'''
+		# reset computer and user card active and visible flags
+		for pCard in statePassedIn['playCard']:
+			pCard['active'] = 0
+			pCard['visible'] = 0
+		for cCard in statePassedIn['compCard']:
+			cCard['active'] = 0
+			cCard['visible'] = 0
+
+		# reset deck and discard flags
+		statePassedIn['discardActivity'] = 0
+		statePassedIn['deckActivity'] = 0
+
+		# reset displayCard flag
+		statePassedIn['displayCard']['active'] = 0
+
+		return statePassedIn
+
+	def translateDivToCard(self, divToTranslate, statePassedIn):
+		'''
+			translateDivToInt
+			Function used to take a click the user made and determine what card it represents. 
+			Parameters:
+				divToTranslate, the name of the div that the user clicked. This is taken from the playerClicks array.
+				statePassedIn, the current state of the game.
+			Return:
+				cardIndex, the position in the card array the card occupies.
+				cardArray, the type (player of computer) of array the card belongs to.
+				cardChoice, the card object that the divToTranslate represented.
+		'''
+		# What is the position of the card in whatever card array it is found. The position is from 0 to 3.
+		cardIndex = int(str(divToTranslate[-1])) - 1
+		cardArray = ""
+
+		# determine if the card was a user or computer card
+		if (divToTranslate[0] == 'p'):
+			# this is a playerCard. 
+			cardChoice = statePassedIn['playCard'][cardIndex]
+			cardArray = 'playCard'
+
+		elif(divToTranslate[0] == 'o'):
+			# this is a computer card.
+			cardChoice = statePassedIn['compCard'][cardIndex]
+			cardArray = 'compCard'
+		else:
+			# something went wrong
+			logging.info("something went wrong")
+
+		return cardIndex, cardArray, cardChoice
+
+
+
+
 
