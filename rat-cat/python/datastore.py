@@ -51,7 +51,10 @@ class MyHandler(Handler):
 			"SELECT * FROM Players "
 			"ORDER BY scoreTotal DESC LIMIT 10"
 		)
-		values = {'players': players}
+		games = db.GqlQuery(
+			"SELECT * FROM Games"
+		)
+		values = {'players': players, 'games': games}
 
 		self.response.out.write(
 			template.render('scores.html',
@@ -61,7 +64,28 @@ class MyHandler(Handler):
 	def post(self):
 		player = Players(
 			name=self.request.get('name'),
-			scoreTotal=float(self.request.get('scoreTotal'))
+			scoreTotal=float(self.request.get('scoreTotal')
 		)
-		player.put()
+		game = Games(
+			Players_playerID = player.key()
+		)
+		game.score = 20.0
+		game.win = True
+
+		if game.win == True: player.gamesWon = 1
+		else: player.gamesLost = 1
+		'''
+		# Datastore query test to see if a player has input a name that already exists in the database
+		players = Players.all()
+		name = player.name
+		players.filter("name = ", name)
+		result = players.get()
+		if player.name == result:
+			self.response.out.write("Sorry, that username has already been taken!")
+		else:
+		'''
+			player.scoreTotal += game.score
+			player.put()
+		game.put()
+		
 		self.redirect('/scores')

@@ -24,13 +24,12 @@ class ScoresHandler(Handler):
 			"SELECT * FROM Players "
 			"ORDER BY scoreTotal DESC LIMIT 10"
 		)
-		self.render("scores.html",players=players)
+		games = db.GqlQuery("SELECT * FROM Games")
+		self.render("scores.html", players = players, games = games)
 
 	def getTopScores(self):
-		'''
-			getTopScores
-			Used to retrieve the top 10 scores from the database. Note that the top 10 will be the top 10 LOWEST scores.
-		'''
+		# getTopScores
+		# Used to retrieve the top 10 scores from the database. Note that the top 10 will be the top 10 LOWEST scores.
 
 		#note: i am just manufacturing a fake top 10 for testing purposes. Here is where the database call would be made in production
 		topTen = {}
@@ -55,12 +54,10 @@ class ScoresHandler(Handler):
 		return topTen, sortedKeys
 
 	def renderScores(self, topTen, sortedKeys):
-		'''
-			renderScores
-			Render the scores template with the appropriate list of players as arguments.
-			parameters:
-			topTen, list of the names and scores of the top 10 players, as provided for by the database
-		'''
+		# renderScores
+		# Render the scores template with the appropriate list of players as arguments.
+		# parameters:
+		# topTen, list of the names and scores of the top 10 players, as provided for by the database
 
 		self.render("scores.html", topTen = topTen, sortedKeys = sortedKeys)
 
