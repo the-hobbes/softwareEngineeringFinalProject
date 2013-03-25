@@ -261,14 +261,38 @@ function playerChoice(state){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
 
+	//Keep track of cards clicked:
+	var clicks = 0;
+
+	//Add a click pushing function to the opponents cards if we are able to swap:
+	if(state.displayCard.image == '12'){
+		alert('SWAPPING TIME');
+		var $oDivs = $('#opponentCards').children('div').each(function(){
+			$(this).addClass('glowing');
+			$(this).addClass('opSwap');
+		});	
+
+		$('.opSwap').bind('click', function(){
+			state.playerClicks.push(this.id);
+			//Conditional ajax call here if the player has selected their card already
+			clicks = clicks + 1;
+			if(clicks >= 2){
+				//Fire Ajax
+			}
+		});
+	}
+
+
+
 
 	//Define the AJAX call to the server 
 	$('.playerChoiceAJAX').bind('click',function(){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		
+		clicks = clicks + 1;
 		//Use ajax to yell over to the server that something has happened
+
 
 	    var request = $.ajax({
 	        url: "/game",
@@ -301,11 +325,7 @@ function playerChoice(state){
 	    });
 
 		//Remove the glow from discard and player cards
-		$('#discardPile').removeClass('glowing');
-		var $divs = $('#playerCards').children('div').each(function(){
-			$(this).removeClass('glowing');
-		
-		});
+		$('.glowing').removeClass('glowing');
 	});
 
 
