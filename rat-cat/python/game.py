@@ -330,6 +330,10 @@ class GameHandler(Handler):
 					# this is the start of the draw2 sequence. Helpful to start here when trying to visualize the series of events,
 					#	and realize that when playerChoice is called, it is processing the results of a player's choice to draw from
 					#	the deck.
+
+					# make the player's cards non-clickable (non-active)
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 0
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
