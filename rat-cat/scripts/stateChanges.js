@@ -253,13 +253,7 @@ function playerChoice(state){
 		$(this).addClass('playerChoiceAJAX');
 	});
 
-	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
-	//Seem to put the glowing into a function without it ceasing functioning. Weird.
-	//This will be refactored at a later date.
-	var glow = $('.glowing');
-	setInterval(function(){
-	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-	}, 2000);
+	
 
 	//Keep track of cards clicked:
 	var pClick = 0;
@@ -407,6 +401,14 @@ function playerChoice(state){
 			}
 		}	
 	});
+
+	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
+	//Seem to put the glowing into a function without it ceasing functioning. Weird.
+	//This will be refactored at a later date.
+	var glow = $('.glowing');
+	setInterval(function(){
+	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+	}, 2000);
 
 
 	return state;
