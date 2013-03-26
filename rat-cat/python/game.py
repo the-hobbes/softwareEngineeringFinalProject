@@ -96,7 +96,7 @@ class GameHandler(Handler):
 					"gameOver" :0,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
-					"message": {"visible" : 0, 'text' : "There is no card to be selected here"}
+					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
 				}
 
 		# encode it
@@ -330,6 +330,10 @@ class GameHandler(Handler):
 					# this is the start of the draw2 sequence. Helpful to start here when trying to visualize the series of events,
 					#	and realize that when playerChoice is called, it is processing the results of a player's choice to draw from
 					#	the deck.
+
+					# make the player's cards non-clickable (non-active)
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 0
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
@@ -594,10 +598,9 @@ class GameHandler(Handler):
 			Returns:
 				statePassedIn, the gamestate modified by the swap
 		'''
-		# NOTE: The game breaks here because playerClicks only contains only one item. This is because items are only added
-		# 			to it in line 350 of stateChanges.js (draw2PlayerChoice function) once. That is, not ALL of the clicks made 
-		#			on the board are recorded, only the one that causes the (draw2PlayerChoiceAJAX').bind event to fire. 
-		#		We need to have a way to gather all of the gameboard clicks for this particular event (the swap cards event). 
+		# modify the message property of the json to explain to the player what to do.
+		statePassedIn['message']['visible'] = 1
+		statePassedIn['message']['text'] = "Choose one of your cards and one of your opponent's cards to swap."
 
 		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
 		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
@@ -679,6 +682,9 @@ class GameHandler(Handler):
 		# reset displayCard flag
 		statePassedIn['displayCard']['active'] = 0
 
+		# reset the message visibilty and it's text 
+		statePassedIn['message'] = {"visible" : 0, "text" : "There is no card to be selected here"}
+
 		return statePassedIn
 
 	def translateDivToCard(self, divToTranslate, statePassedIn):
@@ -712,8 +718,3 @@ class GameHandler(Handler):
 			logging.info("something went wrong")
 
 		return cardIndex, cardArray, cardChoice
-
-
-
-
-
