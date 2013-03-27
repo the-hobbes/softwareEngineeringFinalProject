@@ -7,6 +7,7 @@
 from handler import *
 from random import shuffle
 from random import choice
+from python import HAL
 import cgi
 import logging
 import json
@@ -92,6 +93,9 @@ class GameHandler(Handler):
 				}
 		# encode it
 		logging.info(newState)
+
+		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
+
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
