@@ -253,13 +253,67 @@ function playerChoice(state){
 		$(this).addClass('playerChoiceAJAX');
 	});
 
-	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
-	//Seem to put the glowing into a function without it ceasing functioning. Weird.
-	//This will be refactored at a later date.
-	var glow = $('.glowing');
-	setInterval(function(){
-	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-	}, 2000);
+	
+
+	//Keep track of cards clicked:
+	var pClick = 0;
+	var oClick = 0;
+
+	//Add a click pushing function to the opponents cards if we are able to swap:
+	if(state.displayCard.image == '12'){
+		alert('SWAPPING TIME');
+		var $oDivs = $('#opponentCards').children('div').each(function(){
+			$(this).addClass('glowing');
+			$(this).addClass('opSwap');
+			$(this).addClass('playerChoiceAJAX');
+		});	
+
+		$('.opSwap').bind('click', function(){
+			state.playerClicks.push(this.id);
+			//Conditional ajax call here if the player has selected their card already
+			oClick = oClick + 1;
+			console.log(oClick);
+			if(oClick > 0 && pClick > 0){
+				//Fire Ajax
+				var request = $.ajax({
+			        url: "/game",
+			        type: 'POST',
+					data: JSON.stringify(state),
+					contentType: "application/json",
+					dataType: 'json'
+			    });
+
+			    // callback handler that will be called on success
+			    request.done(function (response, textStatus, jqXHR){
+			        console.log('Returned from playerChoiceAJAX callback');
+			        // console.log(response);
+
+			        //Remove the click so we don't send a ajax request to the server while this 
+			        //click shouldn't do anything
+			        $('.opSwap').unbind('click');
+			    	$('.playerChoiceAJAX').unbind('click');
+			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+			        state = handleState(response);      
+			        renderState(1,state);
+			    });
+
+			    // callback handler that will be called on failure
+			    request.fail(function (jqXHR, textStatus, errorThrown){
+			        // log the error to the console
+			        console.error(
+			            "The following error occured: "+
+			            textStatus, errorThrown
+			        );
+			    });
+
+
+				//Remove the glow from discard and player cards
+				$('.glowing').removeClass('glowing');	
+			}
+		});
+	}
+
+
 
 
 	//Define the AJAX call to the server 
@@ -267,46 +321,94 @@ function playerChoice(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		
+		pClick = pClick + 1;
+		console.log(pClick);
 		//Use ajax to yell over to the server that something has happened
 
-	    var request = $.ajax({
-	        url: "/game",
-	        type: 'POST',
-			data: JSON.stringify(state),
-			contentType: "application/json",
-			dataType: 'json'
-	    });
+		//Normal Player Choice
+		if(state.displayCard.image != '12'){
+		    var request = $.ajax({
+		        url: "/game",
+		        type: 'POST',
+				data: JSON.stringify(state),
+				contentType: "application/json",
+				dataType: 'json'
+		    });
 
-	    // callback handler that will be called on success
-	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from playerChoiceAJAX callback');
-	        // console.log(response);
+		    // callback handler that will be called on success
+		    request.done(function (response, textStatus, jqXHR){
+		        console.log('Returned from playerChoiceAJAX callback');
+		        // console.log(response);
 
-	        //Remove the click so we don't send a ajax request to the server while this 
-	        //click shouldn't do anything
-	    	$('.playerChoiceAJAX').unbind('click');
-	    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
-	        state = handleState(response);      
-	        renderState(1,state);
-	    });
+		        //Remove the click so we don't send a ajax request to the server while this 
+		        //click shouldn't do anything
+		    	$('.playerChoiceAJAX').unbind('click');
+		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+		        state = handleState(response);      
+		        renderState(1,state);
+		    });
 
-	    // callback handler that will be called on failure
-	    request.fail(function (jqXHR, textStatus, errorThrown){
-	        // log the error to the console
-	        console.error(
-	            "The following error occured: "+
-	            textStatus, errorThrown
-	        );
-	    });
+		    // callback handler that will be called on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		        // log the error to the console
+		        console.error(
+		            "The following error occured: "+
+		            textStatus, errorThrown
+		        );
+		    });
 
-		//Remove the glow from discard and player cards
-		$('#discardPile').removeClass('glowing');
-		var $divs = $('#playerCards').children('div').each(function(){
-			$(this).removeClass('glowing');
-		
-		});
+
+			//Remove the glow from discard and player cards
+			$('.glowing').removeClass('glowing');
+		}else{
+			//Swap playerChoice, we need to use the number of clicks
+			//so far to say yes we can submit the ajax request.
+			if(pClick > 0 && oClick > 0){
+				var request = $.ajax({
+			        url: "/game",
+			        type: 'POST',
+					data: JSON.stringify(state),
+					contentType: "application/json",
+					dataType: 'json'
+			    });
+
+			    // callback handler that will be called on success
+			    request.done(function (response, textStatus, jqXHR){
+			        console.log('Returned from playerChoiceAJAX callback');
+			        // console.log(response);
+
+			        //Remove the click so we don't send a ajax request to the server while this 
+			        //click shouldn't do anything
+			        $('.opSwap').unbind('click');
+			    	$('.playerChoiceAJAX').unbind('click');
+			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+			        state = handleState(response);      
+			        renderState(1,state);
+			    });
+
+			    // callback handler that will be called on failure
+			    request.fail(function (jqXHR, textStatus, errorThrown){
+			        // log the error to the console
+			        console.error(
+			            "The following error occured: "+
+			            textStatus, errorThrown
+			        );
+			    });
+
+
+				//Remove the glow from discard and player cards
+				$('.glowing').removeClass('glowing');	
+			}
+		}	
 	});
+
+	//This code is copy pasted anywhere we need to glow, seems awfully silly, but I can't
+	//Seem to put the glowing into a function without it ceasing functioning. Weird.
+	//This will be refactored at a later date.
+	var glow = $('.glowing');
+	setInterval(function(){
+	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+	}, 2000);
 
 
 	return state;
@@ -347,8 +449,7 @@ function draw2PlayerChoice(state){
 
 	//Define the AJAX call to the server 
 	$('.draw2PlayerChoiceAJAX').bind('click',function(){
-		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
-		// this in documentation going forward, and modify our current code to accomodate for it. 
+		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
 		
 		//Use ajax to yell over to the server that something has happened
