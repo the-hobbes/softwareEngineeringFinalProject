@@ -6,6 +6,9 @@
 # This handler displays the top ten scores, and performs all of the associated database calls to do so.
 
 from handler import *
+from google.appengine.ext import db
+from datastore import Players
+import logging
 
 class ScoresHandler(Handler):
 	'''
@@ -24,8 +27,7 @@ class ScoresHandler(Handler):
 			"SELECT * FROM Players "
 			"ORDER BY scoreTotal DESC LIMIT 10"
 		)
-		games = db.GqlQuery("SELECT * FROM Games")
-		self.render("scores.html", players = players, games = games)
+		self.render("scores.html", players = players)
 
 	def getTopScores(self):
 		# getTopScores
