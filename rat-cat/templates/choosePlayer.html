@@ -1,0 +1,81 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Choose Player</title>
+		<meta name="description" content="">
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script>
+			//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
+			$(function($){
+				//hide the radio buttons
+				$('#characterForm input:radio').addClass('input_hidden');
+				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+				$('#characterForm label').click(function(){
+					$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
+					$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
+				    $(this).addClass('glowing');
+
+				    var glow = $('.glowing');
+				    setInterval(function(){
+					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+					}, 2000);
+				});
+			});
+
+			//handle clicks for each radiobutton in order to change the central image
+			function changeMainImage(selector){
+				// console.log(selector)
+				$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
+				//We could load this information from somewhere either async, or have it sent out to the
+				//page into the value of the labels maybe?
+				$('#characterName').text(selector);
+				$('#characterDescription').text("Description for " + selector);
+				// console.log("images/characters/" + selector)
+				// $("#imageBox").text("The image should be #: " + selector);
+			}
+		</script>
+	</head>
+
+	<body>
+	  
+		<div id="container" class="shadow">
+			<form id="characterForm" method="post">
+
+				<div id="characterStripLeft">
+					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg')"/>
+			        <label for="character1"><img src="images/characters/thumbs/bettyThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg')"/>
+			        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg')"/>
+			        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png"/></label>
+				</div><!--end characterStripLeft-->
+
+			     <div id="characterStripRight">
+					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg')"/>
+			        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg')"/>
+			        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png"/></label>
+
+					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg')"/>
+			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
+				</div><!--end characterStripRight-->
+
+ 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
+
+ 				<div id="characterInfo">
+ 					<h2 id="characterName">Character Name</h2>
+ 					<p id="characterDescription">This is a brief description of the character</p>
+	 				</br>
+ 					<input id="characterButton" class="submitButton" type="submit">
+ 				</div><!-- end characterInfo-->
+ 						
+			</form><!-- end characterForm-->
+		</div><!-- end container-->
+
+	</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Game</title>
+		<meta name="description" content="">
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="css/jqModal.css" type="text/css" media="screen">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="scripts/jqModal.js"></script>
+		<script src="scripts/stateChanges.js"></script>
+		<script src="scripts/gameRender.js"></script>
+
+		<script>
+
+		jQuery().ready(function($){
+			//LIGHTBOX CODE:
+			//initialize each hidden dialog div with before it can be shown
+			// $('#startDialog').jqm();
+			$('#creditsDialog').jqm();
+			$('#rulesDialog').jqm();
+
+			//add event handlers to each button, which will fire when clicked and call jqmShow() on the dialogs
+			 // $('#startButton').live('click',function(){
+			 //      $('#startDialog').jqmShow();
+			 // });
+			 $('#creditsLink').live('click',function(){
+			      $('#creditsDialog').jqmShow();
+			 });
+			 $('#rulesLink').live('click',function(){
+			      $('#rulesDialog').jqmShow();
+			 });
+		});
+		</script>
+	</head>
+
+	<body>
+	 	<div id="infoBox">
+	 		<a href="#"><p id="rulesLink">Rules</p></a>
+			<a href="#"><p id="creditsLink">Credits</p></a>
+			<p><a href="/scores" target="_blank">Here is a link to the scores</a></p>
+	 		<p><a href="https://github.com/the-hobbes/softwareEngineeringFinalProject">Here is a link quit</a></p>
+	 	</div><!--end infobox-->
+		<div id="container" class="shadow" style="margin-top:30px;">
+			<div id="opponentCards" class="shadow">
+				<div style="background:url(images/cards/smallCards/13.png);" id="opCard1" class="card" onclick="console.log('opCard1')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="opCard2" class="card" onclick="console.log('opCard2')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="opCard3" class="card" onclick="console.log('opCard3')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="opCard4" class="card" onclick="console.log('opCard4')">
+					<div class="cardShine"></div>
+				</div>
+			</div><!--end opponentCards-->
+
+			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
+			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
+			<div id="currentCard" class="shadow"></div><!--end currentCard-->
+			<button id="knockButton" class="shadow" onclick="testPost()">Knock</button><!--end knockButton-->
+
+			<div id="playerCards" class="shadow">
+				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard2" class="card" onclick="console.log('playerCard2')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard3" class="card" onclick="console.log('playerCard3')">
+					<div class="cardShine"></div>
+				</div>
+				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard4" class="card" onclick="console.log('playerCard4')">
+					<div class="cardShine"></div>
+				</div>
+			</div><!--end playerCards-->
+		</div><!-- end container -->
+
+		{% include "rules.html" %}
+		{% include "credits.html" %}
+
+		<script>
+		var currentState;
+		currentState = renderState({{oldState}},{{newState}});
+		</script>
+
+	</body>
+</html>
