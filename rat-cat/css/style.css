@@ -227,9 +227,7 @@ submitButton:active{position:relative;top:2px;}
     cursor: pointer;
 }
 #difficultyForm label img {
-/*  margin-top:3px;
-  margin-left:2px;
-  margin-right: 2px;*/
+  /*this is what i'm concentrating on now*/
   border: 1px solid black;
 }
 #difficultyButton{

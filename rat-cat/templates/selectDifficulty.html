@@ -25,8 +25,8 @@
 			//handle clicks for each radiobutton in order to change the central image
 			function changeMainImage(selector){
 				// console.log(selector)
-				// $("#imageBox").attr("src", "path/to/newImage.jpg");
-				$("#imageBox").text("The image should be #: " + selector);
+				$('#imageBox').css("background-image", "url(/images/difficulty/"+ selector+")"); 
+				// $("#imageBox").text("The image should be #: " + selector);
 			}
 		</script>
 	</head>
@@ -38,14 +38,14 @@
 
 				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
 				<div id="difficultyStrip">
-					<input type="radio" name="difficultyGroup" id="easy" value="easy" onclick="changeMainImage('easy')"/>
-					<label for="easy"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="difficultyGroup" id="easy" value="easy" onclick="changeMainImage('easy.png')"/>
+					<label for="easy"><img src="images/difficulty/easyButton.png"/></label>
 
-					<input type="radio" name="difficultyGroup" id="medium" value="medium" onclick="changeMainImage('medium')"/>
-					<label for="medium"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="difficultyGroup" id="medium" value="medium" onclick="changeMainImage('medium.png')"/>
+					<label for="medium"><img src="images/difficulty/mediumButton.png"/></label>
 
-					<input type="radio" name="difficultyGroup" id="hard" value="hard" onclick="changeMainImage('hard')"/>
-					<label for="hard"><img src="images/testThumb.png"/></label>
+					<input type="radio" name="difficultyGroup" id="hard" value="hard" onclick="changeMainImage('hard.png')"/>
+					<label for="hard"><img src="images/difficulty/hardButton.png"/></label>
 				</div><!-- end characterstrip-->
 
 				<input id="difficultyButton" class="submitButton" type="submit">
