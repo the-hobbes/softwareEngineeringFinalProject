@@ -24,20 +24,20 @@ class HAL(db.Model):
 		Difficulty of 3 means no recay rate and perfect recall. Good luck.
 	'''
 	#Estimates used in decision calculations
-	pkSessionID = db.StringProperty(required=True)
-	estAIScore = db.IntegerProperty(required=True)
-	estOppScore = db.IntegerProperty(required=True)
+	pkSessionID = db.StringProperty()
+	estAIScore = db.IntegerProperty()
+	estOppScore = db.IntegerProperty()
 	#list for memory values 
-	opCardsMem = db.ListProperty(float,required=True)
-	aiCardsMem = db.ListProperty(float,required=True)
+	opCardsMem = db.ListProperty(float)
+	aiCardsMem = db.ListProperty(float)
 	#list for the actual card values we know
-	opCards = db.StringProperty(str,required=True)
-	aiCards = db.StringProperty(str,required=True)
-	discardTopValue = db.StringProperty(required=True)
+	opCards = db.StringProperty(str)
+	aiCards = db.StringProperty(str)
+	discardTopValue = db.StringProperty()
 	#Memory decay rate, abs and rounded between 0.01-.99
-	decayRate = db.FloatProperty(required=True)
+	decayRate = db.FloatProperty()
 	#decayMemory list, represents chance of remembering correctly
-	decayMemory = db.ListProperty(float,required=True)
+	decayMemory = db.ListProperty(float)
 	#This will be a string that builds up to tell the view what to do
 	actionsToTake = ""
 
@@ -72,10 +72,8 @@ class HAL(db.Model):
 
 		#Store this AI into the database to along with this session
 		#https://groups.google.com/forum/?fromgroups=#!topic/google-appengine/iX2fEjv5jsM ... uh
-		db.Model.__init__(self)
+		db.Model.__init__(self,key_name=sessionID,pkSessionID=sessionID,estAIScore=self.estAIScore,estOppScore=self.estOppScore,opCardsMem=self.opCardsMem,aiCardsMem=self.aiCardsMem,opCards=self.opCards,aiCards=self.aiCards,discardTopValue=self.discardTopValue,decayRate=self.decayRate,decayMemory=self.decayMemory)
 		self.put()
-		logging.info("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-		logging.info("Placed HAL into database with Session key of %s" % str(sessionID) )
 
 
 
