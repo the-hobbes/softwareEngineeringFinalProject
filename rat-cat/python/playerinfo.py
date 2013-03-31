@@ -37,7 +37,7 @@ class PlayerInfoHandler(Handler):
 		self.renderPlayerInfo()
 
 	def validateInput(self,name,age):
-		#validation for age and profanity
+		#validation for age and profanity	
 		validAge = re.match("^[0-9]+$",age,re.M|re.I)
 		swearWords = ["fuck", "shit", "suck my dick, I'm a shaaaaaark"]
 		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)

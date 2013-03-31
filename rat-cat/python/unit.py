@@ -9,6 +9,7 @@
 from handler import *
 from time import time
 import python.scores as ps
+import python.playerinfo as pi
 
 class UnitHarness(Handler):
 	'''
@@ -26,6 +27,7 @@ class UnitHarness(Handler):
 		'''
 		self.tests=[{"name" :"Unit Test Harness", "passed" : True, "message" : "Test harness has been called correctly"}]
 		self.testScores()
+		self.testPlayerInfo()
 		self.render("unit.html",tests=self.tests)
 		
 
@@ -54,7 +56,60 @@ class UnitHarness(Handler):
 
 		#We can't really call render methods because those will cause
 		#the gae to die.
+
+	def testPlayerInfo(self):
+		'''
+			testPlayerInfo
+			Tests the playerinfo.py file's validation function
+		'''
+
+		test = pi.PlayerInfoHandler()
+
+		passed = True
+		message = ""
+
+		name=""
+		age=""
+
+		vPass,e = test.validateInput(name,age)
+		if(vPass):
+			message = message + "Failed to return invalid to empty arguments\n"
+			passed = False
+		else:
+			pass
+
+		name="Fuck"
+		age=""
+
+		vPass,e = test.validateInput(name,age)
+		if(vPass):
+			message = message + "Failed to return invalid to bad age argument\n"
+			passed = False
+		else:
+			pass
+
+		age="0"
+
+		vPass,e = test.validateInput(name,age)
+		if(vPass):
+			message = message + "Failed to return invalid on profanity check\n"
+			passed = False
+		else:
+			pass
+
+		name="Test"
 		
+		vPass,e = test.validateInput(name,age)
+		if(vPass):
+			passed = passed and True
+		else:
+			message = message + "Failed to return valid on valid input arguments"
+
+		if passed:
+			message = "Validation Function working correctly"
+		self.addTest("Player Info Validation",passed,message)
+
+
 
 
 	
