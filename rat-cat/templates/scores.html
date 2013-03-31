@@ -25,10 +25,7 @@
 				{% for player in players %}
 					<li>
 						Player <span style="color:pink">{{player.name}}</span>
-						has <span style="color:pink">{{player.gamesWon}}</span> wins
-						and <span style="color:pink">{{player.gamesLost}}</span> losses,
-						with a score of
-						<span style="color:pink">{{player.scoreTotal}}</span>
+						has a total score of <span style="color:pink">{{player.scoreTotal}}</span>
 					</li>
 				{% endfor %}
 				</ul>

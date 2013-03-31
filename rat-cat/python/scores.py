@@ -6,8 +6,7 @@
 # This handler displays the top ten scores, and performs all of the associated database calls to do so.
 
 from handler import *
-from google.appengine.ext import db
-from datastore import Players
+from datastore import *
 import logging
 
 class ScoresHandler(Handler):

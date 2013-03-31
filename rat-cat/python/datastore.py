@@ -5,19 +5,22 @@
 # 
 # This handler contains the datastore classes for storing data input.
 
+import cgi
+import datetime
+import urllib
+import wsgiref.handlers
+
 from handler import *
 from google.appengine.ext import db
-import logging
-
-#from google.appengine.ext import webapp
-from google.appengine.ext.webapp \
-	import template
+from google.appengine.api import users
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext.db import *
 
 # Database table for Players
 class Players(db.Model):
-	# playerID = db.IntegerProperty(required=True)
-	name = db.StringProperty(required=True)
-	scoreTotal = db.FloatProperty()
+	playerID = db.IntegerProperty(required=True)
+	name = db.StringProperty()
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
 	games = db.FloatProperty()
@@ -26,14 +29,15 @@ class Players(db.Model):
 	roundsTotal = db.FloatProperty()
 	roundsWonTotal = db.FloatProperty()
 	roundsLostTotal = db.FloatProperty()
+	scoreTotal = db.FloatProperty()
 	catCardsTotal = db.IntegerProperty()
 	ratCardsTotal = db.IntegerProperty()
 	powerCardsTotal = db.IntegerProperty()
 
 # Database table for Games
 class Games(db.Model):
-    # gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.StringProperty()
+    gameID = db.IntegerProperty(required=True)
+    Players_playerID = db.IntegerProperty()
     gameStart = db.DateTimeProperty(auto_now_add=True)
     win = db.BooleanProperty()
     score = db.FloatProperty()
@@ -44,8 +48,11 @@ class Games(db.Model):
     ratCards = db.IntegerProperty()
     powerCards = db.IntegerProperty()
 
+
+# New Code
 class MyHandler(Handler):
 
+	# Returns top ten players from datastore and renders them to scores HTML page
 	def get(self):
 		players = db.GqlQuery(
 			"SELECT * FROM Players "
@@ -57,12 +64,17 @@ class MyHandler(Handler):
 			template.render('scores.html',
 				values)
 		)
+	
+	# Retrieves input values for player name and total score
+	# Inputs player into datastore
+	# Refreshes the scores HTML page
 
 	def post(self):
+		pass
+		
 		player = Players(
 			name=self.request.get('name'),
 			scoreTotal=float(self.request.get('scoreTotal')
 		)
 		player.put()
-		
 		self.redirect('/scores')
