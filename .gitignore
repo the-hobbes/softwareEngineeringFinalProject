@@ -19,5 +19,10 @@ package-list
 *.pyc
 rat-cat/*pyc 
 
-#Ignore Deliverable folder so we dont add images to repo
-deliverable2/
+
+
+
+
+#ignore Ethans deliverables folder
+deliverable2/*
+

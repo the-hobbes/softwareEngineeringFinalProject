@@ -1,81 +1,87 @@
-<!doctype html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Choose Player</title>
-		<meta name="description" content="">
-		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-		<script>
-			//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
-			$(function($){
-				//hide the radio buttons
-				$('#characterForm input:radio').addClass('input_hidden');
-				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
-				$('#characterForm label').click(function(){
-					$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
-					$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
-				    $(this).addClass('glowing');
+	<!doctype html>
+		<head>
+			<meta charset="utf-8">
+			<title>Choose Player</title>
+			<meta name="description" content="">
+			<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+			<script>
 
-				    var glow = $('.glowing');
-				    setInterval(function(){
-					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-					}, 2000);
+				//Simple function to assist in readability of jQuery, capitilizes first letter of word
+				function capitaliseFirstLetter(string)
+				{
+    				return string.charAt(0).toUpperCase() + string.slice(1);
+				}
+
+				//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
+				$(function($){
+					//hide the radio buttons
+					$('#characterForm input:radio').addClass('input_hidden');
+					//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+					$('#characterForm label').click(function(){
+						$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
+						$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
+					    $(this).addClass('glowing');
+
+					    var glow = $('.glowing');
+					    setInterval(function(){
+						    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+						}, 2000);
+					});
 				});
-			});
 
-			//handle clicks for each radiobutton in order to change the central image
-			function changeMainImage(selector){
-				// console.log(selector)
-				$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
-				//We could load this information from somewhere either async, or have it sent out to the
-				//page into the value of the labels maybe?
-				$('#characterName').text(selector);
-				$('#characterDescription').text("Description for " + selector);
-				// console.log("images/characters/" + selector)
-				// $("#imageBox").text("The image should be #: " + selector);
-			}
-		</script>
-	</head>
+				//handle clicks for each radiobutton in order to change the central image
+				function changeMainImage(selector){
+					// console.log(selector)
+					$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
+					//We could load this information from somewhere either async, or have it sent out to the
+					//page into the value of the labels maybe?
+					$('#characterName').text(capitaliseFirstLetter(selector.substring(0,selector.length-4)));
+					$('#characterDescription').text($('#'+selector.substring(0,selector.length-4)).attr('alt'));
+					// console.log("images/characters/" + selector)
+					// $("#imageBox").text("The image should be #: " + selector);
+				}
+			</script>
+		</head>
 
-	<body>
-	  
-		<div id="container" class="shadow">
-			<form id="characterForm" method="post">
+		<body>
+		  
+			<div id="container" class="shadow">
+				<form id="characterForm" method="post">
 
-				<div id="characterStripLeft">
-					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg')"/>
-			        <label for="character1"><img src="images/characters/thumbs/bettyThumb.png"/></label>
+					<div id="characterStripLeft">
+						<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg')"/>
+				        <label for="character1"><img alt="Queen Betty of the Rats may look like a mess, but watch out, she might make you look messier than her!" src="images/characters/thumbs/bettyThumb.png" id="betty"/></label>
 
-					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg')"/>
-			        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png"/></label>
+						<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg')"/>
+				        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png" id="jason" alt="Jason is a smart Rat, the best engineer around! His IQ and memory makes him a terrifying opponent."/></label>
 
-					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg')"/>
-			        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png"/></label>
-				</div><!--end characterStripLeft-->
+						<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg')"/>
+				        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png" id="ratMan" alt="Ratman is a rat by day, super hero by night, and going to play against the cats all the time!"/></label>
+					</div><!--end characterStripLeft-->
 
-			     <div id="characterStripRight">
-					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg')"/>
-			        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png"/></label>
+				     <div id="characterStripRight">
+						<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg')"/>
+				        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png" id="catLady" alt="The catLady isn't just crazy, she's good at games too!"/></label>
 
-					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg')"/>
-			        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png"/></label>
+						<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg')"/>
+				        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png" id="lebowsCat" alt="White russian, oppinions, mullet? LebowsCat mean's business."/></label>
 
-					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg')"/>
-			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
-				</div><!--end characterStripRight-->
+						<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg')"/>
+				        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png" id="tommyCat" alt="You thought he was named after the gun? Nope. The tommy gun was named after this bad cat right here."/></label>
+					</div><!--end characterStripRight-->
 
- 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
+	 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
 
- 				<div id="characterInfo">
- 					<h2 id="characterName">Character Name</h2>
- 					<p id="characterDescription">This is a brief description of the character</p>
-	 				</br>
- 					<input id="characterButton" class="submitButton" type="submit">
- 				</div><!-- end characterInfo-->
- 						
-			</form><!-- end characterForm-->
-		</div><!-- end container-->
+	 				<div id="characterInfo">
+	 					<h2 id="characterName">Character Name</h2>
+	 					<p id="characterDescription" >This is a brief description of the character</p>
+		 				<br/>
+	 					<input id="characterButton" class="submitButton" type="submit">
+	 				</div><!-- end characterInfo-->
+	 						
+				</form><!-- end characterForm-->
+			</div><!-- end container-->
 
-	</body>
-</html>
+		</body>
+	</html>
