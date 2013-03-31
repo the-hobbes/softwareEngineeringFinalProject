@@ -1,7 +1,6 @@
 <!doctype html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>Landing Page</title>
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
@@ -37,7 +36,7 @@
 	  	<div id="imageBox" class="shadow"></div><!-- end imageBox-->
 
 	  	<div id="startBox">
-	  		<a href="/playerinfo"><button id="startButton" class="shadow">Start</button></a>
+	  		<form action="/playerinfo" method="GET"><button id="startButton" class="shadow">Start</button></form	>
 	  	</div><!-- end startBox-->
 
 	  	<a href="#"><button id="creditsButton" class="shadow ">Credits</button></a>
@@ -47,9 +46,9 @@
   		{% include "rules.html" %}
 
 	  	<div id="scoresBox">
-	  		<a href="/scores"><button class="shadow">Scores</button></a>
+	  		<form action="/scores" method="get"><button class="shadow">Scores</button></form>
 	  	</div><!-- end scoresBox-->
-	  	<div id="gitBox" class="centerText"><a href="https://github.com/the-hobbes/softwareEngineeringFinalProject"> Take a gander at our project on GitHub!</div><!-- end gitBox-->
+	  	<div id="gitBox" class="centerText"><a href="https://github.com/the-hobbes/softwareEngineeringFinalProject"> Take a gander at our project on GitHub!</a></div><!-- end gitBox-->
 
 	  </div><!--end container-->
 
