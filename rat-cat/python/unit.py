@@ -3,13 +3,15 @@
 # Authors:
 # 	Ethan
 # 
-# This handler facilitates choosing the player character. It renders a template that allows the user to choose one of 6 
-# characters, and then forwards the user to the next screen with that information. 
+# This is the UnitHarness handler, it handles validating and testing functions
+# that we create and want to report on. It also reports interesting statistics 
+# and such.
 
 from handler import *
 from time import time
 import python.scores as ps
 import python.playerinfo as pi
+import python.HAL as ai
 
 class UnitHarness(Handler):
 	'''
@@ -28,6 +30,7 @@ class UnitHarness(Handler):
 		self.tests=[{"name" :"Unit Test Harness", "passed" : True, "message" : "Test harness has been called correctly"}]
 		self.testScores()
 		self.testPlayerInfo()
+		self.testHAL()
 		self.render("unit.html",tests=self.tests)
 		
 
@@ -108,6 +111,31 @@ class UnitHarness(Handler):
 		if passed:
 			message = "Validation Function working correctly"
 		self.addTest("Player Info Validation",passed,message)
+
+
+	def testHAL(self):
+		'''
+			testHAL
+			Tests the time it takes to place a HAL object into the database
+		'''
+		sTime = time()
+		
+		#Calls put inside it's constructor
+		test = ai.HAL()
+
+		eTime = time()
+		passed = True
+
+		if eTime - sTime > 1:
+			passed = False
+		self.addTest("HAL Test",passed,"HAL object placed into datastore in %2.5f seconds" % (eTime - sTime))
+
+
+	def testGame(self):
+		'''
+			testGame
+			Monolithic test function to test game play
+		'''
 
 
 
