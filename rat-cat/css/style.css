@@ -397,3 +397,15 @@ a.credits:hover {text-decoration:underline;}  /* mouse over link */
 a.credits:active {text-decoration:none;} /* selected link */
 
 
+/*
+  This styling applys to the Unit Test Harness page
+*/
+span.unitTest, p.unitTest{
+  color:  #aaaaaa;
+}
+span.unitPass{
+  color: #00FF00;
+}
+span.unitFail{
+  color: #FF0000;
+}
