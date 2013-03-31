@@ -14,10 +14,13 @@ class UnitHarness(Handler):
 		Inherits from handler. Used to respond to http requests for the /unit url
 		Performs basic Unit tests on each python file. Generates statistics and information for each
 	'''
+	#Array to hold information about tests. Will
+	tests=[{"name" :"Unit Test Harness", "passed" : True, "message" : "Test harness has been called correctly"}]
+
 	def get(self):
 		'''
 			get
 			Standard get method. Renders template.
 		'''
-		self.render("unit.html")
+		self.render("unit.html",tests=self.tests)
 	

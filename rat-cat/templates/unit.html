@@ -13,7 +13,23 @@
 			<div id="topTen" class="shadow">
 				<h1>Unit Tests</h1>
 				<hr>
-				
+				<ul>
+				{%for test in tests%}
+					<li>
+						<fieldset>
+							<legend>Test Name: <span class="unitTest">{{test.name}}</span></legend>
+							{% if test.passed %}
+								<span class="unitPass">The test has passed</span><br />
+							{% else %}
+								<span class="unitFail">The test has failed</span><br />
+							{% endif %}
+							<p class="unitTest">
+								{{test.message}}
+							</p>
+						</fieldset>
+					</li>
+				{% endfor %}
+				</ul>
 			</div><!--end topten-->
 
 			
