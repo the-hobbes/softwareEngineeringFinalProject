@@ -8,6 +8,8 @@
  *   http://www.gnu.org/licenses/gpl.html
  * 
  * $Version: 03/01/2009 +r14
+ *
+ * Phelan says: This is the stuff that runs the lightbox! 
  */
 (function($) {
 $.fn.jqm=function(o){

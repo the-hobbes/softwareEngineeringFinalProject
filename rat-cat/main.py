@@ -25,6 +25,8 @@ from python.scores import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
+from python.HAL import *
+from python.unit import *
 
 class MasterControlProgram(Handler):
 	'''
@@ -55,5 +57,6 @@ app = webapp2.WSGIApplication([
 	('/scores',ScoresHandler),
 	('/playerinfo',PlayerInfoHandler),
 	('/difficulty',DifficultyHandler),
-	('/characterchoice',CharacterHandler)
+	('/characterchoice',CharacterHandler),
+	('/unit',UnitHarness)
 ], debug=True)
