@@ -137,7 +137,10 @@ class UnitHarness(Handler):
 			Monolithic test function to test game play
 		'''
 
-
+		#Need to figure out a way to test game.py correctly
+		#this may mean rigging the deck and stuff and testing
+		#each power card and sending it fake user actions and such
+		#definitely need to work on this part with phelan somewhere
 
 
 	
