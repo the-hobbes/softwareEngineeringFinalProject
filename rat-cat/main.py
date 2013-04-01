@@ -25,6 +25,7 @@ from python.scores import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
+from python.HAL import *
 
 class MasterControlProgram(Handler):
 	'''

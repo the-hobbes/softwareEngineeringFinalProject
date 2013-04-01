@@ -1,28 +1,34 @@
-<!doctype html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Choose Player</title>
-		<meta name="description" content="">
-		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-		<script>
-			//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
-			$(function($){
-				//hide the radio buttons
-				$('#characterForm input:radio').addClass('input_hidden');
-				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
-				$('#characterForm label').click(function(){
-					$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
-					$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
-				    $(this).addClass('glowing');
+	<!doctype html>
+		<head>
+			<meta charset="utf-8">
+			<title>Choose Player</title>
+			<meta name="description" content="">
+			<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+			<script>
 
-				    var glow = $('.glowing');
-				    setInterval(function(){
-					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-					}, 2000);
+				//Simple function to assist in readability of jQuery, capitilizes first letter of word
+				function capitaliseFirstLetter(string)
+				{
+    				return string.charAt(0).toUpperCase() + string.slice(1);
+				}
+
+				//document ready function (note that $ replaces jQuery().ready). Hell yes for concise code!
+				$(function($){
+					//hide the radio buttons
+					$('#characterForm input:radio').addClass('input_hidden');
+					//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+					$('#characterForm label').click(function(){
+						$('#character1').removeClass('glowing').nextAll().removeClass('glowing');
+						$('#character4').removeClass('glowing').nextAll().removeClass('glowing');
+					    $(this).addClass('glowing');
+
+					    var glow = $('.glowing');
+					    setInterval(function(){
+						    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+						}, 2000);
+					});
 				});
-			});
 
 			//handle clicks for each radiobutton in order to change the central image
 			function changeMainImage(selector, name){
@@ -66,11 +72,10 @@
 		</script>
 	</head>
 
-	<body>
-	  
-		<div id="container" class="shadow">
-			<form id="characterForm" method="post">
-
+		<body>
+		  
+			<div id="container" class="shadow">
+				<form id="characterForm" method="post">
 				<div id="characterStripLeft">
 					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg', 'Betty, Queen of Rats')"/>
 			        <label for="character1"><img src="images/characters/thumbs/bettyThumb.png"/></label>
@@ -93,7 +98,7 @@
 			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
 				</div><!--end characterStripRight-->
 
- 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
+	 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
 
  				<div id="characterInfo">
  					<h2 id="characterName">Choose your Character</h2>
@@ -105,5 +110,5 @@
 			</form><!-- end characterForm-->
 		</div><!-- end container-->
 
-	</body>
-</html>
+		</body>
+	</html>
