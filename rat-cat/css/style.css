@@ -86,7 +86,7 @@ a:hover {text-decoration:underline;}  /* mouse over link */
 a:active {text-decoration:underline;} /* selected link */
 
 button{
-  font:2.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:2.4em Futura, Century Gothic, AppleGothic, sans-serif;
   padding:14px;
   background:url(../images/buttonGloss.png) repeat-x center #212121;
   background-color:rgba(97,97,97,1);
@@ -134,13 +134,13 @@ button:active{position:relative;top:2px;}
   /*float:left;*/
   height:25px;
   margin-bottom: 5px;
-  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
   color:gray;
 }
 #ageEntry{
   /*clear:left; */
   /*display:block; */
-  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
   color:gray;
 }
 #infoForm{
@@ -148,7 +148,7 @@ button:active{position:relative;top:2px;}
   margin:0px auto;
 }
 .submitButton{
-  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
   padding:14px;
   background:url(../images/buttonGloss.png) repeat-x center #212121;
   background-color:rgba(97,97,97,1);
@@ -227,9 +227,7 @@ submitButton:active{position:relative;top:2px;}
     cursor: pointer;
 }
 #difficultyForm label img {
-/*  margin-top:3px;
-  margin-left:2px;
-  margin-right: 2px;*/
+  /*this is what i'm concentrating on now*/
   border: 1px solid black;
 }
 #difficultyButton{
@@ -302,7 +300,7 @@ submitButton:active{position:relative;top:2px;}
   border-radius:10px;
 }
 #knockButton{
-  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
   margin-top: 10px;
   width:100px;
   position: relative;
@@ -336,7 +334,7 @@ submitButton:active{position:relative;top:2px;}
   background: -webkit-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); /* Chrome10+,Safari5.1+ */
   background: -o-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); /* Opera 11.10+ */
   background: -ms-linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); /* IE10+ */
-  background: linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); /* W3C */
+  background: linear-gradient(to top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%); /* W3C */
   box-shadow: inset 0px 2px 1px rgba(255, 255, 255, 0.7);
 
   -moz-border-radius:10px;-webkit-border-radius:10px;
@@ -386,7 +384,7 @@ submitButton:active{position:relative;top:2px;}
 }
 #homeButton{
   width:100px;
-  font:1.4em Futura, ‘Century Gothic’, AppleGothic, sans-serif;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
   margin-top: 30px;
 }
 
@@ -398,4 +396,21 @@ a.credits:visited {text-decoration:none; color: #000000 !important;} /* visited 
 a.credits:hover {text-decoration:underline;}  /* mouse over link */
 a.credits:active {text-decoration:none;} /* selected link */
 
+
+/*
+  This styling applys to the Unit Test Harness page
+*/
+span.unitTest, p.unitTest{
+  color:  #aaaaaa;
+}
+span.unitPass{
+  color: #00FF00;
+}
+span.unitFail{
+  color: #FF0000;
+}
+div.unitTest{
+  height: 500px;
+  overflow: auto;
+}
 

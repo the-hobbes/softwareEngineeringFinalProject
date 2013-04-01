@@ -8,6 +8,7 @@
 from handler import *
 from random import shuffle
 from random import choice
+from python import HAL
 import cgi
 import logging
 import json
@@ -101,6 +102,9 @@ class GameHandler(Handler):
 
 		# encode it
 		logging.info(newState)
+
+		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
+
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
@@ -706,6 +710,8 @@ class GameHandler(Handler):
 		# determine if the card was a user or computer card
 		if (divToTranslate[0] == 'p'):
 			# this is a playerCard. 
+			logging.info("hesdhjflasdkfjsdfjskglshfsdfjghsdlkfjghsjdfhglksfhgksfhgklshfgljdfhsdkfjg")
+			logging.info(statePassedIn)
 			cardChoice = statePassedIn['playCard'][cardIndex]
 			cardArray = 'playCard'
 
