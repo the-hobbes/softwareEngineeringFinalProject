@@ -710,6 +710,8 @@ class GameHandler(Handler):
 		# determine if the card was a user or computer card
 		if (divToTranslate[0] == 'p'):
 			# this is a playerCard. 
+			logging.info("hesdhjflasdkfjsdfjskglshfsdfjghsdlkfjghsjdfhglksfhgksfhgklshfgljdfhsdkfjg")
+			logging.info(statePassedIn)
 			cardChoice = statePassedIn['playCard'][cardIndex]
 			cardArray = 'playCard'
 
