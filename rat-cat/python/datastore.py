@@ -5,22 +5,14 @@
 # 
 # This handler contains the datastore classes for storing data input.
 
-import cgi
 import datetime
-import urllib
-import wsgiref.handlers
-
 from handler import *
 from google.appengine.ext import db
-from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.db import *
 
 # Database table for Players
 class Players(db.Model):
-	playerID = db.IntegerProperty(required=True)
-	name = db.StringProperty()
+	# playerID = db.StringProperty(required=True)
+	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
 	games = db.FloatProperty()
@@ -36,8 +28,8 @@ class Players(db.Model):
 
 # Database table for Games
 class Games(db.Model):
-    gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.IntegerProperty()
+    # gameID = db.IntegerProperty(required=True)
+    Players_playerID = db.StringProperty()
     gameStart = db.DateTimeProperty(auto_now_add=True)
     win = db.BooleanProperty()
     score = db.FloatProperty()
@@ -47,7 +39,6 @@ class Games(db.Model):
     catCards = db.IntegerProperty()
     ratCards = db.IntegerProperty()
     powerCards = db.IntegerProperty()
-
 
 # New Code
 class MyHandler(Handler):
@@ -70,11 +61,9 @@ class MyHandler(Handler):
 	# Refreshes the scores HTML page
 
 	def post(self):
-		pass
-		
 		player = Players(
-			name=self.request.get('name'),
-			scoreTotal=float(self.request.get('scoreTotal')
+			name = self.request.get('name'),
+			scoreTotal = float(self.request.get('scoreTotal'))
 		)
 		player.put()
 		self.redirect('/scores')
