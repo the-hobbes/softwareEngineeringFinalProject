@@ -28,8 +28,10 @@ class DifficultyHandler(Handler):
 			if all is well.
 		'''
 		difficulty = self.request.get("difficultyGroup")
+		sessionId = self.request.get("sessionId")
+		
 		if difficulty:
 			#add the difficulty to the database
-			self.redirect("/game")
+			self.redirect("/game" + "?sessionId=" + sessionId)
 		else:
 			self.render("selectDifficulty.html")
