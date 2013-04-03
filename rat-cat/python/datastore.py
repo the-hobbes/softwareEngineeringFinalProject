@@ -11,8 +11,8 @@ from google.appengine.ext import db
 
 # Database table for Players
 class Players(db.Model):
-	playerID = db.IntegerProperty(required=True)
-	name = db.StringProperty()
+	# playerID = db.StringProperty(required=True)
+	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
 	games = db.FloatProperty()
@@ -28,8 +28,8 @@ class Players(db.Model):
 
 # Database table for Games
 class Games(db.Model):
-    gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.IntegerProperty()
+    # gameID = db.IntegerProperty(required=True)
+    Players_playerID = db.StringProperty()
     gameStart = db.DateTimeProperty(auto_now_add=True)
     win = db.BooleanProperty()
     score = db.FloatProperty()
@@ -39,3 +39,31 @@ class Games(db.Model):
     catCards = db.IntegerProperty()
     ratCards = db.IntegerProperty()
     powerCards = db.IntegerProperty()
+
+# New Code
+class MyHandler(Handler):
+
+	# Returns top ten players from datastore and renders them to scores HTML page
+	def get(self):
+		players = db.GqlQuery(
+			"SELECT * FROM Players "
+			"ORDER BY scoreTotal DESC LIMIT 10"
+		)
+		values = {'players': players}
+
+		self.response.out.write(
+			template.render('scores.html',
+				values)
+		)
+	
+	# Retrieves input values for player name and total score
+	# Inputs player into datastore
+	# Refreshes the scores HTML page
+
+	def post(self):
+		player = Players(
+			name = self.request.get('name'),
+			scoreTotal = float(self.request.get('scoreTotal'))
+		)
+		player.put()
+		self.redirect('/scores')
