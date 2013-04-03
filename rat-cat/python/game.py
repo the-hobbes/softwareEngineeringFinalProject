@@ -95,6 +95,7 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
+					"sessionId" : self.request.get("sessionId"),
 					"playerClicks" : [],
 					"draw2Counter" : 0,
 					"message": {"visible" : 0, "text" : "There is no card to be selected here"}

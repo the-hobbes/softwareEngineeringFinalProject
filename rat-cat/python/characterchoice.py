@@ -27,8 +27,11 @@ class CharacterHandler(Handler):
 			the difficulty choice page.
 		'''
 		radioAnswer = self.request.get("characterGroup")
+		sessionId = self.request.get("sessionId")
+		
+		
 		if radioAnswer:
 			#add the choice of character to the database
-			self.redirect("/difficulty")
+			self.redirect("/difficulty" +"?sessionId=" + sessionId)
 		else:
 			self.render("choosePlayer.html")
