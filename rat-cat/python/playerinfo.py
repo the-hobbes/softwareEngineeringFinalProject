@@ -78,12 +78,13 @@ class PlayerInfoHandler(Handler):
 		m.digest()
 		
 		valid,error=self.validateInput(name,age)
+		sessionId = m.hexdigest()
 
 		if valid:
 			# add a new player to the datastore
-			playerObj = Players(name=name, age=int(age))
+			playerObj = Players(name=name, age=int(age), sessionId=sessionId)
 			playerObj.put()
-			self.redirect("/characterchoice" + "?sessionId=" + m.hexdigest())
+			self.redirect("/characterchoice" + "?sessionId=" + sessionId)
 		else:
 			self.renderPlayerInfo(name, age, error)
 		

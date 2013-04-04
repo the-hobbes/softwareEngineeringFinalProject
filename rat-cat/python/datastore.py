@@ -9,12 +9,20 @@ import datetime
 from handler import *
 from google.appengine.ext import db
 
-# Database table for Players
 class Players(db.Model):
+	'''
+		Players
+		Datastore entity for Players. Used to record relevent player information. Inherits from db.Model
+	'''
 	# playerID = db.StringProperty(required=True)
+
+	# player specific information
 	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
+	sessionId = db.StringProperty()
+
+	# statistics gathering information	
 	games = db.FloatProperty()
 	gamesWon = db.FloatProperty()
 	gamesLost = db.FloatProperty()
@@ -26,8 +34,12 @@ class Players(db.Model):
 	ratCardsTotal = db.IntegerProperty()
 	powerCardsTotal = db.IntegerProperty()
 
-# Database table for Games
+
 class Games(db.Model):
+	'''
+		Games
+		Datastore entity for Games. Used to record relevent game information. Inherits from db.Model
+	'''
     # gameID = db.IntegerProperty(required=True)
     Players_playerID = db.StringProperty()
     gameStart = db.DateTimeProperty(auto_now_add=True)
@@ -39,6 +51,8 @@ class Games(db.Model):
     catCards = db.IntegerProperty()
     ratCards = db.IntegerProperty()
     powerCards = db.IntegerProperty()
+
+    sessionId = db.StringProperty()
 
 # New Code
 class MyHandler(Handler):
