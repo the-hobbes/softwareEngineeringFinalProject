@@ -21,6 +21,7 @@ class Players(db.Model):
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
 	sessionId = db.StringProperty()
+	avatar = db.StringProperty()
 
 	# statistics gathering information	
 	games = db.FloatProperty()
@@ -52,7 +53,9 @@ class Games(db.Model):
 	ratCards = db.IntegerProperty()
 	powerCards = db.IntegerProperty()
 
+	# foreign key
 	sessionId = db.StringProperty()
+	difficulty = db.StringProperty()
 
 # New Code
 class MyHandler(Handler):

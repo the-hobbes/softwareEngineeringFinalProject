@@ -32,6 +32,13 @@ class DifficultyHandler(Handler):
 		
 		if difficulty:
 			#add the difficulty to the database
+			# add the choice of character to the database
+			results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=sessionId)
+			for result in results:
+				result.difficulty = difficulty
+				result.put()
+
+			# redirect to the game
 			self.redirect("/game" + "?sessionId=" + sessionId)
 		else:
 			self.render("selectDifficulty.html")
