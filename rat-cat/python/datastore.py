@@ -40,19 +40,19 @@ class Games(db.Model):
 		Games
 		Datastore entity for Games. Used to record relevent game information. Inherits from db.Model
 	'''
-    # gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.StringProperty()
-    gameStart = db.DateTimeProperty(auto_now_add=True)
-    win = db.BooleanProperty()
-    score = db.FloatProperty()
-    rounds = db.FloatProperty()
-    roundsWon = db.FloatProperty()
-    roundsLost = db.FloatProperty()
-    catCards = db.IntegerProperty()
-    ratCards = db.IntegerProperty()
-    powerCards = db.IntegerProperty()
+	# gameID = db.IntegerProperty(required=True)
+	# Players_playerID = db.StringProperty()
+	gameStart = db.DateTimeProperty(auto_now_add=True)
+	win = db.BooleanProperty()
+	score = db.FloatProperty()
+	rounds = db.FloatProperty()
+	roundsWon = db.FloatProperty()
+	roundsLost = db.FloatProperty()
+	catCards = db.IntegerProperty()
+	ratCards = db.IntegerProperty()
+	powerCards = db.IntegerProperty()
 
-    sessionId = db.StringProperty()
+	sessionId = db.StringProperty()
 
 # New Code
 class MyHandler(Handler):
