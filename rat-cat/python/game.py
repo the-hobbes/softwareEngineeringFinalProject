@@ -28,9 +28,29 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
-		#perform initial creation and encoding of JSON object
+		# get the player avatar image from the datastore 
+		thumbnailImage =""
+		sessionId = self.request.get("sessionId")
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=sessionId)
+		for result in results:
+			avatar = result.avatar
+		
+		if(avatar == "character1"):
+			thumbnailImage = "bettyThumb.png"
+		elif(avatar == "character2"):
+			thumbnailImage = "jasonThumb.png"
+		elif(avatar == "character3"):
+			thumbnailImage = "batRatThumb.png"
+		elif(avatar == "character4"):
+			thumbnailImage = "catLadyThumb.png"
+		elif(avatar == "character5"):
+			thumbnailImage = "lebowsCatThumb.png"
+		else:
+			thumbnailImage = "tommyCatThumb.png"
+
+		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
-		self.render("game.html", oldState='null', newState=newState)
+		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
 
 	def post(self):
 		'''
