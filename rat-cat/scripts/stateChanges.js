@@ -253,6 +253,7 @@ function playerChoice(state){
 		$(this).addClass('playerChoiceAJAX');
 	});
 
+	glowActiveCards(state);
 	
 
 	//Keep track of cards clicked:
@@ -265,7 +266,6 @@ function playerChoice(state){
 		var $oDivs = $('#opponentCards').children('div').each(function(){
 			$(this).addClass('glowing');
 			$(this).addClass('opSwap');
-			$(this).addClass('playerChoiceAJAX');
 		});	
 
 		$('.opSwap').bind('click', function(){
@@ -342,6 +342,7 @@ function playerChoice(state){
 
 		        //Remove the click so we don't send a ajax request to the server while this 
 		        //click shouldn't do anything
+
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
@@ -519,5 +520,22 @@ function handleState(state){
 			return initialState(state);
 		default:
 			return state;
+	}
+}
+
+/*handleState: This function passes the state and any cards marked active are glown
+ *	state: The JSON representative of the game board, this is a JSON
+ *		   object which has the following high level pairs:
+ *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
+ * 			 "displayCard" : {}, "knockState" : 0 | 1, "state" : "state specified by specs" }
+ *	returns: The updated state
+ */
+function glowActiveCards(state){
+	console.log(state);
+	if(state.deckActivity==1){
+		$('#deck').addClass('glowing');
+	}
+	if(state.discardActivity){
+		$('#discardPile').addClass('glowing');
 	}
 }

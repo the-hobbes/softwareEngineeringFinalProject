@@ -36,6 +36,27 @@ class PlayerInfoHandler(Handler):
 		'''
 		self.renderPlayerInfo()
 
+	def validateInput(self,name,age):
+		#validation for age and profanity	
+		validAge = re.match("^[0-9]+$",age,re.M|re.I)
+		swearWords = ["fuck", "shit", "suck my dick, I'm a shaaaaaark"]
+		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)
+		error = ""
+
+		if (name and age and validAge):
+			#success. 
+			# This is where we add their information to the database, as well as moving them to the next page.
+			if vulgarity.search(name):
+				error = "dang, get a bar of soap up in that biz!"
+			else:
+				return True,error
+		else:
+			if validAge:
+				error = "We need both your name and your age!"
+			else:
+				error = "You must enter a number for your age"
+		return False,error
+
 	def post(self):
 		'''
 			post
@@ -46,22 +67,9 @@ class PlayerInfoHandler(Handler):
 		name = self.request.get("name")
 		age = self.request.get("age")
 
-		#validation for age and profanity
-		validAge = re.match("^[0-9]+$",age,re.M|re.I)
-		swearWords = ["fuck", "shit", "suck my dick, I'm a shaaaaaark"]
-		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)
+		valid,error=self.validateInput(name,age)
 
-		if (name and age and validAge):
-			#success. 
-			# This is where we add their information to the database, as well as moving them to the next page.
-			if vulgarity.search(name):
-				error = "dang, get a bar of soap up in that biz!"
-				self.renderPlayerInfo(name, age, error)
-			else:
-				self.redirect("/characterchoice")
+		if valid:
+			self.redirect("/characterchoice")
 		else:
-			if validAge:
-				error = "We need both your name and your age!"
-			else:
-				error = "You must enter a number for your age"
 			self.renderPlayerInfo(name, age, error)
