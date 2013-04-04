@@ -1,0 +1,56 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Select Difficulty</title>
+		<meta name="description" content="">
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script>
+			//document ready function (note that $ replaces jQuery().ready)
+			$(function($){
+				//hide the radio buttons
+				$('#difficultyForm input:radio').addClass('input_hidden');
+				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
+				$('#difficultyForm label').click(function(){
+				    $(this).addClass('glowing').siblings().removeClass('glowing');
+
+				    var glow = $('.glowing');
+				    setInterval(function(){
+					    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+					}, 2000);
+				});
+			});
+
+			//handle clicks for each radiobutton in order to change the central image
+			function changeMainImage(selector){
+				// console.log(selector)
+				$('#imageBox').css("background-image", "url(/images/difficulty/"+ selector+")"); 
+				// $("#imageBox").text("The image should be #: " + selector);
+			}
+		</script>
+	</head>
+
+	<body>
+	  
+		<div id="container" class="shadow">
+			<form id="difficultyForm" method="post">
+
+				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+				<div id="difficultyStrip">
+					<input type="radio" name="difficultyGroup" id="easy" value="easy" onclick="changeMainImage('easy.png')"/>
+					<label for="easy"><img src="images/difficulty/easyButton.png"/></label>
+
+					<input type="radio" name="difficultyGroup" id="medium" value="medium" onclick="changeMainImage('medium.png')"/>
+					<label for="medium"><img src="images/difficulty/mediumButton.png"/></label>
+
+					<input type="radio" name="difficultyGroup" id="hard" value="hard" onclick="changeMainImage('hard.png')"/>
+					<label for="hard"><img src="images/difficulty/hardButton.png"/></label>
+				</div><!-- end characterstrip-->
+
+				<input id="difficultyButton" class="submitButton" type="submit">
+			</form><!-- end characterForm-->
+		</div><!-- end container -->
+
+	</body>
+</html>

@@ -1,0 +1,3 @@
+#ignore files for the rat-cat directory
+*.pyc
+*.DS_Store
