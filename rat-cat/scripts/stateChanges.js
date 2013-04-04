@@ -533,6 +533,9 @@ function handleState(state){
 function glowActiveCards(state){
 	console.log(state);
 	if(state.deckActivity==1){
-		//alert('deck active');
+		$('#deck').addClass('glowing');
+	}
+	if(state.discardActivity){
+		$('#discardPile').addClass('glowing');
 	}
 }
