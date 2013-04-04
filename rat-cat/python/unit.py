@@ -12,6 +12,13 @@ from time import time
 import python.scores as ps
 import python.playerinfo as pi
 import python.HAL as ai
+import python.game as gh
+import logging
+import json
+from google.appengine.ext.db import stats
+
+global_stat = stats.GlobalStat.all().get()
+
 
 class UnitHarness(Handler):
 	'''
@@ -31,7 +38,10 @@ class UnitHarness(Handler):
 		self.testScores()
 		self.testPlayerInfo()
 		self.testHAL()
-		self.render("unit.html",tests=self.tests)
+		self.testGame()
+		totalBytes = 'Total bytes stored: %d' % global_stat.bytes
+		totalEntities ='Total entities stored: %d' % global_stat.count
+		self.render("unit.html",tests=self.tests,totalBytes=totalBytes,totalEntities=totalEntities)
 		
 
 	def addTest(self,name,passed=False,message="No Message Set"):
@@ -141,6 +151,109 @@ class UnitHarness(Handler):
 		#this may mean rigging the deck and stuff and testing
 		#each power card and sending it fake user actions and such
 		#definitely need to work on this part with phelan somewhere
+
+		test = gh.GameHandler()
+		state = False
+		
+		passed=True
+		message=""
+		#Initalization Test
+		try:
+			state = json.loads(test.initEncode())
+		except Exception, e:
+			message = "Failed to initilize game state JSON " 
+			passed = False
+		else:
+			message = ""
+
+		self.addTest("Game Initialize Test",passed,message)
+
+		passed=True
+		#div to card translation test
+		try:
+			cardIndex,cardArray,cardChoice = test.translateDivToCard("playCard1",state)
+		except Exception, e:
+			message = "Failed to translateDivToCard "
+			passed = False
+			if not state:
+				message = message + " due to unintialized state "
+		else:
+			if cardIndex != 0:
+				passed = False
+				message = " cardIndex incorrect <br/>"
+			if cardArray != 'playCard':
+				passed = False
+				message = message + " cardArray return value incorrect <br />"
+			if cardChoice['image'] != state['playCard'][0]['image']:
+				passed = False
+				self.write(cardChoice['image'])
+				message = message + " cardChoice incorect <br />"
+
+		self.addTest("Translate Div -> Card Test",passed,message)
+
+		passed=True
+		#Test on actives
+		try:
+			state = test.resetActiveFlags(state)
+		except Exception, e:
+			passed = False
+			message = " Failed to reset active flags "
+		else:
+			for r in state['playCard']:
+				if(r['active']==1):
+					passed = False
+			if not passed:
+				message = " Failed to reset active flags "
+		
+		self.addTest("Reset active Flags Test",passed,message)
+
+		passed=True
+		#Testing swap cards
+		try:
+			card1 = state['playCard'][0]['image']
+			card2 = state['compCard'][1]['image']
+			state['playerClicks'].append("playerCard1")
+			state['playerClicks'].append("compCard2")
+			state = test.swapCards("p1","c2",state)
+		except Exception, e:
+			passed = False
+			message =  " recieved error while attempting to execute function error:" + str(e)
+		else:
+			message =""
+			if card1 != state['compCard'][1]['image']:
+				passed = False
+				message = message + " failed to swap player card 1 with computer card 2 <br />"
+			if card2 != state['playCard'][0]['image']:
+				passed = False
+				message = message + " failed to swap computer card 2 and player card 1 <br />"
+		self.addTest("Swap Cards Test",passed,message)
+
+		passed=True
+
+
+		#Waiting for PCard test
+		try:
+			state['playerClicks'][0] = 'playerCard1'
+			oldCard = state['playCard'][0]['image']
+			#This unit test will fail if the old card and the discard card is the same
+			newCard = state['displayCard']['image']
+			state = test.waitingForPCard(state)
+		except Exception, e:
+			passed = False
+			message =  " Error while attempting to use waitingForPCard" + str(e)
+		else:
+			if state['playCard'][0]['image'] != newCard:
+				passed = False
+				message = "Failed to swap display and selected card "
+
+		self.addTest("waitingForPCard Test",passed,message)
+
+
+
+		self.addTest("Game Test",passed,message)
+
+
+
 
 
 	

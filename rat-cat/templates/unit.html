@@ -10,10 +10,17 @@
 
 		<div id="container" class="shadow">
 
-			<div id="topTen" class="shadow">
+			<div id="topTen" class="shadow unitTest">
 				<h1>Unit Tests</h1>
 				<hr>
 				<ul>
+					<li>
+						<fieldset>
+							<legend>Database Statistics</legend>
+							{{totalBytes}} <br />
+							{{totalEntities}} <br />
+						</fieldset>
+					</li>
 				{%for test in tests%}
 					<li>
 						<fieldset>
