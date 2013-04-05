@@ -313,6 +313,16 @@ function playerChoice(state){
 
 				//Remove the glow from discard and player cards
 				$('.glowing').removeClass('glowing');	
+			}else if(pClick || oClick){
+				$('#discardPile').removeClass('glowing');
+				$('#discardPile').removeClass('playerChoiceAJAX');
+				$('#discardPile').unbind('click');
+				
+				
+				//They clicked but its not time to do ajax, so remove the glow from the cards they clicked
+				var $oDivs = $('#opponentCards').children('div').each(function(){
+					$(this).removeClass('glowing');
+				});	
 			}
 		});
 	}
@@ -403,6 +413,14 @@ function playerChoice(state){
 
 				//Remove the glow from discard and player cards
 				$('.glowing').removeClass('glowing');	
+			}else if(pClick || oClick){
+				$('#discardPile').removeClass('glowing');
+				$('#discardPile').removeClass('playerChoiceAJAX');
+				$('#discardPile').unbind('click');
+				
+				var $oDivs = $('#playerCards').children('div').each(function(){
+					$(this).removeClass('glowing');
+				});	
 			}
 		}	
 	});
