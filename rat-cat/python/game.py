@@ -182,6 +182,7 @@ class GameHandler(Handler):
 				if(drawnCard == 10):
 					# draw 2. Glow the deck and discard
 					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
 				elif(drawnCard == 12):
 					# swap. glow the discard, opponents cards, and the player's cards.
 					statePassedIn['discardActivity'] = 1
@@ -189,11 +190,17 @@ class GameHandler(Handler):
 						pCard['active'] = 1
 					for cCard in statePassedIn['compCard']:
 						cCard['active'] = 1
-				else:
-					# a number card or peek card was draw. glow deck and player's cards
+				elif(drawnCard == 11):
+					#peek card, player can view their cards or the deck, or discard it
 					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
 					for cCard in statePassedIn['playCard']:
 						cCard['active'] = 1
+				else:
+					# a number card or peek card was draw. glow deck and player's cards
+					statePassedIn['discardActivity'] = 1
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends, so we should probably have a round end state? 
 				# It would probs need to be something similar to a knock state, which we may have to do as well.
@@ -264,7 +271,14 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
+		
+
+
+
+		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 		statePassedIn['state'] = "waitingForDraw"
+		statePassedIn['deckActivity'] = 1
+		statePassedIn['discardActivity'] = 1
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):

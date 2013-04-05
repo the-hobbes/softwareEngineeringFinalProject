@@ -64,8 +64,7 @@ function initialState(state){
 function waitingForDraw(state){
 	console.log("waitingForDraw state entered");
 	//Add glow to whatever the user will interact with
-	$('#deck').addClass('glowing');
-	$('#discardPile').addClass('glowing');
+	state = glowActiveCards(state);
 
 	//Add Ajax class to things that will be responsive to user input
 	$('#deck').addClass('waitingForDrawAJAX');
@@ -142,9 +141,11 @@ function waitingForDraw(state){
 function waitingForPCard(state){
 	console.log('waitingForPCard state entered');
 	
-	//Iterate through each div within playerCards and add the glowing class
+	//Add the glowing state
+	state = glowActiveCards(state);
+
+	//Add the ajax handler
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
 		$(this).addClass('waitingForPCardAJAX');
 	});
 
@@ -265,7 +266,6 @@ function playerChoice(state){
 	if(state.displayCard.image == '12'){
 		alert('SWAPPING TIME');
 		var $oDivs = $('#opponentCards').children('div').each(function(){
-			$(this).addClass('glowing');
 			$(this).addClass('opSwap');
 		});	
 
@@ -429,7 +429,7 @@ function draw2PlayerChoice(state){
 	//to select either the discard pile, their card to switch out, or the deck to draw another card.
 
 	//Add glow
-	glowActiveCards(state);
+	state = glowActiveCards(state);
 
 	//Add ajax method
 	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
