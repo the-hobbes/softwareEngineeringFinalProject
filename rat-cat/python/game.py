@@ -299,6 +299,7 @@ class GameHandler(Handler):
 		statePassedIn['state'] = "waitingForDraw"
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
+		logging.info(statePassedIn)
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
@@ -424,7 +425,10 @@ class GameHandler(Handler):
 
 					# you've swapped, and now the turn is over
 					statePassedIn['state'] = "HAL"
-
+				if(statePassedIn['state']=="HAL"):
+					#Set the active cards that will be glown on the players next turn 
+					statePassedIn['discardActivity'] = 1
+					statePassedIn['deckActivity'] = 1
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
