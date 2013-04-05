@@ -192,7 +192,7 @@ class GameHandler(Handler):
 				else:
 					# a number card or peek card was draw. glow deck and player's cards
 					statePassedIn['deckActivity'] = 1
-					for cCard in statePassedIn['compCard']:
+					for cCard in statePassedIn['playCard']:
 						cCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends, so we should probably have a round end state? 

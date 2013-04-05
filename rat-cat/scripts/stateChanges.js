@@ -244,16 +244,17 @@ function playerChoice(state){
 	console.log("playerChoice State entered");
 	
 	//Add glow to the players cards
-	$('#discardPile').addClass('glowing');
+	state = glowActiveCards(state);
+
+
 	$('#discardPile').addClass('playerChoiceAJAX');
 
 	//Iterate through each div within playerCards and add the glowing class
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
 		$(this).addClass('playerChoiceAJAX');
 	});
 
-	glowActiveCards(state);
+	
 	
 
 	//Keep track of cards clicked:
@@ -428,14 +429,13 @@ function draw2PlayerChoice(state){
 	//to select either the discard pile, their card to switch out, or the deck to draw another card.
 
 	//Add glow
-	$('#discardPile').addClass('glowing');
-	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
-	$('#deck').addClass('glowing');
-	$('#deck').addClass('draw2PlayerChoiceAJAX');
+	glowActiveCards(state);
 
-	//Iterate through each div within playerCards and add the glowing class
+	//Add ajax method
+	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
+	$('#deck').addClass('draw2PlayerChoiceAJAX');
+	//Iterate through each div within playerCards and add the ajax class
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
 		$(this).addClass('draw2PlayerChoiceAJAX');
 	});
 
@@ -487,12 +487,9 @@ function draw2PlayerChoice(state){
 	    });
 
 		//Remove the glow from discard and player cards
-		$('#discardPile').removeClass('glowing');
-		$('#deck').removeClass('glowing');
-		var $divs = $('#playerCards').children('div').each(function(){
-			$(this).removeClass('glowing');
+		$('.glowing').removeClass('glowing');
 		
-		});
+		
 	});
 	return state;
 }
@@ -538,4 +535,21 @@ function glowActiveCards(state){
 	if(state.discardActivity){
 		$('#discardPile').addClass('glowing');
 	}
+	//Iterate through each div within playerCards and add the glowing class
+	i=0;
+	var $divs = $('#playerCards').children('div').each(function(){
+		if(state.playCard[i].active){
+			$(this).addClass('glowing');
+		}
+		i=i+1;
+	});
+
+	i=0;
+	var $oDivs = $('#opponentCards').children('div').each(function(){
+		if(state.compCard[i].active){
+			$(this).addClass('glowing');
+		}
+		i=i+1;
+	});	
+	return state;
 }
