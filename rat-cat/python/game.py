@@ -28,9 +28,29 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
-		#perform initial creation and encoding of JSON object
+		# get the player avatar image from the datastore 
+		thumbnailImage =""
+		sessionId = self.request.get("sessionId")
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=sessionId)
+		for result in results:
+			avatar = result.avatar
+		
+		if(avatar == "character1"):
+			thumbnailImage = "bettyThumb.png"
+		elif(avatar == "character2"):
+			thumbnailImage = "jasonThumb.png"
+		elif(avatar == "character3"):
+			thumbnailImage = "batRatThumb.png"
+		elif(avatar == "character4"):
+			thumbnailImage = "catLadyThumb.png"
+		elif(avatar == "character5"):
+			thumbnailImage = "lebowsCatThumb.png"
+		else:
+			thumbnailImage = "tommyCatThumb.png"
+
+		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
-		self.render("game.html", oldState='null', newState=newState)
+		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
 
 	def post(self):
 		'''
@@ -95,6 +115,7 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
+					"sessionId" : self.request.get("sessionId"),
 					"playerClicks" : [],
 					"draw2Counter" : 0,
 					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
@@ -102,7 +123,6 @@ class GameHandler(Handler):
 
 		# encode it
 		logging.info(newState)
-
 		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		return json.dumps(newState)
@@ -599,6 +619,48 @@ class GameHandler(Handler):
 
 		# is the game over? (is either player's total score over or at 60?)
 		statePassedIn['state'] = "endGame"
+
+		return statePassedIn
+
+	'''
+		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated
+		from the handlers themselves for the sake of modularity and readability. 
+	'''
+
+	def swapCards(self, card1, card2, statePassedIn):
+		'''
+			swapCards
+			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
+			Parameters:
+				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
+				statePassedIn, the current state of the game
+			Returns:
+				statePassedIn, the gamestate modified by the swap
+		'''
+		# modify the message property of the json to explain to the player what to do.
+		statePassedIn['message']['visible'] = 1
+		statePassedIn['message']['text'] = "Choose one of your cards and one of your opponent's cards to swap."
+
+		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
+		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
+		if (card1[0] == 'p'):
+			# a player card that must be swapped out with an opponent's card
+			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
+			playerIndex = int(str(card1[-1])) - 1
+			# get the index of the other card, which must be the opponent's card
+			oppIndex = int(str(card2[-1])) - 1
+			# swap the image values of these two cards in the dictionaries, using a temp variable
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+		else:
+			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
+			playerIndex = int(str(card2[-1])) - 1
+			oppIndex = int(str(card1[-1])) - 1
+			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
+			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
+			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+
 		return statePassedIn
 
 	'''
@@ -724,8 +786,8 @@ class GameHandler(Handler):
 		# determine if the card was a user or computer card
 		if (divToTranslate[0] == 'p'):
 			# this is a playerCard. 
-			logging.info("hesdhjflasdkfjsdfjskglshfsdfjghsdlkfjghsjdfhglksfhgksfhgklshfgljdfhsdkfjg")
 			logging.info(statePassedIn)
+
 			cardChoice = statePassedIn['playCard'][cardIndex]
 			cardArray = 'playCard'
 
