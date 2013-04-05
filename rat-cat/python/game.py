@@ -14,6 +14,7 @@ import logging
 import json
 
 ENDGAME_SCORE = 60
+sessionId = ""
 
 class GameHandler(Handler):
 	'''
@@ -30,11 +31,12 @@ class GameHandler(Handler):
 		'''
 		# get the player avatar image from the datastore 
 		thumbnailImage =""
-		sessionId = self.request.get("sessionId")
-		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=sessionId)
+		self.sessionId = self.request.get("sessionId")
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			avatar = result.avatar
-		
+
+		# set the right picture
 		if(avatar == "character1"):
 			thumbnailImage = "bettyThumb.png"
 		elif(avatar == "character2"):
@@ -215,9 +217,8 @@ class GameHandler(Handler):
 					for cCard in statePassedIn['compCard']:
 						cCard['active'] = 1
 			except:
-				# no cards left in the deck. The round ends, so we should probably have a round end state? 
-				# It would probs need to be something similar to a knock state, which we may have to do as well.
-				pass
+				# no cards left in the deck. The round ends
+				return self.endGame(statePassedIn)
 
 			# add the card to the display card 
 			statePassedIn['displayCard'] =  {'image' : str(drawnCard), 'active' : 0}
@@ -367,7 +368,7 @@ class GameHandler(Handler):
 					except:
 						# no cards left in the deck. The round ends, so we should probably have a round end state? 
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
-						pass
+						return self.endGame(statePassedIn)
 
 					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
@@ -467,9 +468,8 @@ class GameHandler(Handler):
 				try:
 					drawnCard = statePassedIn['deck'].pop()
 				except:
-					# no cards left in the deck. The round ends, so we should probably have a round end state? 
-					# It would probs need to be something similar to a knock state, which we may have to do as well.
-					pass
+					# no cards left in the deck. The round ends
+					return self.endGame(statePassedIn)
 
 				# set the display card to what we've just drawn
 				statePassedIn['displayCard']['image'] = drawnCard 
@@ -514,9 +514,8 @@ class GameHandler(Handler):
 				try:
 					drawnCard = statePassedIn['deck'].pop()
 				except:
-					# no cards left in the deck. The round ends, so we should probably have a round end state? 
-					# It would probs need to be something similar to a knock state, which we may have to do as well.
-					pass
+					# no cards left in the deck. The round ends
+					return self.endGame(statePassedIn)
 
 				# clear the clicks array
 				statePassedIn['playerClicks'] = []
@@ -593,18 +592,27 @@ class GameHandler(Handler):
 		# who wins?
 		if pScore > cScore:
 			# player wins
-			pass
+			statePassedIn['message']['text'] = "You've WON!"
+			# update the fact that the player won a round at the very least.
 		elif pScore < cScore:
 			# computer wins
-			pass
+			statePassedIn['message']['text'] = "You've LOST!"
 		else:
 			# tie
-			pass
+			statePassedIn['message']['text'] = "It's a TIE!"
 
-		# add each player's scores to the running total of their score for the game so far
-
+		# add the player score to the running total of their score for the game so far in the database
+		
 		# is the game over? (is either player's total score over or at 60?)
-		statePassedIn['state'] = "endGame"
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			playerTotalScore = result.scoreTotal
+		# is the game over?
+		if(playerTotalScore >= ENDGAME_SCORE):
+			statePassedIn['state'] = "endGame"
+		else:
+			freshState = initEncode()
+			return freshState
 
 		return statePassedIn
 

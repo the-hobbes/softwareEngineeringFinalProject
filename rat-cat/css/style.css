@@ -352,6 +352,7 @@ submitButton:active{position:relative;top:2px;}
   position: absolute;
   margin-left:370px;
   border: 1px solid black;
+  opacity: .7;
 }
 
 /*
