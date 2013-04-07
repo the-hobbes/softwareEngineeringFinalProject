@@ -12,6 +12,7 @@ from python import HAL
 import cgi
 import logging
 import json
+from python.gameModel import DatastoreInteraction
 
 ENDGAME_SCORE = 60
 sessionId = ""
@@ -29,12 +30,13 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
+
 		# get the player avatar image from the datastore 
 		thumbnailImage =""
 		self.sessionId = self.request.get("sessionId")
-		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
-		for result in results:
-			avatar = result.avatar
+		# use the gameModel to interact with the datastore
+		newModel = DatastoreInteraction(self.sessionId)
+		avatar = newModel.getAvatar()
 
 		# set the right picture
 		if(avatar == "character1"):
@@ -607,9 +609,13 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+		# make a new object to interact with the datastore
+		newModel = DatastoreInteraction()
+
 		# what is the total score of each player's hand?
 		pScore = 0
 		cScore = 0
+
 		# set the cards to visible at this time as well
 		for pCard in statePassedIn['playCard']:
 			pScore += int(pCard['image'])
@@ -622,24 +628,30 @@ class GameHandler(Handler):
 		if pScore > cScore:
 			# player wins
 			statePassedIn['message']['text'] = "You've WON!"
-			# update the fact that the player won a round at the very least.
+			# update the fact that the player won a round, and played a round
+			newModel.updateRoundsWonTotal()
 		elif pScore < cScore:
 			# computer wins
 			statePassedIn['message']['text'] = "You've LOST!"
+			newModel.updateRoundsLostTotal()
 		else:
 			# tie
 			statePassedIn['message']['text'] = "It's a TIE!"
+			newModel.updateRoundsPlayedTotal()
 
-		# add the player score to the running total of their score for the game so far in the database
+		# add the player score to the running total of their score for all games so far in the database
+		newModel.updatePlayerScore(pScore)
+		# add the players score to the running total for the current game 
+		newModel.updateGameScore(pScore)
+
+		# what is the player's total score now for this specific game?
+		playerTotalScore = newModel.getTotalGameScore()
 		
-		# is the game over? (is either player's total score over or at 60?)
-		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
-		for result in results:
-			playerTotalScore = result.scoreTotal
 		# is the game over?
 		if(playerTotalScore >= ENDGAME_SCORE):
 			statePassedIn['state'] = "endGame"
 		else:
+			# if not, begin a new round
 			freshState = initEncode()
 			return freshState
 
@@ -800,6 +812,7 @@ class GameHandler(Handler):
 		elif(knockStatus == 1):
 			statePassedIn['knockState'] = 0
 			statePassedIn['state'] = endGame
+
 		else:
 			pass
 
