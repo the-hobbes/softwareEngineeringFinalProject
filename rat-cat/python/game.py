@@ -794,3 +794,25 @@ class GameHandler(Handler):
 			logging.info("something went wrong")
 
 		return cardIndex, cardArray, cardChoice
+
+	def checkKnock(self, statePassedIn):
+		'''
+			checkKnock
+			Used to determine the knock status of any state passed in by the view. 
+			If the knock status is 0, then no knocking has occurred and play proceeds as normal.
+			If the knock status is 2, then the player has just clicked knock, and the opponent has one more round to play. 
+			If the knock status is 1, then the player has already clicked knock and the state we are working with is the 
+			result of the opponent's turn. This means the next state must be endGame.
+		'''
+		knockStatus = statePassedIn['knockState']
+
+		if(knockStatus == 2):
+			statePassedIn['knockState'] = 1
+			
+		elif(knockStatus == 1):
+			statePassedIn['knockState'] = 0
+			statePassedIn['state'] = endGame
+		else:
+			pass
+
+		return statePassedIn
