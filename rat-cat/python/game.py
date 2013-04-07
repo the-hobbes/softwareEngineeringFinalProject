@@ -227,6 +227,9 @@ class GameHandler(Handler):
 			# set the new state of the game to be "playerChoice", as per our documentation
 			statePassedIn['state'] = "playerChoice"
 
+			# check for knock state
+			statePassedIn = self.checkKnock(statePassedIn)
+
 		return statePassedIn
 
 	def waitingForPCard(self, statePassedIn):
@@ -266,6 +269,9 @@ class GameHandler(Handler):
 		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 		statePassedIn['playerClicks'] = []
 		statePassedIn['state'] = "HAL" # change this to anything and it works. WHY?
+
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
 
 		return statePassedIn
 
@@ -418,6 +424,9 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
+
 		return statePassedIn
 
 	def draw2PlayerChoice(self, statePassedIn):
@@ -456,6 +465,9 @@ class GameHandler(Handler):
 				# the user's turn is now over, so it is up to HAL to take over as the new state
 				statePassedIn['state'] = "HAL"
 
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# otherwise, the user still has some draw2 power left.
@@ -481,6 +493,10 @@ class GameHandler(Handler):
 
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
 				#	newly drawn card.
+				
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 		# otherwise, the user's choice must've been to use the card that was drawn
@@ -506,6 +522,10 @@ class GameHandler(Handler):
 
 				# return, with the state being set to HAL
 				statePassedIn['state'] = 'HAL'
+
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# if the card is a 10, then it is a draw 2 card. This also means they've clicked the deck.
@@ -532,8 +552,11 @@ class GameHandler(Handler):
 
 				# set the draw2 counter to 2, the initial value for a draw2 series (since we are beginning again)
 				statePassedIn['draw2Counter'] = 2
-
 				statePassedIn['state'] = 'draw2PlayerChoice'
+
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# if the card is an 11, then it is a peek card
@@ -550,6 +573,9 @@ class GameHandler(Handler):
 				# return, with the state being set to HAL
 				statePassedIn['state'] = "HAL"
 				
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 				
 			# then the card is a 12, which means it is a swap card.
@@ -565,6 +591,9 @@ class GameHandler(Handler):
 				statePassedIn['playerClicks'] = []
 				# return, with the state being set to HAL.
 				statePassedIn['state'] = "HAL"
+
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
 
 				return statePassedIn
 		
