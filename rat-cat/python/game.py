@@ -86,21 +86,16 @@ class GameHandler(Handler):
 				initialState, the initial state of the gameboard
 		'''
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		# also, dang this is ugly.  Seriously ugly.
-
-		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
-		# deck = sum(numberCards, [])
-		# shuffle(deck)
-		# subDeck = sum(powerCards, [])
-		# shuffle(subDeck)
-		# discardCard = str(deck.pop(choice(deck)))
-		# for p in subDeck:
-		# 	deck.append(p)
-		# shuffle(deck)
-
-		deck = [1,1,1,1,1,1,1,1,1]
-		discardCard = 12
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		deck = sum(numberCards, [])
+		shuffle(deck)
+		subDeck = sum(powerCards, [])
+		shuffle(subDeck)
+		discardCard = str(deck.pop(choice(deck)))
+		for p in subDeck:
+			deck.append(p)
+		shuffle(deck)
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
