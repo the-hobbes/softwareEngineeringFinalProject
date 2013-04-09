@@ -33,16 +33,16 @@
 
 	  <div id="container" class="shadow">
 
-	  	<div id="imageBox" class="shadow"></div><!-- end imageBox-->
+	  	<div id="imageBox" class="shadow"><img src="../images/mainImage.png" alt=""/></div><!-- end imageBox-->
 
 	  	<div id="startBox">
 	  		<form action="/playerinfo" method="GET"><button id="startButton" class="shadow">Start</button></form	>
 	  	</div><!-- end startBox-->
 
-	  	<a href="#"><button id="creditsButton" class="shadow ">Credits</button></a>
+	  	<button id="creditsButton" class="shadow ">Credits</button>
 		{% include "credits.html" %}
 
-  		<a href="#"><button id="rulesButton" class="shadow ">Rules</button></a>
+  		<button id="rulesButton" class="shadow ">Rules</button>
   		{% include "rules.html" %}
 
 	  	<div id="scoresBox">

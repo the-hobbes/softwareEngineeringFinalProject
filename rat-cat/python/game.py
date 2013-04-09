@@ -643,7 +643,6 @@ class GameHandler(Handler):
 		newModel.updatePlayerScore(pScore)
 		# add the players score to the running total for the current game 
 		newModel.updateGameScore(pScore)
-
 		# what is the player's total score now for this specific game?
 		playerTotalScore = newModel.getTotalGameScore()
 		
