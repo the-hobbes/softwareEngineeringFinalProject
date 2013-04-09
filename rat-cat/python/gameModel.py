@@ -80,8 +80,6 @@ class DatastoreInteraction():
 		'''
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		
-		logging.info("HERE ARE THE RESULTS")
-
 		for result in results:
 			result.roundsLostTotal += 1
 			result.roundsTotal += 1

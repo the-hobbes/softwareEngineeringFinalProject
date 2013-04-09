@@ -99,7 +99,7 @@ class GameHandler(Handler):
 		# 	deck.append(p)
 		# shuffle(deck)
 
-		deck = [0,1,2,2,1,2,3,2,1]
+		deck = [1,1,1,1,1,1,1,1,1]
 		discardCard = 12
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
@@ -630,12 +630,12 @@ class GameHandler(Handler):
 			cCard['visible'] = 1
 
 		# who wins?
-		if pScore > cScore:
+		if pScore < cScore:
 			# player wins
 			statePassedIn['message']['text'] = "You've WON!"
 			# update the fact that the player won a round, and played a round
 			newModel.updateRoundsWonTotal()
-		elif pScore < cScore:
+		elif pScore > cScore:
 			# computer wins
 			statePassedIn['message']['text'] = "You've LOST!"
 			newModel.updateRoundsLostTotal()
@@ -656,7 +656,7 @@ class GameHandler(Handler):
 			statePassedIn['state'] = "endGame"
 		else:
 			# if not, begin a new round
-			freshState = initEncode()
+			freshState = self.initEncode()
 			return freshState
 
 		return statePassedIn
