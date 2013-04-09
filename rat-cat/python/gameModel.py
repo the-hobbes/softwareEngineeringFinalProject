@@ -6,7 +6,7 @@
 
 from handler import *
 import logging
-from pprint import pprint
+from python.datastore import *
 
 class DatastoreInteraction():
 	'''
@@ -65,6 +65,7 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsWonTotal by 1. Called when a player wins a round. This will also update
 			the fact that a player has played another round (in addition to winning it)
 		'''
+		logging.info("got to update rounds won!")
 
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
@@ -78,12 +79,13 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsLostTotal by 1. Called when a player wins a round. This will also update
 			the fact that a player has played another round (in addition to losing it)
 		'''
+		logging.info("got to update rounds lost!")
+
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
-		
 		for result in results:
 			result.roundsLostTotal += 1
 			result.roundsTotal += 1
-			result.put()
+			result.put
 
 	def updateRoundsPlayedTotal(self):
 		'''
@@ -91,9 +93,12 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsTotal by 1. Called when a game results in a tie, or the rounds need to
 			be incremented for some reason.
 		'''
+		logging.info("got to rounds played total")
+		
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.roundsTotal += 1
+			logging.info(result.roundsTotal)
 			result.put()
 
 	def updatePlayerScore(self, pScore):
@@ -132,4 +137,24 @@ class DatastoreInteraction():
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.score = result.score + pScore
+			result.put()
+
+	def updateGameWin(self):
+		'''
+			updateGameWin
+			Used to update the game table with the boolean value of win. 
+		'''
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.win = True
+			result.put()
+
+	def updateGameLose(self):
+		'''
+			updateGameWin
+			Used to update the game table with the boolean value of lose. 
+		'''
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.win = False
 			result.put()

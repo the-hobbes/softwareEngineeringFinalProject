@@ -99,7 +99,7 @@ class GameHandler(Handler):
 		# 	deck.append(p)
 		# shuffle(deck)
 
-		deck = [1,1,1,1,1,1,1,1,1]
+		deck = [1,1,1,1,1,0,0,0,0]
 		discardCard = 12
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
@@ -129,7 +129,7 @@ class GameHandler(Handler):
 				}
 
 		# encode it
-		logging.info(newState)
+		# logging.info(newState)
 		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		return json.dumps(newState)
@@ -616,6 +616,7 @@ class GameHandler(Handler):
 
 		# make a new object to interact with the datastore
 		newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		# newModel.updateRoundsPlayedTotal()
 
 		# what is the total score of each player's hand?
 		pScore = 0
@@ -629,18 +630,28 @@ class GameHandler(Handler):
 			cScore += int(cCard['image'])
 			cCard['visible'] = 1
 
+		logging.info("This is the player score")
+		logging.info(pScore)
+		logging.info("This is the computer score")
+		logging.info(cScore)
+
 		# who wins?
-		if pScore < cScore:
+		if (pScore < cScore):
 			# player wins
+			logging.info("player wins")
 			statePassedIn['message']['text'] = "You've WON!"
 			# update the fact that the player won a round, and played a round
 			newModel.updateRoundsWonTotal()
-		elif pScore > cScore:
+
+		elif (pScore > cScore):
 			# computer wins
+			logging.info("computer wins")
 			statePassedIn['message']['text'] = "You've LOST!"
 			newModel.updateRoundsLostTotal()
+
 		else:
 			# tie
+			logging.info("tie!!")
 			statePassedIn['message']['text'] = "It's a TIE!"
 			newModel.updateRoundsPlayedTotal()
 
@@ -653,9 +664,12 @@ class GameHandler(Handler):
 		
 		# is the game over?
 		if(playerTotalScore >= ENDGAME_SCORE):
+			logging.info("Game over, player score is: " + str(playerTotalScore))
 			statePassedIn['state'] = "endGame"
+			# is the player's score, retrieved from the database, greater than the computer's score? Who won?
 		else:
 			# if not, begin a new round
+			logging.info("Starting a new round")
 			freshState = self.initEncode()
 			return freshState
 
