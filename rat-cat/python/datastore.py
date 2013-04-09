@@ -24,16 +24,16 @@ class Players(db.Model):
 	avatar = db.StringProperty()
 
 	# statistics gathering information	
-	games = db.FloatProperty()
-	gamesWon = db.FloatProperty()
-	gamesLost = db.FloatProperty()
-	roundsTotal = db.FloatProperty()
-	roundsWonTotal = db.FloatProperty()
-	roundsLostTotal = db.FloatProperty()
-	scoreTotal = db.FloatProperty()
-	catCardsTotal = db.IntegerProperty()
-	ratCardsTotal = db.IntegerProperty()
-	powerCardsTotal = db.IntegerProperty()
+	games = db.FloatProperty(default=0.0)
+	gamesWon = db.FloatProperty(default=0.0)
+	gamesLost = db.FloatProperty(default=0.0)
+	roundsTotal = db.FloatProperty(default=0.0)
+	roundsWonTotal = db.FloatProperty(default=0.0)
+	roundsLostTotal = db.FloatProperty(default=0.0)
+	scoreTotal = db.FloatProperty(default=0.0)
+	catCardsTotal = db.IntegerProperty(default=0)
+	ratCardsTotal = db.IntegerProperty(default=0)
+	powerCardsTotal = db.IntegerProperty(default=0)
 
 
 class Games(db.Model):
@@ -45,13 +45,13 @@ class Games(db.Model):
 	# Players_playerID = db.StringProperty()
 	gameStart = db.DateTimeProperty(auto_now_add=True)
 	win = db.BooleanProperty()
-	score = db.FloatProperty()
-	rounds = db.FloatProperty()
-	roundsWon = db.FloatProperty()
-	roundsLost = db.FloatProperty()
-	catCards = db.IntegerProperty()
-	ratCards = db.IntegerProperty()
-	powerCards = db.IntegerProperty()
+	score = db.FloatProperty(default=0.0)
+	rounds = db.FloatProperty(default=0.0)
+	roundsWon = db.FloatProperty(default=0.0)
+	roundsLost = db.FloatProperty(default=0.0)
+	catCards = db.IntegerProperty(default=0)
+	ratCards = db.IntegerProperty(default=0)
+	powerCards = db.IntegerProperty(default=0)
 
 	# foreign key
 	sessionId = db.StringProperty()

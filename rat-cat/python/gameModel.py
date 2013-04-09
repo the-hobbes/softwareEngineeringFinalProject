@@ -6,6 +6,7 @@
 
 from handler import *
 import logging
+from pprint import pprint
 
 class DatastoreInteraction():
 	'''
@@ -78,6 +79,9 @@ class DatastoreInteraction():
 			the fact that a player has played another round (in addition to losing it)
 		'''
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		
+		logging.info("HERE ARE THE RESULTS")
+
 		for result in results:
 			result.roundsLostTotal += 1
 			result.roundsTotal += 1
