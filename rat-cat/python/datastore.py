@@ -52,6 +52,7 @@ class Games(db.Model):
 	catCards = db.IntegerProperty(default=0)
 	ratCards = db.IntegerProperty(default=0)
 	powerCards = db.IntegerProperty(default=0)
+	halScore = db.IntegerProperty(default=0)
 
 	# foreign key
 	sessionId = db.StringProperty()
@@ -62,20 +63,23 @@ class MyHandler(Handler):
 
 	# Returns top ten players from datastore and renders them to scores HTML page
 	def get(self):
-		players = db.GqlQuery(
-			"SELECT * FROM Players "
-			"ORDER BY scoreTotal DESC LIMIT 10"
-		)
-		values = {'players': players}
+		# players = db.GqlQuery(
+		# 	"SELECT * FROM Players "
+		# 	"ORDER BY scoreTotal DESC LIMIT 10"
+		# )
+		# values = {'players': players}
 
-		self.response.out.write(
-			template.render('scores.html',
-				values)
-		)
-		# results = db.GqlQuery("SELECT * FROM Players")
-		# for result in results:
-		# 	result.scoreTotal = 0
-		# 	result.put()
+		# self.response.out.write(
+		# 	template.render('scores.html',
+		# 		values)
+		# )
+		results = db.GqlQuery("SELECT * FROM Players")
+		for result in results:
+			result.scoreTotal = 0
+			result.roundsWonTotal = 0
+			result.roundsLostTotal = 0
+			result.roundsTotal = 0
+			result.put()
 	
 	# Retrieves input values for player name and total score
 	# Inputs player into datastore

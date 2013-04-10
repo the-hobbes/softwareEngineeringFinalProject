@@ -85,7 +85,7 @@ class DatastoreInteraction():
 		for result in results:
 			result.roundsLostTotal += 1
 			result.roundsTotal += 1
-			result.put
+			result.put()
 
 	def updateRoundsPlayedTotal(self):
 		'''
@@ -108,9 +108,23 @@ class DatastoreInteraction():
 			Parameters:
 				pScore, the player's score for the round
 		'''
+		logging.info("got to update player score!")
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.scoreTotal = result.scoreTotal + pScore
+			result.put()
+
+	def updateComputerScore(self, cScore):
+		'''
+			updateComputerScore
+			Adds the computer's score for the round to the running total in the datastore.
+			Parameters:
+				cScore, the computer's score for the round
+		'''
+		logging.info("got to update computer score!")
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.halScore = result.halScore + cScore
 			result.put()
 
 	def getTotalGameScore(self):
@@ -121,11 +135,13 @@ class DatastoreInteraction():
 			Returns:
 				totalGameScore, the total score for the game so far. 
 		'''
+		logging.info("got to get total game score")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
-			totalScore = result.score
+			playerScore = result.score
+			computerScore = result.halScore
 
-		return totalScore
+		return playerScore, computerScore
 
 	def updateGameScore(self, pScore):
 		'''
