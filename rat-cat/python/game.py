@@ -159,7 +159,7 @@ class GameHandler(Handler):
 		elif (statePassedIn == 'playerChoice'):
 			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
-			pass
+			return self.draw2PlayerChoice(oldState)
 		return oldState
 
 	def waitingForDraw(self, statePassedIn):
@@ -678,7 +678,7 @@ class GameHandler(Handler):
 		if(playerTotalScore >= ENDGAME_SCORE or computerTotalScore >= ENDGAME_SCORE):
 			logging.info("Game over, player score is: " + str(playerTotalScore) + " Computer score is: " + str(computerTotalScore))
 			statePassedIn['state'] = "endGame"
-			
+
 			# is the player's score, retrieved from the database, greater than the computer's score? Who won?
 			if (playerTotalScore > computerTotalScore):
 				# player loses

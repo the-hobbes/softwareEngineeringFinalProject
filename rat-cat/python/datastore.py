@@ -24,9 +24,9 @@ class Players(db.Model):
 	avatar = db.StringProperty()
 
 	# statistics gathering information	
-	games = db.IntegerProperty(default=0)
-	gamesWon = db.IntegerProperty(default=0)
-	gamesLost = db.IntegerProperty(default=0)
+	# games = db.IntegerProperty(default=0)
+	# gamesWon = db.IntegerProperty(default=0)
+	# gamesLost = db.IntegerProperty(default=0)
 	roundsTotal = db.IntegerProperty(default=0)
 	roundsWonTotal = db.IntegerProperty(default=0)
 	roundsLostTotal = db.IntegerProperty(default=0)
