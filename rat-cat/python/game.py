@@ -622,6 +622,8 @@ class GameHandler(Handler):
 
 		# make a new object to interact with the datastore
 		newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		# update the number of rounds played in the game
+		newModel.updateGameRounds()
 
 		# what is the total score of each player's hand?
 		pScore = 0
@@ -640,7 +642,7 @@ class GameHandler(Handler):
 		logging.info("This is the computer score")
 		logging.info(cScore)
 
-		# who wins?
+		# who wins the round?
 		if (pScore < cScore):
 			# player wins
 			logging.info("player wins")
@@ -673,9 +675,10 @@ class GameHandler(Handler):
 		playerTotalScore, computerTotalScore = newModel.getTotalGameScore()
 		
 		# is the game over?
-		if(playerTotalScore >= ENDGAME_SCORE || computerTotalScore >= ENDGAME_SCORE):
+		if(playerTotalScore >= ENDGAME_SCORE or computerTotalScore >= ENDGAME_SCORE):
 			logging.info("Game over, player score is: " + str(playerTotalScore) + " Computer score is: " + str(computerTotalScore))
 			statePassedIn['state'] = "endGame"
+			
 			# is the player's score, retrieved from the database, greater than the computer's score? Who won?
 			if (playerTotalScore > computerTotalScore):
 				# player loses

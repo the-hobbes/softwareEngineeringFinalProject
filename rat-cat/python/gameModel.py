@@ -174,3 +174,13 @@ class DatastoreInteraction():
 		for result in results:
 			result.win = False
 			result.put()
+		
+	def updateGameRounds(self):
+		'''
+			updateGameRounds
+			Used to keep track of the number of rounds in a game.
+		'''
+		results =  db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.rounds += 1
+			result.put()

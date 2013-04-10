@@ -31,9 +31,9 @@ class Players(db.Model):
 	roundsWonTotal = db.IntegerProperty(default=0)
 	roundsLostTotal = db.IntegerProperty(default=0)
 	scoreTotal = db.IntegerProperty(default=0)
-	catCardsTotal = db.IntegerProperty(default=0)
-	ratCardsTotal = db.IntegerProperty(default=0)
-	powerCardsTotal = db.IntegerProperty(default=0)
+	# catCardsTotal = db.IntegerProperty(default=0)
+	# ratCardsTotal = db.IntegerProperty(default=0)
+	# powerCardsTotal = db.IntegerProperty(default=0)
 
 
 class Games(db.Model):
@@ -47,11 +47,11 @@ class Games(db.Model):
 	win = db.BooleanProperty()
 	score = db.IntegerProperty(default=0)
 	rounds = db.IntegerProperty(default=0)
-	roundsWon = db.IntegerProperty(default=0)
-	roundsLost = db.IntegerProperty(default=0)
-	catCards = db.IntegerProperty(default=0)
-	ratCards = db.IntegerProperty(default=0)
-	powerCards = db.IntegerProperty(default=0)
+	# roundsWon = db.IntegerProperty(default=0)
+	# roundsLost = db.IntegerProperty(default=0)
+	# catCards = db.IntegerProperty(default=0)
+	# ratCards = db.IntegerProperty(default=0)
+	# powerCards = db.IntegerProperty(default=0)
 	halScore = db.IntegerProperty(default=0)
 
 	# foreign key
