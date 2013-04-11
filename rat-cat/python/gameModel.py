@@ -6,7 +6,7 @@
 
 from handler import *
 import logging
-from pprint import pprint
+from python.datastore import *
 
 class DatastoreInteraction():
 	'''
@@ -65,6 +65,7 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsWonTotal by 1. Called when a player wins a round. This will also update
 			the fact that a player has played another round (in addition to winning it)
 		'''
+		logging.info("got to update rounds won!")
 
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
@@ -78,8 +79,9 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsLostTotal by 1. Called when a player wins a round. This will also update
 			the fact that a player has played another round (in addition to losing it)
 		'''
+		logging.info("got to update rounds lost!")
+
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
-		
 		for result in results:
 			result.roundsLostTotal += 1
 			result.roundsTotal += 1
@@ -91,9 +93,12 @@ class DatastoreInteraction():
 			Used to increment the datastore field roundsTotal by 1. Called when a game results in a tie, or the rounds need to
 			be incremented for some reason.
 		'''
+		logging.info("got to rounds played total")
+		
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.roundsTotal += 1
+			logging.info(result.roundsTotal)
 			result.put()
 
 	def updatePlayerScore(self, pScore):
@@ -103,9 +108,23 @@ class DatastoreInteraction():
 			Parameters:
 				pScore, the player's score for the round
 		'''
+		logging.info("got to update player score!")
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.scoreTotal = result.scoreTotal + pScore
+			result.put()
+
+	def updateComputerScore(self, cScore):
+		'''
+			updateComputerScore
+			Adds the computer's score for the round to the running total in the datastore.
+			Parameters:
+				cScore, the computer's score for the round
+		'''
+		logging.info("got to update computer score!")
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.halScore = result.halScore + cScore
 			result.put()
 
 	def getTotalGameScore(self):
@@ -116,11 +135,13 @@ class DatastoreInteraction():
 			Returns:
 				totalGameScore, the total score for the game so far. 
 		'''
+		logging.info("got to get total game score")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
-			totalScore = result.score
+			playerScore = result.score
+			computerScore = result.halScore
 
-		return totalScore
+		return playerScore, computerScore
 
 	def updateGameScore(self, pScore):
 		'''
@@ -132,4 +153,34 @@ class DatastoreInteraction():
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.score = result.score + pScore
+			result.put()
+
+	def updateGameWin(self):
+		'''
+			updateGameWin
+			Used to update the game table with the boolean value of win. 
+		'''
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.win = True
+			result.put()
+
+	def updateGameLose(self):
+		'''
+			updateGameWin
+			Used to update the game table with the boolean value of lose. 
+		'''
+		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.win = False
+			result.put()
+		
+	def updateGameRounds(self):
+		'''
+			updateGameRounds
+			Used to keep track of the number of rounds in a game.
+		'''
+		results =  db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.rounds += 1
 			result.put()
