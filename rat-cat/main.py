@@ -27,6 +27,8 @@ from python.game import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
+from python.HAL import *
+from python.unit import *
 from python.scores import *
 from python.datastore import *
 
@@ -59,6 +61,7 @@ app = webapp2.WSGIApplication([
 	('/playerinfo',PlayerInfoHandler),
 	('/difficulty',DifficultyHandler),
 	('/characterchoice',CharacterHandler),
+	('/unit',UnitHarness),
 	('/scores',ScoresHandler),
 	('/datastore',MyHandler)
 ], debug=True)
