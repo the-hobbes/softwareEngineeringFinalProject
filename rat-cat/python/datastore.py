@@ -15,30 +15,30 @@ class Players(db.Model):
 	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
-	games = db.FloatProperty()
-	gamesWon = db.FloatProperty()
-	gamesLost = db.FloatProperty()
-	roundsTotal = db.FloatProperty()
-	roundsWonTotal = db.FloatProperty()
-	roundsLostTotal = db.FloatProperty()
-	scoreTotal = db.FloatProperty()
+	games = db.IntegerProperty()
+	gamesWon = db.IntegerProperty()
+	gamesLost = db.IntegerProperty()
+	roundsTotal = db.IntegerProperty()
+	roundsWonTotal = db.IntegerProperty()
+	roundsLostTotal = db.IntegerProperty()
+	scoreTotal = db.IntegerProperty()
 	catCardsTotal = db.IntegerProperty()
 	ratCardsTotal = db.IntegerProperty()
 	powerCardsTotal = db.IntegerProperty()
 
 # Database table for Games
 class Games(db.Model):
-    # gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.StringProperty()
-    gameStart = db.DateTimeProperty(auto_now_add=True)
-    win = db.BooleanProperty()
-    score = db.FloatProperty()
-    rounds = db.FloatProperty()
-    roundsWon = db.FloatProperty()
-    roundsLost = db.FloatProperty()
-    catCards = db.IntegerProperty()
-    ratCards = db.IntegerProperty()
-    powerCards = db.IntegerProperty()
+	# gameID = db.IntegerProperty(required=True)
+	Players_playerID = db.StringProperty()
+	gameStart = db.DateTimeProperty(auto_now_add=True)
+	win = db.BooleanProperty()
+	score = db.IntegerProperty()
+	rounds = db.IntegerProperty()
+	roundsWon = db.IntegerProperty()
+	roundsLost = db.IntegerProperty()
+	catCards = db.IntegerProperty()
+	ratCards = db.IntegerProperty()
+	powerCards = db.IntegerProperty()
 
 # New Code
 class MyHandler(Handler):
@@ -52,18 +52,24 @@ class MyHandler(Handler):
 		values = {'players': players}
 
 		self.response.out.write(
-			template.render('scores.html',
-				values)
+			template.render('scores.html', values)
 		)
-	
-	# Retrieves input values for player name and total score
-	# Inputs player into datastore
-	# Refreshes the scores HTML page
-
+	# Post method for inputting a player into the datastore
 	def post(self):
-		player = Players(
+		p = Players(
 			name = self.request.get('name'),
-			scoreTotal = float(self.request.get('scoreTotal'))
+			scoreTotal = int(self.request.get('scoreTotal'))
 		)
-		player.put()
+		'''
+		BEGIN Check for same name in datastore
+		players = db.GqlQuery("SELECT * FROM Players")
+		for player in players:
+			if player.name == p.name:
+				self.response.write('Sorry, that name has already been taken!')
+			else:
+				p.put()
+				self.redirect('/scores')
+		END Check for same name in datastore
+		'''
+		p.put()
 		self.redirect('/scores')
