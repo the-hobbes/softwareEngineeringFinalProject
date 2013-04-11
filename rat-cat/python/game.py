@@ -149,7 +149,7 @@ class GameHandler(Handler):
 		elif (statePassedIn == 'playerChoice'):
 			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
-			pass
+			return self.draw2PlayerChoice(oldState)
 		return oldState
 
 	def waitingForDraw(self, statePassedIn):
