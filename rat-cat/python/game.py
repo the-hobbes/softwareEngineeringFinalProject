@@ -12,8 +12,10 @@ from python import HAL
 import cgi
 import logging
 import json
+from python.gameModel import DatastoreInteraction
 
 ENDGAME_SCORE = 60
+sessionId = ""
 
 class GameHandler(Handler):
 	'''
@@ -28,13 +30,15 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
+
 		# get the player avatar image from the datastore 
 		thumbnailImage =""
-		sessionId = self.request.get("sessionId")
-		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=sessionId)
-		for result in results:
-			avatar = result.avatar
-		
+		self.sessionId = self.request.get("sessionId")
+		# use the gameModel to interact with the datastore
+		newModel = DatastoreInteraction(self.sessionId)
+		avatar = newModel.getAvatar()
+
+		# set the right picture
 		if(avatar == "character1"):
 			thumbnailImage = "bettyThumb.png"
 		elif(avatar == "character2"):
@@ -82,8 +86,6 @@ class GameHandler(Handler):
 				initialState, the initial state of the gameboard
 		'''
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		# also, dang this is ugly.  Seriously ugly.
-
 		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
 		powerCards = [ [10]*3, [11]*3, [12]*3 ]
 		deck = sum(numberCards, [])
@@ -147,7 +149,7 @@ class GameHandler(Handler):
 		elif (statePassedIn == 'playerChoice'):
 			return self.playerChoice(oldState)
 		elif (statePassedIn == 'draw2PlayerChoice'):
-			pass
+			return self.draw2PlayerChoice(oldState)
 		return oldState
 
 	def waitingForDraw(self, statePassedIn):
@@ -222,9 +224,8 @@ class GameHandler(Handler):
 					for pCard in statePassedIn['playCard']:
 						pCard['active'] = 1
 			except:
-				# no cards left in the deck. The round ends, so we should probably have a round end state? 
-				# It would probs need to be something similar to a knock state, which we may have to do as well.
-				pass
+				# no cards left in the deck. The round ends
+				return self.endGame(statePassedIn)
 
 			# add the card to the display card 
 			statePassedIn['displayCard'] =  {'image' : str(drawnCard), 'active' : 0}
@@ -232,6 +233,9 @@ class GameHandler(Handler):
 			statePassedIn['playerClicks'] = []
 			# set the new state of the game to be "playerChoice", as per our documentation
 			statePassedIn['state'] = "playerChoice"
+
+			# check for knock state
+			statePassedIn = self.checkKnock(statePassedIn)
 
 		return statePassedIn
 
@@ -272,6 +276,9 @@ class GameHandler(Handler):
 		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 		statePassedIn['playerClicks'] = []
 		statePassedIn['state'] = "HAL" # change this to anything and it works. WHY?
+
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
 
 		return statePassedIn
 
@@ -382,7 +389,7 @@ class GameHandler(Handler):
 					except:
 						# no cards left in the deck. The round ends, so we should probably have a round end state? 
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
-						pass
+						return self.endGame(statePassedIn)
 
 					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
@@ -435,6 +442,9 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
+
 		return statePassedIn
 
 	def draw2PlayerChoice(self, statePassedIn):
@@ -473,6 +483,9 @@ class GameHandler(Handler):
 				# the user's turn is now over, so it is up to HAL to take over as the new state
 				statePassedIn['state'] = "HAL"
 
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# otherwise, the user still has some draw2 power left.
@@ -485,9 +498,8 @@ class GameHandler(Handler):
 				try:
 					drawnCard = statePassedIn['deck'].pop()
 				except:
-					# no cards left in the deck. The round ends, so we should probably have a round end state? 
-					# It would probs need to be something similar to a knock state, which we may have to do as well.
-					pass
+					# no cards left in the deck. The round ends
+					return self.endGame(statePassedIn)
 
 				# set the display card to what we've just drawn
 				statePassedIn['displayCard']['image'] = drawnCard 
@@ -499,6 +511,10 @@ class GameHandler(Handler):
 
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
 				#	newly drawn card.
+				
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 		# otherwise, the user's choice must've been to use the card that was drawn
@@ -524,6 +540,10 @@ class GameHandler(Handler):
 
 				# return, with the state being set to HAL
 				statePassedIn['state'] = 'HAL'
+
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# if the card is a 10, then it is a draw 2 card. This also means they've clicked the deck.
@@ -532,9 +552,8 @@ class GameHandler(Handler):
 				try:
 					drawnCard = statePassedIn['deck'].pop()
 				except:
-					# no cards left in the deck. The round ends, so we should probably have a round end state? 
-					# It would probs need to be something similar to a knock state, which we may have to do as well.
-					pass
+					# no cards left in the deck. The round ends
+					return self.endGame(statePassedIn)
 
 				# clear the clicks array
 				statePassedIn['playerClicks'] = []
@@ -551,8 +570,11 @@ class GameHandler(Handler):
 
 				# set the draw2 counter to 2, the initial value for a draw2 series (since we are beginning again)
 				statePassedIn['draw2Counter'] = 2
-
 				statePassedIn['state'] = 'draw2PlayerChoice'
+
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 
 			# if the card is an 11, then it is a peek card
@@ -569,6 +591,9 @@ class GameHandler(Handler):
 				# return, with the state being set to HAL
 				statePassedIn['state'] = "HAL"
 				
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 				
 			# then the card is a 12, which means it is a swap card.
@@ -585,6 +610,9 @@ class GameHandler(Handler):
 				# return, with the state being set to HAL.
 				statePassedIn['state'] = "HAL"
 
+				# check for knock state
+				statePassedIn = self.checkKnock(statePassedIn)
+
 				return statePassedIn
 		
 	def endGame(self, statePassedIn):
@@ -597,9 +625,15 @@ class GameHandler(Handler):
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
+		logging.info("Made it to the endgame state")
+
+		# make a new object to interact with the datastore
+		newModel = DatastoreInteraction(statePassedIn['sessionId'])
+
 		# what is the total score of each player's hand?
 		pScore = 0
 		cScore = 0
+
 		# set the cards to visible at this time as well
 		for pCard in statePassedIn['playCard']:
 			pScore += int(pCard['image'])
@@ -609,61 +643,34 @@ class GameHandler(Handler):
 			cCard['visible'] = 1
 
 		# who wins?
-		if pScore > cScore:
+		if pScore < cScore:
 			# player wins
-			pass
-		elif pScore < cScore:
+			statePassedIn['message']['text'] = "You've WON!"
+			# update the fact that the player won a round, and played a round
+			newModel.updateRoundsWonTotal()
+		elif pScore > cScore:
 			# computer wins
-			pass
+			statePassedIn['message']['text'] = "You've LOST!"
+			newModel.updateRoundsLostTotal()
 		else:
 			# tie
-			pass
+			statePassedIn['message']['text'] = "It's a TIE!"
+			newModel.updateRoundsPlayedTotal()
 
-		# add each player's scores to the running total of their score for the game so far
-
-		# is the game over? (is either player's total score over or at 60?)
-		statePassedIn['state'] = "endGame"
-
-		return statePassedIn
-
-	'''
-		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated
-		from the handlers themselves for the sake of modularity and readability. 
-	'''
-
-	def swapCards(self, card1, card2, statePassedIn):
-		'''
-			swapCards
-			Function used to swap the image values of 2 cards. Used when a Swap power card is activated.
-			Parameters:
-				card1 and card2, the two cards taken from the playerClicks array, which must be swapped.
-				statePassedIn, the current state of the game
-			Returns:
-				statePassedIn, the gamestate modified by the swap
-		'''
-		# modify the message property of the json to explain to the player what to do.
-		statePassedIn['message']['visible'] = 1
-		statePassedIn['message']['text'] = "Choose one of your cards and one of your opponent's cards to swap."
-
-		# is card1 player or opponent? Note the format of these clicks, which are div names, for example: playerCard4 or opCard2
-		# (you can tell whats what by the first letter of the div name passed into the playerclicks array, either p or o)
-		if (card1[0] == 'p'):
-			# a player card that must be swapped out with an opponent's card
-			# get the index of this card (you can tell this by subtracting 1 from the last character of the div name passed in)
-			playerIndex = int(str(card1[-1])) - 1
-			# get the index of the other card, which must be the opponent's card
-			oppIndex = int(str(card2[-1])) - 1
-			# swap the image values of these two cards in the dictionaries, using a temp variable
-			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+		# add the player score to the running total of their score for all games so far in the database
+		newModel.updatePlayerScore(pScore)
+		# add the players score to the running total for the current game 
+		newModel.updateGameScore(pScore)
+		# what is the player's total score now for this specific game?
+		playerTotalScore = newModel.getTotalGameScore()
+		
+		# is the game over?
+		if(playerTotalScore >= ENDGAME_SCORE):
+			statePassedIn['state'] = "endGame"
 		else:
-			# a computer card that must be swapped out with a player's card. just do the reverse (change card numbers, ie card2 becomes card1)
-			playerIndex = int(str(card2[-1])) - 1
-			oppIndex = int(str(card1[-1])) - 1
-			tmpPlayerImage = statePassedIn['playCard'][playerIndex]['image']
-			statePassedIn['playCard'][playerIndex]['image'] = statePassedIn['compCard'][oppIndex]['image']
-			statePassedIn['compCard'][oppIndex]['image'] = tmpPlayerImage
+			# if not, begin a new round
+			freshState = self.initEncode()
+			return freshState
 
 		return statePassedIn
 
@@ -804,3 +811,26 @@ class GameHandler(Handler):
 			logging.info("something went wrong")
 
 		return cardIndex, cardArray, cardChoice
+
+	def checkKnock(self, statePassedIn):
+		'''
+			checkKnock
+			Used to determine the knock status of any state passed in by the view. 
+			If the knock status is 0, then no knocking has occurred and play proceeds as normal.
+			If the knock status is 2, then the player has just clicked knock, and the opponent has one more round to play. 
+			If the knock status is 1, then the player has already clicked knock and the state we are working with is the 
+			result of the opponent's turn. This means the next state must be endGame.
+		'''
+		knockStatus = statePassedIn['knockState']
+
+		if(knockStatus == 2):
+			statePassedIn['knockState'] = 1
+
+		elif(knockStatus == 1):
+			statePassedIn['knockState'] = 0
+			statePassedIn['state'] = endGame
+
+		else:
+			pass
+
+		return statePassedIn

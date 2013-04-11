@@ -24,16 +24,16 @@ class Players(db.Model):
 	avatar = db.StringProperty()
 
 	# statistics gathering information	
-	games = db.FloatProperty()
-	gamesWon = db.FloatProperty()
-	gamesLost = db.FloatProperty()
-	roundsTotal = db.FloatProperty()
-	roundsWonTotal = db.FloatProperty()
-	roundsLostTotal = db.FloatProperty()
-	scoreTotal = db.FloatProperty()
-	catCardsTotal = db.IntegerProperty()
-	ratCardsTotal = db.IntegerProperty()
-	powerCardsTotal = db.IntegerProperty()
+	games = db.IntegerProperty(default=0)
+	gamesWon = db.IntegerProperty(default=0)
+	gamesLost = db.IntegerProperty(default=0)
+	roundsTotal = db.IntegerProperty(default=0)
+	roundsWonTotal = db.IntegerProperty(default=0)
+	roundsLostTotal = db.IntegerProperty(default=0)
+	scoreTotal = db.IntegerProperty(default=0)
+	catCardsTotal = db.IntegerProperty(default=0)
+	ratCardsTotal = db.IntegerProperty(default=0)
+	powerCardsTotal = db.IntegerProperty(default=0)
 
 
 class Games(db.Model):
@@ -45,13 +45,13 @@ class Games(db.Model):
 	# Players_playerID = db.StringProperty()
 	gameStart = db.DateTimeProperty(auto_now_add=True)
 	win = db.BooleanProperty()
-	score = db.FloatProperty()
-	rounds = db.FloatProperty()
-	roundsWon = db.FloatProperty()
-	roundsLost = db.FloatProperty()
-	catCards = db.IntegerProperty()
-	ratCards = db.IntegerProperty()
-	powerCards = db.IntegerProperty()
+	score = db.IntegerProperty(default=0)
+	rounds = db.IntegerProperty(default=0)
+	roundsWon = db.IntegerProperty(default=0)
+	roundsLost = db.IntegerProperty(default=0)
+	catCards = db.IntegerProperty(default=0)
+	ratCards = db.IntegerProperty(default=0)
+	powerCards = db.IntegerProperty(default=0)
 
 	# foreign key
 	sessionId = db.StringProperty()
@@ -72,6 +72,10 @@ class MyHandler(Handler):
 			template.render('scores.html',
 				values)
 		)
+		# results = db.GqlQuery("SELECT * FROM Players")
+		# for result in results:
+		# 	result.scoreTotal = 0
+		# 	result.put()
 	
 	# Retrieves input values for player name and total score
 	# Inputs player into datastore
