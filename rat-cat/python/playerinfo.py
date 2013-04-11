@@ -6,8 +6,12 @@
 # This handler processes user information entry. It renders a form for the user to input their name and age, then adds that
 # to the database and forwards the user to the next page. 
 from handler import *
+from datetime import *
+import hashlib
 #re = regular expresion module
-import re;
+import re
+from python.datastore import Players
+from python.datastore import Games
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 
@@ -36,6 +40,27 @@ class PlayerInfoHandler(Handler):
 		'''
 		self.renderPlayerInfo()
 
+	def validateInput(self,name,age):
+		#validation for age and profanity	
+		validAge = re.match("^[0-9]+$",age,re.M|re.I)
+		swearWords = ["fuck", "shit", "suck my dick, I'm a shaaaaaark"]
+		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)
+		error = ""
+
+		if (name and age and validAge):
+			#success. 
+			# This is where we add their information to the database, as well as moving them to the next page.
+			if vulgarity.search(name):
+				error = "dang, get a bar of soap up in that biz!"
+			else:
+				return True,error
+		else:
+			if validAge:
+				error = "We need both your name and your age!"
+			else:
+				error = "You must enter a number for your age"
+		return False,error
+
 	def post(self):
 		'''
 			post
@@ -45,23 +70,27 @@ class PlayerInfoHandler(Handler):
 		#get the parameters from the post
 		name = self.request.get("name")
 		age = self.request.get("age")
+		#hash user info 
+		time = str(datetime.now())
+		m = hashlib.sha224()
+		m.update(name)
+		m.update(age)
+		m.update(time)
+		m.digest()
+		
+		valid,error=self.validateInput(name,age)
+		sessionId = m.hexdigest()
 
-		#validation for age and profanity
-		validAge = re.match("^[0-9]+$",age,re.M|re.I)
-		swearWords = ["fuck", "shit", "suck my dick, I'm a shaaaaaark"]
-		vulgarity = re.compile(r'\b%s\b' % '\\b|\\b'.join(swearWords), flags=re.IGNORECASE)
+		if valid:
+			# add a new player to the datastore
+			playerObj = Players(name=name, age=int(age), sessionId=sessionId)
+			playerObj.put()
+			# add a corresponding new game to the datastore
+			gameObj = Games(sessionId=sessionId)
+			gameObj.put()
 
-		if (name and age and validAge):
-			#success. 
-			# This is where we add their information to the database, as well as moving them to the next page.
-			if vulgarity.search(name):
-				error = "dang, get a bar of soap up in that biz!"
-				self.renderPlayerInfo(name, age, error)
-			else:
-				self.redirect("/characterchoice")
+			# redirect, with sessionID as a GET parameter
+			self.redirect("/characterchoice" + "?sessionId=" + sessionId)
 		else:
-			if validAge:
-				error = "We need both your name and your age!"
-			else:
-				error = "You must enter a number for your age"
 			self.renderPlayerInfo(name, age, error)
+		

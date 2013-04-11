@@ -6,6 +6,8 @@
 # This handler displays the top ten scores, and performs all of the associated database calls to do so.
 
 from handler import *
+from datastore import *
+import logging
 
 class ScoresHandler(Handler):
 	'''
@@ -18,14 +20,17 @@ class ScoresHandler(Handler):
 			Default get method. Called when a user lands on /scores. Used to get the top 10 scores from the database,
 			then render the template with those top scores.
 		'''
-		topTen, sortedKeys = self.getTopScores()
-		self.renderScores(topTen, sortedKeys)
+		# topTen, sortedKeys = self.getTopScores()
+		# self.renderScores(topTen, sortedKeys)
+		players = db.GqlQuery(
+			"SELECT * FROM Players "
+			"ORDER BY scoreTotal DESC LIMIT 10"
+		)
+		self.render("scores.html", players = players)
 
 	def getTopScores(self):
-		'''
-			getTopScores
-			Used to retrieve the top 10 scores from the database. Note that the top 10 will be the top 10 LOWEST scores.
-		'''
+		# getTopScores
+		# Used to retrieve the top 10 scores from the database. Note that the top 10 will be the top 10 LOWEST scores.
 
 		#note: i am just manufacturing a fake top 10 for testing purposes. Here is where the database call would be made in production
 		topTen = {}
@@ -50,11 +55,12 @@ class ScoresHandler(Handler):
 		return topTen, sortedKeys
 
 	def renderScores(self, topTen, sortedKeys):
-		'''
-			renderScores
-			Render the scores template with the appropriate list of players as arguments.
-			parameters:
-			topTen, list of the names and scores of the top 10 players, as provided for by the database
-		'''
+		# renderScores
+		# Render the scores template with the appropriate list of players as arguments.
+		# parameters:
+		# topTen, list of the names and scores of the top 10 players, as provided for by the database
 
 		self.render("scores.html", topTen = topTen, sortedKeys = sortedKeys)
+
+	def post(self):
+		pass
