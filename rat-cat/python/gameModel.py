@@ -7,10 +7,7 @@
 from handler import *
 import logging
 from python.datastore import *
-<<<<<<< HEAD
 from python.HAL import *
-=======
->>>>>>> endgame
 
 class DatastoreInteraction():
 	'''
@@ -188,7 +185,6 @@ class DatastoreInteraction():
 		for result in results:
 			result.rounds += 1
 			result.put()
-<<<<<<< HEAD
 
 	def getDifficulty(self):
 		'''
@@ -232,6 +228,3 @@ class DatastoreInteraction():
 
 		return halDict
 
-
-=======
->>>>>>> endgame
