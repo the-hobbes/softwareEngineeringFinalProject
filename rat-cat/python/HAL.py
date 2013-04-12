@@ -46,40 +46,6 @@ class HAL(db.Model):
 	actionsToTake = ""
 	diff =0
 
-	# def __init__(self,sessionID="Debug",diff=0,aiCardArray=[],opCardArray=[],topValue=9):
-	# 	'''
-	# 		Constructor
-	# 			Creates the HAL instance in the database to keep persistent state. 
-	# 		Parameters:
-	# 			sessionID, The sessionID to find this instance of computer in the database
-	# 			diff, The difficult setting of the AI
-	# 				Difficulty of 0 corresponds to random choice
-	# 				Difficulty of 1 corresponds to high memory decay rate
-	# 				Difficulty of 2 corresponds to low memory decay rate
-	# 				Difficulty of 3 corresponds to perfect memory recall (Not selectable by user but for funsies is here)
-	# 			aiCardArray, An array of the AI's initial cards
-	# 			opCardArray, An array of the opponents initial cards
-	# 			topValue, The value of the top card, None if the deck is empty
-	# 	'''
-	# 	logging.info("Made an instance of HAL")
-	# 	self.key_name=sessionID
-	# 	self.sessionId=sessionID
-	# 	self.estAIScore=36
-	# 	self.estOppScore=18
-	# 	#HAL does not know the user's cards yet...
-	# 	self.opCardsMem=[0.0,0.0,0.0,0.0]
-	# 	self.aiCardsMem=[1.0,1.0,1.0,1.0]
-	# 	self.opCards=json.dumps(opCardArray)
-	# 	self.aiCards=json.dumps(aiCardArray)
-	# 	self.discardTopValue=json.dumps(topValue)
-	# 	self.decayRate = 0.0 #use some equation of difficult (probs 1/e^diff and some stuff)
-	# 	self.decayMemory = [1.0,1.0,1.0,1.0]
-
-	# 	#Store this AI into the database to along with this session
-	# 	#https://groups.google.com/forum/?fromgroups=#!topic/google-appengine/iX2fEjv5jsM ... uh
-	# 	db.Model.__init__(self,key_name=sessionID,sessionId=sessionID,estAIScore=self.estAIScore,estOppScore=self.estOppScore,opCardsMem=self.opCardsMem,aiCardsMem=self.aiCardsMem,opCards=self.opCards,aiCards=self.aiCards,discardTopValue=self.discardTopValue,decayRate=self.decayRate,decayMemory=self.decayMemory)
-	# 	self.put()
-
 	def testMe(self):
 		logging.info("Test Satisfactory")
 
