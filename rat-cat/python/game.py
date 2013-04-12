@@ -219,6 +219,7 @@ class GameHandler(Handler):
 				if(drawnCard == 10):
 					# draw 2. Glow the deck and discard
 					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
 				elif(drawnCard == 12):
 					# swap. glow the discard, opponents cards, and the player's cards.
 					statePassedIn['discardActivity'] = 1
@@ -226,11 +227,17 @@ class GameHandler(Handler):
 						pCard['active'] = 1
 					for cCard in statePassedIn['compCard']:
 						cCard['active'] = 1
+				elif(drawnCard == 11):
+					#peek card, player can view their cards or the deck, or discard it
+					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
+					for cCard in statePassedIn['playCard']:
+						cCard['active'] = 1
 				else:
 					# a number card or peek card was draw. glow deck and player's cards
-					statePassedIn['deckActivity'] = 1
-					for cCard in statePassedIn['compCard']:
-						cCard['active'] = 1
+					statePassedIn['discardActivity'] = 1
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends
 				return self.endGame(statePassedIn)
@@ -307,6 +314,7 @@ class GameHandler(Handler):
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
 		
+<<<<<<< HEAD
 		statePassedIn['state'] = "waitingForDraw"
 		logging.info("Made it to the HAL State")
 		# self.ai.testMe()
@@ -314,6 +322,16 @@ class GameHandler(Handler):
 		parameterDict = newModel.getHAL()
 		logging.info(parameterDict)
 
+=======
+
+
+
+		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
+		statePassedIn['state'] = "waitingForDraw"
+		statePassedIn['deckActivity'] = 1
+		statePassedIn['discardActivity'] = 1
+		logging.info(statePassedIn)
+>>>>>>> 159bcc73993b0901fe88897e02776febf698c878
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
@@ -439,7 +457,10 @@ class GameHandler(Handler):
 
 					# you've swapped, and now the turn is over
 					statePassedIn['state'] = "HAL"
-
+				if(statePassedIn['state']=="HAL"):
+					#Set the active cards that will be glown on the players next turn 
+					statePassedIn['discardActivity'] = 1
+					statePassedIn['deckActivity'] = 1
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
