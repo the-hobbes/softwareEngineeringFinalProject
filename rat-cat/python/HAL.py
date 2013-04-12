@@ -94,9 +94,29 @@ class HAL(db.Model):
 		'''
 		pass
 
-	def swapCard(self,state):
+	def peek(self,state):
 		'''
-			Swapcard
+			peek:
+				The AI chooses its least remembered card and refreshes it's memory of it
+			Parameters:
+				state, the state of the game
+
+		'''
+		#What's the least remembered card of ours?
+		i=0
+		val=99
+		for j in range(len(self.aiCardsMem)):
+			if(self.aiCardsMem[j] < val):
+				val = self.aiCardsMem[j]
+				i = j
+		#reset the memory (this is effectively the same as us looking at it)
+		self.aiCardsMem[i] = 1
+
+		return state
+
+	def swap(self,state):
+		'''
+			Swap
 				This function simply switches two cards from the player and computers hands
 			Parameters:
 				state, The state of the game
@@ -211,7 +231,6 @@ class HAL(db.Model):
 			else:
 				#Remembered incorrectly
 				compRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
-
 		#Return two things at once #YOLO
 		return humanRep,compRep
 
