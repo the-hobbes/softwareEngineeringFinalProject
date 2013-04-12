@@ -72,7 +72,7 @@ class HAL(db.Model):
 		self.opCards=json.dumps(opCardArray)
 		self.aiCards=json.dumps(aiCardArray)
 		self.discardTopValue=json.dumps(topValue)
-		self.decayRate = 0.0 #use some equation of difficult (probs 1/e^diff and some stuff)
+		self.decayRate = 0.001 #use some equation of difficult (probs 1/e^diff and some stuff)
 		self.decayMemory = [1.0,1.0,1.0,1.0]
 
 		#Store this AI into the database to along with this session
@@ -92,7 +92,57 @@ class HAL(db.Model):
 		Does the HAL's turn, this function is essentially a way for the AI to keep
 
 		'''
+		#Decide whether or not to draw from the discard pile or the deck
+		#If the card on the discard pile is lower than the largest number we think we have
+		#take it, else draw from the deck
+		discardPile = state['discardPile'][-1]
+		maxVal = 0
+		i,j=0,0
+		human,aiCards = self.getMemory()
+		for c in aiCards:
+			if(maxVal < int(c['image'])):
+				i=j
+				maxVal = int(c['image'])
+			j=j+1
+		#Now we know what the maxVal is
+		card = 0
+		if(maxVal > discardPile):
+			#Pull from the discard pile
+			card = state['discardPile'].pop()
+		else:
+			#Pull from the deck
+			card = state['deck'].pop()
+		#We now have a card, is it a regular card or a power card?
+		if(card < 10):
+			#Regular Card
+		else:
+			#Power Card. Really wish we had  a switch... (python)
+			if(card==10):
+				return self.drawTwo(state)
+			elif(card==11):
+				return self.peek(state)
+			elif(card==12):
+				return self.swap(state)
+			else:
+				#Back of a card, aka we drew from an empty deck maybe?
+
+
+
+
 		pass
+
+
+
+	def drawTwo(self,state):
+		'''
+			drawTwo:
+				The AI decides what to do with a draw two car 
+			Parameters:
+				state, the state of the game
+
+		'''
+
+		return state
 
 	def peek(self,state):
 		'''
