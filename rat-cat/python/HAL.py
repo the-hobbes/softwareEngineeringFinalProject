@@ -89,7 +89,7 @@ class HAL(db.Model):
 
 	def doTurn(self,state):
 		'''
-		Does the HAL's turn, this function is essentially
+		Does the HAL's turn, this function is essentially a way for the AI to keep
 
 		'''
 		pass
@@ -170,10 +170,25 @@ class HAL(db.Model):
 			tmp = state['playCard'][humanCard]['image']
 			state['playCard'][humanCard]['image'] = state['compCard'][compCard]['image']
 			state['compCard'][compCard]['image'] = tmp
-
-
+			#update the memory 
+			self.opCardsMem[humanCard],self.aiCardsMem[compCard] = self.aiCardsMem[compCard],self.opCardsMem[humanCard]
 
 		return state
+
+	def alzheimer(self):
+		'''
+			alzheimer:
+				This makes HAL forget his cards as if he had alzheimers 
+				(Decrement each remembrance array by the decary rate multiplied by difficulty)
+		'''
+		#Decrement how much we remember
+		for i in range(len(self.opCardsMem)):
+			self.opCardsMem[i] = self.opCardsMem[i] - self.diff*self.decayRate
+			self.aiCardsMem[i] = self.aiCardsMem[i] - self.diff*self.decayRate
+			if(self.opCardsMem[i] < 0):
+				self.opCardsMem[i] = 0
+			if(self.aiCardsMem[i] < 0):
+				self.aiCardsMem[i] = 0
 
 	def getMemory(self):
 		'''
