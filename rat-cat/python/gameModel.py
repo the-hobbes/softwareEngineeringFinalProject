@@ -7,6 +7,7 @@
 from handler import *
 import logging
 from python.datastore import *
+from python.HAL import *
 
 class DatastoreInteraction():
 	'''
@@ -184,3 +185,47 @@ class DatastoreInteraction():
 		for result in results:
 			result.rounds += 1
 			result.put()
+
+	def getDifficulty(self):
+		'''
+			getDifficulty
+			Retrieve the difficulty from the datastore
+		'''
+		results =  db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			difficulty = result.difficulty
+
+		return difficulty
+
+	def getHAL(self):
+		'''
+			getHAL
+			Used to keep retrieve all of the information about hal from the datastore.
+			Returns:
+				halDict, a dictionary containing k/v pairs of all in information in the datastore relevent to HAL.
+		'''
+		logging.info("Made it to get HAL")
+		# retrieve HAL object from datastore
+		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess='Debug')
+		# results = db.GqlQuery("SELECT * from HAL where __key__ = KEY('HAL', 'Debug')")
+		# thing = results.get()
+
+		# for result in results:
+		# 	pkSessionID = result.pkSessionID
+		# 	opCardsMem = result.opCardsMem
+		# 	opCards = result.opCards
+		# 	estOppScore = result.estOppScore
+		# 	estAIScore = result.estAIScore
+		# 	discardTopValue = result.discardTopValue
+		# 	decayRate = result.decayRate
+		# 	decayMemory = result.decayMemory
+		# 	aiCardsMem = result.aiCardsMem
+		# 	aiCards = result.aiCards
+
+		# # retrieve difficulty from datastore 
+		# difficulty = self.getDifficulty()
+		# halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'decayMemory':decayMemory, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
+
+		# return halDict
+
+

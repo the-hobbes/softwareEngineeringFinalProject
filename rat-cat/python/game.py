@@ -14,8 +14,6 @@ import logging
 import json
 from python.gameModel import DatastoreInteraction
 
-ENDGAME_SCORE = 60
-sessionId = ""
 
 class GameHandler(Handler):
 	'''
@@ -23,6 +21,10 @@ class GameHandler(Handler):
 		Main handler for rendering game elements in the templating system. Responds to get and post requests for the game url. Inherits from Hander for easy
 		template rendering.
 	'''
+	ai = HAL.HAL()
+	sessionId = ""
+	ENDGAME_SCORE = 60
+
 	def get(self):
 		'''
 			get
@@ -125,8 +127,7 @@ class GameHandler(Handler):
 
 		# encode it
 		logging.info(newState)
-		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
-
+		self.HAL(newState)
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
@@ -268,7 +269,7 @@ class GameHandler(Handler):
 		# reset the activecard, reset the clicks list, set the new state
 		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 		statePassedIn['playerClicks'] = []
-		statePassedIn['state'] = "HAL" # change this to anything and it works. WHY?
+		statePassedIn['state'] = "HAL" 
 
 		# check for knock state
 		statePassedIn = self.checkKnock(statePassedIn)
@@ -292,6 +293,10 @@ class GameHandler(Handler):
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
 		statePassedIn['state'] = "waitingForDraw"
+		newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		parameterDict = newModel.getHAL()
+		logging.info(parameterDict)
+
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):

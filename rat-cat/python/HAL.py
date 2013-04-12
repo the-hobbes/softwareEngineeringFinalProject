@@ -56,7 +56,7 @@ class HAL(db.Model):
 				opCardArray, An array of the opponents initial cards
 				topValue, The value of the top card, None if the deck is empty
 		'''
-
+		logging.info("Made an instance of HAL")
 		self.key_name=sessionID
 		self.pkSessionID=sessionID
 		self.estAIScore=36
@@ -75,16 +75,10 @@ class HAL(db.Model):
 		db.Model.__init__(self,key_name=sessionID,pkSessionID=sessionID,estAIScore=self.estAIScore,estOppScore=self.estOppScore,opCardsMem=self.opCardsMem,aiCardsMem=self.aiCardsMem,opCards=self.opCards,aiCards=self.aiCards,discardTopValue=self.discardTopValue,decayRate=self.decayRate,decayMemory=self.decayMemory)
 		self.put()
 
+	def testMe(self):
+		logging.info("Test Satisfactory")
 
 
 
 
-
-
-
-
-
-
-
-
-
+		
