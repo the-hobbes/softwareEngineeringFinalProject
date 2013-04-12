@@ -314,24 +314,17 @@ class GameHandler(Handler):
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
 		
-<<<<<<< HEAD
 		statePassedIn['state'] = "waitingForDraw"
 		logging.info("Made it to the HAL State")
 		# self.ai.testMe()
-		newModel = DatastoreInteraction(statePassedIn['sessionId'])
-		parameterDict = newModel.getHAL()
-		logging.info(parameterDict)
-
-=======
-
-
+		# newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		# parameterDict = newModel.getHAL()
+		# logging.info(parameterDict)
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
-		statePassedIn['state'] = "waitingForDraw"
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
 		logging.info(statePassedIn)
->>>>>>> 159bcc73993b0901fe88897e02776febf698c878
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
