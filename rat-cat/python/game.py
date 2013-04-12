@@ -21,7 +21,7 @@ class GameHandler(Handler):
 		Main handler for rendering game elements in the templating system. Responds to get and post requests for the game url. Inherits from Hander for easy
 		template rendering.
 	'''
-	ai = HAL.HAL()
+	ai = object()
 	sessionId = ""
 	ENDGAME_SCORE = 60
 
@@ -56,6 +56,11 @@ class GameHandler(Handler):
 
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
+
+		# create an instance of the ai
+		self.ai = HAL.HAL(pkSessionID=self.request.get("sessionId"))
+		self.ai.put()
+
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
 
 	def post(self):
@@ -77,6 +82,9 @@ class GameHandler(Handler):
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
+
+
+		self.HAL(oldState)
 		self.write(newState)
 
 
@@ -127,7 +135,8 @@ class GameHandler(Handler):
 
 		# encode it
 		logging.info(newState)
-		self.HAL(newState)
+		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
+
 		return json.dumps(newState)
 
 	def parseState(self, oldState):
@@ -292,7 +301,10 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
+		
 		statePassedIn['state'] = "waitingForDraw"
+		logging.info("Made it to the HAL State")
+		# self.ai.testMe()
 		newModel = DatastoreInteraction(statePassedIn['sessionId'])
 		parameterDict = newModel.getHAL()
 		logging.info(parameterDict)

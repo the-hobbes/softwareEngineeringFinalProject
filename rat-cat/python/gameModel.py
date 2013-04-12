@@ -206,26 +206,26 @@ class DatastoreInteraction():
 		'''
 		logging.info("Made it to get HAL")
 		# retrieve HAL object from datastore
-		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess='Debug')
-		# results = db.GqlQuery("SELECT * from HAL where __key__ = KEY('HAL', 'Debug')")
-		# thing = results.get()
+		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		logging.info(self.sessionId)
+		# logging.info(results[0].pkSessionID)
+		for result in results:
+			pkSessionID = result.pkSessionID
+			opCardsMem = result.opCardsMem
+			opCards = result.opCards
+			estOppScore = result.estOppScore
+			estAIScore = result.estAIScore
+			discardTopValue = result.discardTopValue
+			decayRate = result.decayRate
+			decayMemory = result.decayMemory
+			aiCardsMem = result.aiCardsMem
+			aiCards = result.aiCards
 
-		# for result in results:
-		# 	pkSessionID = result.pkSessionID
-		# 	opCardsMem = result.opCardsMem
-		# 	opCards = result.opCards
-		# 	estOppScore = result.estOppScore
-		# 	estAIScore = result.estAIScore
-		# 	discardTopValue = result.discardTopValue
-		# 	decayRate = result.decayRate
-		# 	decayMemory = result.decayMemory
-		# 	aiCardsMem = result.aiCardsMem
-		# 	aiCards = result.aiCards
+		# retrieve difficulty from datastore 
+		difficulty = self.getDifficulty()
+		logging.info(difficulty)
+		halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'decayMemory':decayMemory, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
 
-		# # retrieve difficulty from datastore 
-		# difficulty = self.getDifficulty()
-		# halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'decayMemory':decayMemory, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
-
-		# return halDict
+		return halDict
 
 
