@@ -13,7 +13,7 @@ import cgi
 import logging
 import json
 from python.gameModel import DatastoreInteraction
-
+import time
 
 class GameHandler(Handler):
 	'''
@@ -24,6 +24,7 @@ class GameHandler(Handler):
 	ai = object()
 	sessionId = ""
 	ENDGAME_SCORE = 60
+	thumbnailImage = ""
 
 	def get(self):
 		'''
@@ -32,12 +33,12 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
+		global thumbnailImage, sessionId
 
 		# get the player avatar image from the datastore 
-		thumbnailImage =""
-		self.sessionId = self.request.get("sessionId")
+		sessionId = self.request.get("sessionId")
 		# use the gameModel to interact with the datastore
-		newModel = DatastoreInteraction(self.sessionId)
+		newModel = DatastoreInteraction(sessionId)
 		avatar = newModel.getAvatar()
 
 		# set the right picture
@@ -56,15 +57,14 @@ class GameHandler(Handler):
 
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
-
 		halState = json.loads(newState)
-		# create an instance of the ai
-		# SET UP the initial values
+
+		# create an instance of the ai and set the initial values
 		self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId"), 
 							opCards= str(halState['playCard']),
 							aiCards=str(halState['compCard']) 
 							)
-
+		# put it in the datastore
 		self.ai.put()
 
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
@@ -100,6 +100,8 @@ class GameHandler(Handler):
 			Returns:
 				initialState, the initial state of the gameboard
 		'''
+		global sessionId
+		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
 		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
 		powerCards = [ [10]*3, [11]*3, [12]*3 ]
@@ -132,7 +134,7 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
-					"sessionId" : self.request.get("sessionId"),
+					"sessionId" : sessionId,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
 					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
@@ -644,9 +646,12 @@ class GameHandler(Handler):
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
 		logging.info("Made it to the endgame state")
+		logging.info(statePassedIn['sessionId'])
 
 		# make a new object to interact with the datastore
 		newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		# update the number of rounds played in the game
+		newModel.updateGameRounds()
 
 		# what is the total score of each player's hand?
 		pScore = 0
@@ -660,35 +665,73 @@ class GameHandler(Handler):
 			cScore += int(cCard['image'])
 			cCard['visible'] = 1
 
-		# who wins?
-		if pScore < cScore:
+		logging.info("This is the player score")
+		logging.info(pScore)
+		logging.info("This is the computer score")
+		logging.info(cScore)
+
+		# who wins the round?
+		if (pScore < cScore):
 			# player wins
+			logging.info("player wins")
 			statePassedIn['message']['text'] = "You've WON!"
 			# update the fact that the player won a round, and played a round
 			newModel.updateRoundsWonTotal()
-		elif pScore > cScore:
+
+		elif (pScore > cScore):
 			# computer wins
+			logging.info("computer wins")
 			statePassedIn['message']['text'] = "You've LOST!"
 			newModel.updateRoundsLostTotal()
+
 		else:
 			# tie
+			logging.info("tie!!")
 			statePassedIn['message']['text'] = "It's a TIE!"
 			newModel.updateRoundsPlayedTotal()
 
+		# use sleep to prevent the datastore from 
+		time.sleep(1)
+
 		# add the player score to the running total of their score for all games so far in the database
 		newModel.updatePlayerScore(pScore)
+		# add the computer score to the running total for HAL
+		newModel.updateComputerScore(cScore)
 		# add the players score to the running total for the current game 
 		newModel.updateGameScore(pScore)
-		# what is the player's total score now for this specific game?
-		playerTotalScore = newModel.getTotalGameScore()
+		# what is the player and computer's total score now for this specific game?
+		playerTotalScore, computerTotalScore = newModel.getTotalGameScore()
 		
 		# is the game over?
-		if(playerTotalScore >= ENDGAME_SCORE):
+		if(playerTotalScore >= ENDGAME_SCORE or computerTotalScore >= ENDGAME_SCORE):
+			logging.info("Game over, player score is: " + str(playerTotalScore) + " Computer score is: " + str(computerTotalScore))
 			statePassedIn['state'] = "endGame"
+
+			# is the player's score, retrieved from the database, greater than the computer's score? Who won?
+			if (playerTotalScore > computerTotalScore):
+				# player loses
+				logging.info("Player Loses")
+				newModel.updateGameLose()
+			elif(computerTotalScore > playerTotalScore):
+				# player wins
+				logging.info("Player Wins")
+				newModel.updateGameWin()
+			else:
+				# a tie
+				logging.info("A tie has occurred")
+				newModel.updateGameLose()
+
+			time.sleep(1)
+
 		else:
 			# if not, begin a new round
+			logging.info("Starting a new round")
+			global thumbnailImage, sessionId
 			freshState = self.initEncode()
+			logging.info(freshState)
+			self.render("game.html", oldState='null', newState=freshState, thumbnailImage=thumbnailImage)
 			return freshState
+			
 
 		return statePassedIn
 
