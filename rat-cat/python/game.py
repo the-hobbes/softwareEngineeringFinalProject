@@ -15,16 +15,17 @@ import json
 from python.gameModel import DatastoreInteraction
 import time
 
-ENDGAME_SCORE = 60
-sessionId = ""
-thumbnailImage = ""
-
 class GameHandler(Handler):
 	'''
 		GameHandler
 		Main handler for rendering game elements in the templating system. Responds to get and post requests for the game url. Inherits from Hander for easy
 		template rendering.
 	'''
+	ai = object()
+	sessionId = ""
+	ENDGAME_SCORE = 60
+	thumbnailImage = ""
+
 	def get(self):
 		'''
 			get
@@ -56,7 +57,16 @@ class GameHandler(Handler):
 
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
-		# logging.info(newState)
+		halState = json.loads(newState)
+
+		# create an instance of the ai and set the initial values
+		self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId"), 
+							opCards= str(halState['playCard']),
+							aiCards=str(halState['compCard']) 
+							)
+		# put it in the datastore
+		self.ai.put()
+
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
 
 	def post(self):
@@ -78,6 +88,8 @@ class GameHandler(Handler):
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
+
+		# self.HAL(oldState)
 		self.write(newState)
 
 
@@ -91,21 +103,16 @@ class GameHandler(Handler):
 		global sessionId
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		# also, dang this is ugly.  Seriously ugly.
-
-		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
-		# deck = sum(numberCards, [])
-		# shuffle(deck)
-		# subDeck = sum(powerCards, [])
-		# shuffle(subDeck)
-		# discardCard = str(deck.pop(choice(deck)))
-		# for p in subDeck:
-		# 	deck.append(p)
-		# shuffle(deck)
-
-		deck = [1,1,1,1,1,0,0,0,0]
-		discardCard = 12
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		deck = sum(numberCards, [])
+		shuffle(deck)
+		subDeck = sum(powerCards, [])
+		shuffle(subDeck)
+		discardCard = str(deck.pop(choice(deck)))
+		for p in subDeck:
+			deck.append(p)
+		shuffle(deck)
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -134,8 +141,8 @@ class GameHandler(Handler):
 				}
 
 		# encode it
-		# logging.info(newState)
-		ai = HAL.HAL("Debug",0,newState['compCard'],newState['playCard'],newState['displayCard'])
+		logging.info(newState)
+		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		return json.dumps(newState)
 
@@ -214,6 +221,7 @@ class GameHandler(Handler):
 				if(drawnCard == 10):
 					# draw 2. Glow the deck and discard
 					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
 				elif(drawnCard == 12):
 					# swap. glow the discard, opponents cards, and the player's cards.
 					statePassedIn['discardActivity'] = 1
@@ -221,11 +229,17 @@ class GameHandler(Handler):
 						pCard['active'] = 1
 					for cCard in statePassedIn['compCard']:
 						cCard['active'] = 1
+				elif(drawnCard == 11):
+					#peek card, player can view their cards or the deck, or discard it
+					statePassedIn['deckActivity'] = 1
+					statePassedIn['discardActivity'] = 1
+					for cCard in statePassedIn['playCard']:
+						cCard['active'] = 1
 				else:
 					# a number card or peek card was draw. glow deck and player's cards
-					statePassedIn['deckActivity'] = 1
-					for cCard in statePassedIn['compCard']:
-						cCard['active'] = 1
+					statePassedIn['discardActivity'] = 1
+					for pCard in statePassedIn['playCard']:
+						pCard['active'] = 1
 			except:
 				# no cards left in the deck. The round ends
 				return self.endGame(statePassedIn)
@@ -278,7 +292,7 @@ class GameHandler(Handler):
 		# reset the activecard, reset the clicks list, set the new state
 		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 		statePassedIn['playerClicks'] = []
-		statePassedIn['state'] = "HAL" # change this to anything and it works. WHY?
+		statePassedIn['state'] = "HAL" 
 
 		# check for knock state
 		statePassedIn = self.checkKnock(statePassedIn)
@@ -301,7 +315,18 @@ class GameHandler(Handler):
 		# HAL remembers things better according to the difficulty level chosen. We must keep track of everything he has seen. 
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
+		
 		statePassedIn['state'] = "waitingForDraw"
+		logging.info("Made it to the HAL State")
+		# self.ai.testMe()
+		# newModel = DatastoreInteraction(statePassedIn['sessionId'])
+		# parameterDict = newModel.getHAL()
+		# logging.info(parameterDict)
+
+		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
+		statePassedIn['deckActivity'] = 1
+		statePassedIn['discardActivity'] = 1
+		logging.info(statePassedIn)
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
@@ -427,7 +452,10 @@ class GameHandler(Handler):
 
 					# you've swapped, and now the turn is over
 					statePassedIn['state'] = "HAL"
-
+				if(statePassedIn['state']=="HAL"):
+					#Set the active cards that will be glown on the players next turn 
+					statePassedIn['discardActivity'] = 1
+					statePassedIn['deckActivity'] = 1
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
