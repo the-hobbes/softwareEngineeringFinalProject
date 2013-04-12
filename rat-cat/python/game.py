@@ -57,8 +57,15 @@ class GameHandler(Handler):
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
 
+		halState = json.loads(newState)
 		# create an instance of the ai
-		self.ai = HAL.HAL(pkSessionID=self.request.get("sessionId"))
+		# SET UP the initial values
+		self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId"), 
+							opCards= str(halState['playCard']),
+							aiCards=str(halState['compCard']) 
+							)
+		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
+
 		self.ai.put()
 
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
@@ -83,8 +90,7 @@ class GameHandler(Handler):
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
 
-
-		self.HAL(oldState)
+		# self.HAL(oldState)
 		self.write(newState)
 
 

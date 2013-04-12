@@ -25,17 +25,17 @@ class HAL(db.Model):
 	'''
 	#Estimates used in decision calculations
 	pkSessionID = db.StringProperty()
-	estAIScore = db.IntegerProperty()
-	estOppScore = db.IntegerProperty()
+	estAIScore = db.IntegerProperty(default=0)
+	estOppScore = db.IntegerProperty(default=0)
 	#list for memory values 
 	opCardsMem = db.ListProperty(float)
 	aiCardsMem = db.ListProperty(float)
 	#list for the actual card values we know
 	opCards = db.StringProperty(str)
 	aiCards = db.StringProperty(str)
-	discardTopValue = db.StringProperty()
+	discardTopValue = db.StringProperty(default="0")
 	#Memory decay rate, abs and rounded between 0.01-.99
-	decayRate = db.FloatProperty()
+	decayRate = db.FloatProperty(default=0.0)
 	#decayMemory list, represents chance of remembering correctly
 	decayMemory = db.ListProperty(float)
 	#This will be a string that builds up to tell the view what to do
