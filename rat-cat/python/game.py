@@ -64,7 +64,6 @@ class GameHandler(Handler):
 							opCards= str(halState['playCard']),
 							aiCards=str(halState['compCard']) 
 							)
-		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		self.ai.put()
 
