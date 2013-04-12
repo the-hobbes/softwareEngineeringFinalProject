@@ -118,6 +118,7 @@ class HAL(db.Model):
 		#We now have a card, is it a regular card or a power card?
 		if(card < 10):
 			#Regular Card
+			pass
 		else:
 			#Power Card. Really wish we had  a switch... (python)
 			if(card==10):
@@ -128,11 +129,7 @@ class HAL(db.Model):
 				return self.swap(state)
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
-
-
-
-
-		pass
+				pass
 
 
 
