@@ -228,3 +228,21 @@ class DatastoreInteraction():
 
 		return halDict
 
+	def updateAiCards(self, opCards, aiCards):
+		'''
+			updateAiCards
+			Used to update the HAL datastore entity with the current card set of the player and computer.
+			Parameters:
+				opcards, the cards the player has (opcards because the player is the opponent of HAL) 
+				aiCards, the cards of the AI itself
+		'''
+		logging.info("Made it to updateAiCards")
+		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		for result in results:
+			logging.info(result.opCards)
+			result.opCards = opCards
+			logging.info(result.aiCards)
+			result.aiCards = aiCards
+			result.put()
+
+

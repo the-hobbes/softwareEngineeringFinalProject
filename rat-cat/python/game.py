@@ -57,16 +57,12 @@ class GameHandler(Handler):
 
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
-		halState = json.loads(newState)
 
-		# create an instance of the ai and set the initial values
-		self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId"), 
-							opCards= str(halState['playCard']),
-							aiCards=str(halState['compCard']) 
-							)
-		# put it in the datastore
-		self.ai.put()
-			
+		# update the opcards and aicards in the hal object in the datastore
+		halState = json.loads(newState)
+		newModel = DatastoreInteraction(self.sessionId)
+		logging.info(newModel)
+		newModel.updateAiCards(str(halState['playCard']), aiCards=str(halState['compCard']))
 
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=self.thumbnailImage)
 
