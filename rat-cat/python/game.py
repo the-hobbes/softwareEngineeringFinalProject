@@ -112,7 +112,7 @@ class GameHandler(Handler):
 		# shuffle(deck)
 
 		# smaller deck to test endgame conditions
-		deck = [1,1,1,1,0,0,0,0,9]
+		deck = [9,9,9,9,0,0,0,0,0]
 		discardCard = [12]
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
@@ -679,23 +679,23 @@ class GameHandler(Handler):
 		if (pScore < cScore):
 			# player wins
 			logging.info("player wins")
-			statePassedIn['message']['text'] = "You've WON!"
 			statePassedIn["win"] = 1
 			# update the fact that the player won a round, and played a round
 			newModel.updateRoundsWonTotal()
+			time.sleep(1)
 
 		elif (pScore > cScore):
 			# computer wins
 			logging.info("computer wins")
-			statePassedIn['message']['text'] = "You've LOST!"
 			newModel.updateRoundsLostTotal()
+			time.sleep(1)
 
 		else:
 			# tie
 			logging.info("tie!!")
-			statePassedIn['message']['text'] = "It's a TIE!"
 			statePassedIn["win"] = 2
 			newModel.updateRoundsPlayedTotal()
+			time.sleep(1)
 
 		# use sleep to prevent the datastore from overwriting itself
 		time.sleep(1)
@@ -724,24 +724,24 @@ class GameHandler(Handler):
 			if (playerTotalScore > computerTotalScore):
 				# player loses
 				logging.info("Player Loses")
-				gameText = "You Lose."
+				gameText = "You Lose,"
 				newModel.updateGameLose()
 			elif(computerTotalScore > playerTotalScore):
 				# player wins
 				logging.info("Player Wins")
-				gameText = "You Win."
+				gameText = "You Win,"
 				statePassedIn["win"] = 1
 				newModel.updateGameWin()
 			else:
 				# a tie
 				logging.info("A tie has occurred")
-				gameText = "It was a tie."
+				gameText = "It was a tie,"
 				statePassedIn["win"] = 2
 				newModel.updateGameLose()
 
 			time.sleep(1)
 
-			statePassedIn['message']['text'] = "Game Over. " + gameText + " Would you like to start a new game?"
+			statePassedIn['message']['text'] = "Game Over. " + gameText + str(playerTotalScore) + " to " + str(computerTotalScore) + ". Would you like to start a new game?"
 
 			return statePassedIn
 
@@ -750,7 +750,7 @@ class GameHandler(Handler):
 			time.sleep(1)
 
 			logging.info("Starting a new round")
-			statePassedIn['message']['text'] = "The round is over! Your total score so far is: " + str(playerTotalScore) + ". The computer's total score so far is: " + str(computerTotalScore) + ". Would you like to continue playing?"
+			statePassedIn['message']['text'] = "The round is over! Your score for the round was: " + str(pScore) + ". The computer's score was: " + str(cScore) + ". Would you like to continue playing?"
 
 			return statePassedIn
 		
