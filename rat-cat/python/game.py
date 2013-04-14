@@ -641,13 +641,16 @@ class GameHandler(Handler):
 			endGame
 			State handler used to sum of the scores of a round and add them to the total score value in the state JSON.
 			Also decides if the game is over or just the round is over.
+			Note about the sleep timers: Google, get your shit together and serialize your datastore. This is just ridiculous.
 			Parameters:
 				statePassedIn, the (current) state of the game that has been passed in by the client side (view) ajax call.
 			Returns:
 				newState, the new state of the game as delinated by the statePassedIn and the user's choices.
 		'''
 		logging.info("Made it to the endgame state")
-		logging.info(statePassedIn['sessionId'])
+
+		# set the state to endgame so the view knows what to do
+		statePassedIn['state'] = "endGame"
 
 		# make a new object to interact with the datastore
 		newModel = DatastoreInteraction(statePassedIn['sessionId'])
@@ -696,51 +699,56 @@ class GameHandler(Handler):
 
 		# add the player score to the running total of their score for all games so far in the database
 		newModel.updatePlayerScore(pScore)
-		# time.sleep(1)
+		time.sleep(1)
 		# add the computer score to the running total for HAL
 		newModel.updateComputerScore(cScore)
-		# time.sleep(1)
+		time.sleep(1)
 		# add the players score to the running total for the current game 
 		newModel.updateGameScore(pScore)
-		# time.sleep(1)
+		time.sleep(1)
 		# what is the player and computer's total score now for this specific game?
 		playerTotalScore, computerTotalScore = newModel.getTotalGameScore()
-		# time.sleep(1)
-		
-		# is the game over?
+		time.sleep(1)
+
+		# is the game over? If yes...
 		if(playerTotalScore >= self.ENDGAME_SCORE or computerTotalScore >= self.ENDGAME_SCORE):
-			logging.info("Game over, player score is: " + str(playerTotalScore) + " Computer score is: " + str(computerTotalScore))
-			statePassedIn['state'] = "endGame"
+			logging.info("Game is now over")
+
+			# update the json to reflect that the game is now over
+			statePassedIn['gameOver'] = 1
 
 			# is the player's score, retrieved from the database, greater than the computer's score? Who won?
 			if (playerTotalScore > computerTotalScore):
 				# player loses
 				logging.info("Player Loses")
+				gameText = "You Lose."
 				newModel.updateGameLose()
 			elif(computerTotalScore > playerTotalScore):
 				# player wins
 				logging.info("Player Wins")
+				gameText = "You Win."
 				newModel.updateGameWin()
 			else:
 				# a tie
 				logging.info("A tie has occurred")
+				gameText = "It was a tie."
 				newModel.updateGameLose()
 
 			time.sleep(1)
 
+			statePassedIn['message']['text'] = "Game Over. " + gameText + " Would you like to start a new game?"
+
+			return statePassedIn
+
+		# if the game is not over, only the rounds is. Therefore, we begin a new round
 		else:
 			time.sleep(1)
-			# if not, begin a new round
+
 			logging.info("Starting a new round")
-			statePassedIn['state'] = "endRound"
-			statePassedIn['message']['text'] = "The round is over! Your total score so far is: " + str(playerTotalScore) + ". The computer's total score so far is: " + str(computerTotalScore)
-			# freshState = self.initEncode()
-			# logging.info(freshState)
-			# self.render("game.html", oldState='null', newState=freshState, thumbnailImage=self.thumbnailImage)
+			statePassedIn['message']['text'] = "The round is over! Your total score so far is: " + str(playerTotalScore) + ". The computer's total score so far is: " + str(computerTotalScore) + ". Would you like to continue playing?"
+
 			return statePassedIn
 		
-
-		# return statePassedIn
 
 	'''
 		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated

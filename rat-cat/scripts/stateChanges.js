@@ -515,16 +515,18 @@ function draw2PlayerChoice(state){
 	return state;
 }
 
-/*endRound: This function causes the board to update to the end round state
- *	state: The JSON representative of the game board, this is a JSON
- *		   object which has the following high level pairs:
- *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
- * 			 "displayCard" : {}, "knockState" : 0 | 1, "state" : "state specified by specs" }
- *	returns: The updated state
+/*endGame: This function causes the board to update to the end round state.
+ * First, it shows a hidden lightbox to interact with the user. Then it sends the state to an interaction function so the 
+ * user may decide what to do, depending on whether or not the game is over or the round is over. 
+ * note that this lightbox is a jinja snippet called popup.html, which is included in game.html
  */
-function endRound(state){
+function endGame(state){
+	//render the board visible
 	renderState(1,state);
-	alert(state.message.text);
+	//show the dialog popup
+	$('#popupDialog').jqmShow();
+	//call the interaction function, passing in the state.
+	endGameInteraction(state);
 }
 
 /*handleState: This function passes the state through a switch statement and calls the proper rendering function
@@ -548,9 +550,8 @@ function handleState(state){
 			return draw2PlayerChoice(state);
 		case 'initial':
 			return initialState(state);
-		case 'endRound':
-			return endRound(state);
-			// alert("End round state hit");
+		case 'endGame':
+			return endGame(state);
 		default:
 			return state;
 	}
