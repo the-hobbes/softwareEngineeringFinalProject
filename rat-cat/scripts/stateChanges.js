@@ -515,6 +515,18 @@ function draw2PlayerChoice(state){
 	return state;
 }
 
+/*endRound: This function causes the board to update to the end round state
+ *	state: The JSON representative of the game board, this is a JSON
+ *		   object which has the following high level pairs:
+ *		   { "deck" : {}, "discard" : {}, "compCard" : {}, "playCard" : {},
+ * 			 "displayCard" : {}, "knockState" : 0 | 1, "state" : "state specified by specs" }
+ *	returns: The updated state
+ */
+function endRound(state){
+	renderState(1,state);
+	alert(state.message.text);
+}
+
 /*handleState: This function passes the state through a switch statement and calls the proper rendering function
  *	state: The JSON representative of the game board, this is a JSON
  *		   object which has the following high level pairs:
@@ -536,6 +548,9 @@ function handleState(state){
 			return draw2PlayerChoice(state);
 		case 'initial':
 			return initialState(state);
+		case 'endRound':
+			return endRound(state);
+			// alert("End round state hit");
 		default:
 			return state;
 	}

@@ -136,7 +136,7 @@ class DatastoreInteraction():
 			Returns:
 				totalGameScore, the total score for the game so far. 
 		'''
-		logging.info("got to get total game score")
+		logging.info("got to get total game score!")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			playerScore = result.score

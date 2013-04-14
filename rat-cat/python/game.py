@@ -21,6 +21,7 @@ class GameHandler(Handler):
 		Main handler for rendering game elements in the templating system. Responds to get and post requests for the game url. Inherits from Hander for easy
 		template rendering.
 	'''
+	# class variables 
 	ai = object()
 	sessionId = ""
 	ENDGAME_SCORE = 60
@@ -33,27 +34,26 @@ class GameHandler(Handler):
 			This method perfoms the intialization of the game state, creating the json objects that represent the game and
 			json encoding them. It then renders them on the game template with jinja. 
 		'''
-		global thumbnailImage, sessionId
 
 		# get the player avatar image from the datastore 
-		sessionId = self.request.get("sessionId")
+		self.sessionId = self.request.get("sessionId")
 		# use the gameModel to interact with the datastore
-		newModel = DatastoreInteraction(sessionId)
+		newModel = DatastoreInteraction(self.sessionId)
 		avatar = newModel.getAvatar()
 
 		# set the right picture
 		if(avatar == "character1"):
-			thumbnailImage = "bettyThumb.png"
+			self.thumbnailImage = "bettyThumb.png"
 		elif(avatar == "character2"):
-			thumbnailImage = "jasonThumb.png"
+			self.thumbnailImage = "jasonThumb.png"
 		elif(avatar == "character3"):
-			thumbnailImage = "batRatThumb.png"
+			self.thumbnailImage = "batRatThumb.png"
 		elif(avatar == "character4"):
-			thumbnailImage = "catLadyThumb.png"
+			self.thumbnailImage = "catLadyThumb.png"
 		elif(avatar == "character5"):
-			thumbnailImage = "lebowsCatThumb.png"
+			self.thumbnailImage = "lebowsCatThumb.png"
 		else:
-			thumbnailImage = "tommyCatThumb.png"
+			self.thumbnailImage = "tommyCatThumb.png"
 
 		# perform initial creation and encoding of JSON object
 		newState = self.initEncode()
@@ -66,8 +66,9 @@ class GameHandler(Handler):
 							)
 		# put it in the datastore
 		self.ai.put()
+			
 
-		self.render("game.html", oldState='null', newState=newState, thumbnailImage=thumbnailImage)
+		self.render("game.html", oldState='null', newState=newState, thumbnailImage=self.thumbnailImage)
 
 	def post(self):
 		'''
@@ -103,16 +104,20 @@ class GameHandler(Handler):
 		global sessionId
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-		powerCards = [ [10]*3, [11]*3, [12]*3 ]
-		deck = sum(numberCards, [])
-		shuffle(deck)
-		subDeck = sum(powerCards, [])
-		shuffle(subDeck)
-		discardCard = str(deck.pop(choice(deck)))
-		for p in subDeck:
-			deck.append(p)
-		shuffle(deck)
+		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		# deck = sum(numberCards, [])
+		# shuffle(deck)
+		# subDeck = sum(powerCards, [])
+		# shuffle(subDeck)
+		# discardCard = str(deck.pop(choice(deck)))
+		# for p in subDeck:
+		# 	deck.append(p)
+		# shuffle(deck)
+
+		# smaller deck to test endgame conditions
+		deck = [1,1,1,1,0,0,0,0,9]
+		discardCard = [12]
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -134,14 +139,14 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
-					"sessionId" : sessionId,
+					"sessionId" : self.sessionId,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
 					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
 				}
 
 		# encode it
-		logging.info(newState)
+		# logging.info(newState)
 		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		return json.dumps(newState)
@@ -690,20 +695,24 @@ class GameHandler(Handler):
 			statePassedIn['message']['text'] = "It's a TIE!"
 			newModel.updateRoundsPlayedTotal()
 
-		# use sleep to prevent the datastore from 
+		# use sleep to prevent the datastore from overwriting itself
 		time.sleep(1)
 
 		# add the player score to the running total of their score for all games so far in the database
 		newModel.updatePlayerScore(pScore)
+		# time.sleep(1)
 		# add the computer score to the running total for HAL
 		newModel.updateComputerScore(cScore)
+		# time.sleep(1)
 		# add the players score to the running total for the current game 
 		newModel.updateGameScore(pScore)
+		# time.sleep(1)
 		# what is the player and computer's total score now for this specific game?
 		playerTotalScore, computerTotalScore = newModel.getTotalGameScore()
+		# time.sleep(1)
 		
 		# is the game over?
-		if(playerTotalScore >= ENDGAME_SCORE or computerTotalScore >= ENDGAME_SCORE):
+		if(playerTotalScore >= self.ENDGAME_SCORE or computerTotalScore >= self.ENDGAME_SCORE):
 			logging.info("Game over, player score is: " + str(playerTotalScore) + " Computer score is: " + str(computerTotalScore))
 			statePassedIn['state'] = "endGame"
 
@@ -724,16 +733,18 @@ class GameHandler(Handler):
 			time.sleep(1)
 
 		else:
+			time.sleep(1)
 			# if not, begin a new round
 			logging.info("Starting a new round")
-			global thumbnailImage, sessionId
-			freshState = self.initEncode()
-			logging.info(freshState)
-			self.render("game.html", oldState='null', newState=freshState, thumbnailImage=thumbnailImage)
-			return freshState
-			
+			statePassedIn['state'] = "endRound"
+			statePassedIn['message']['text'] = "The round is over! Your total score so far is: " + str(playerTotalScore) + ". The computer's total score so far is: " + str(computerTotalScore)
+			# freshState = self.initEncode()
+			# logging.info(freshState)
+			# self.render("game.html", oldState='null', newState=freshState, thumbnailImage=self.thumbnailImage)
+			return statePassedIn
+		
 
-		return statePassedIn
+		# return statePassedIn
 
 	'''
 		The following are utility methods, employed by the state handlers to perform various standard tasks. They are separated
