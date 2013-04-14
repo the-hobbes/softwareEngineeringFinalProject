@@ -1,0 +1,41 @@
+{% block popupLightbox %}
+<!-- Popup Button Lightbox-->
+<div id="popupBox">
+</div><!-- end popup-->
+
+<div class="jqmWindow hideMe" id="popupDialog">
+	<p id="endGameMessage"> </p>
+	<div style="width:100%; margin:0px auto;">
+		<button id="yesButton" style="width:100px; height:50px; font-size:small;">Yes</button> 
+		<button id="noButton" style="width:100px; height:50px; font-size:small;">No</button>
+	</div>
+	<script> 
+		/* endGameInteraction: This function displays the text passed in by the endGame state function in stateChanges.js 
+		 * It gives the user a choice of options (yes or no) and then executes based on that choice.
+		 */
+		function endGameInteraction(state){
+			$("#endGameMessage").text(state.message.text);
+			//find out if the game is over, or just the round
+			gameOver = state.gameOver
+
+			$("#yesButton").click(function() {
+				// They clicked Yes
+			    if(gameOver == 0){
+			    	// if only the round is over, refresh the page to create a new round
+			    	window.location.href=window.location.href
+			    }
+			    else{
+			    	//otherwise, the game itself is over. Redirect them to the playerinfo page so they can start again
+			    	window.location.href="/playerinfo"
+			    }
+			});
+
+			$("#noButton").click(function() {
+				// They clicked no. Get 'em outta here
+			    window.location = 'http://www.google.com';
+			});
+		}
+	</script>
+</div><!-- end startDialog-->
+	<!-- End Popup Button Lightbox-->
+{% endblock %}
