@@ -4,10 +4,12 @@
 </div><!-- end popup-->
 
 <div class="jqmWindow hideMe" id="popupDialog">
-	<p id="endGameMessage"> </p>
-	<div style="width:100%; margin:0px auto;">
+	<div style="width:100%; text-align: center;">
+		<p id="endGameMessage" style="margin-bottom:20px;"> </p>
 		<button id="yesButton" style="width:100px; height:50px; font-size:small;">Yes</button> 
 		<button id="noButton" style="width:100px; height:50px; font-size:small;">No</button>
+		<br />
+		<img id="resultImage" src="" style="margin-top:10px; border:1px solid black;"/>
 	</div>
 	<script> 
 		/* endGameInteraction: This function displays the text passed in by the endGame state function in stateChanges.js 
@@ -17,6 +19,21 @@
 			$("#endGameMessage").text(state.message.text);
 			//find out if the game is over, or just the round
 			gameOver = state.gameOver
+
+			//change the image to the appropriate one depending on whether they won or lost
+			if(state.win == 1){
+				//they won
+				$("#resultImage").attr("src","images/win.png");
+			}
+			else if(state.win == 2){
+				//they tied
+				$("#resultImage").attr("src","images/lose.png");
+			}
+			else{
+				//they lost
+				$("#resultImage").attr("src","images/tie.png");
+			}
+			
 
 			$("#yesButton").click(function() {
 				// They clicked Yes
@@ -32,7 +49,7 @@
 
 			$("#noButton").click(function() {
 				// They clicked no. Get 'em outta here
-			    window.location = 'http://www.google.com';
+			    window.location = '/scores';
 			});
 		}
 	</script>

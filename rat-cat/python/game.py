@@ -135,6 +135,7 @@ class GameHandler(Handler):
 					"state" : "waitingForDraw",
 					"score" : 0,
 					"gameOver" :0,
+					"win": 0,
 					"sessionId" : self.sessionId,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
@@ -679,6 +680,7 @@ class GameHandler(Handler):
 			# player wins
 			logging.info("player wins")
 			statePassedIn['message']['text'] = "You've WON!"
+			statePassedIn["win"] = 1
 			# update the fact that the player won a round, and played a round
 			newModel.updateRoundsWonTotal()
 
@@ -692,6 +694,7 @@ class GameHandler(Handler):
 			# tie
 			logging.info("tie!!")
 			statePassedIn['message']['text'] = "It's a TIE!"
+			statePassedIn["win"] = 2
 			newModel.updateRoundsPlayedTotal()
 
 		# use sleep to prevent the datastore from overwriting itself
@@ -727,11 +730,13 @@ class GameHandler(Handler):
 				# player wins
 				logging.info("Player Wins")
 				gameText = "You Win."
+				statePassedIn["win"] = 1
 				newModel.updateGameWin()
 			else:
 				# a tie
 				logging.info("A tie has occurred")
 				gameText = "It was a tie."
+				statePassedIn["win"] = 2
 				newModel.updateGameLose()
 
 			time.sleep(1)
