@@ -29,56 +29,25 @@ class HAL(db.Model):
 	'''
 	#Estimates used in decision calculations
 	pkSessionID = db.StringProperty()
-	estAIScore = db.IntegerProperty()
-	estOppScore = db.IntegerProperty()
+	estAIScore = db.IntegerProperty(default=0)
+	estOppScore = db.IntegerProperty(default=0)
 	#list for memory values 
 	opCardsMem = db.ListProperty(float)
 	aiCardsMem = db.ListProperty(float)
 	#list for the actual card values we know
 	opCards = db.StringProperty(str)
 	aiCards = db.StringProperty(str)
-	discardTopValue = db.StringProperty()
+	discardTopValue = db.StringProperty(default="0")
 	#Memory decay rate, abs and rounded between 0.01-.99
-	decayRate = db.FloatProperty()
+	decayRate = db.FloatProperty(default=0.0)
 	#decayMemory list, represents chance of remembering correctly
 	decayMemory = db.ListProperty(float)
 	#This will be a string that builds up to tell the view what to do
 	actionsToTake = ""
 	diff =0
 
-	def __init__(self,sessionID="Debug",diff=0,aiCardArray=[],opCardArray=[],topValue=9):
-		'''
-			Constructor
-				Creates the HAL instance in the database to keep persistent state. 
-			Parameters:
-				sessionID, The sessionID to find this instance of computer in the database
-				diff, The difficult setting of the AI
-					Difficulty of 0 corresponds to random choice
-					Difficulty of 1 corresponds to high memory decay rate
-					Difficulty of 2 corresponds to low memory decay rate
-					Difficulty of 3 corresponds to perfect memory recall (Not selectable by user but for funsies is here)
-				aiCardArray, An array of the AI's initial cards
-				opCardArray, An array of the opponents initial cards
-				topValue, The value of the top card, None if the deck is empty
-		'''
-
-		self.key_name=sessionID
-		self.pkSessionID=sessionID
-		self.estAIScore=36
-		self.estOppScore=18
-		#HAL does not know the user's cards yet...
-		self.opCardsMem=[0.0,0.0,0.0,0.0]
-		self.aiCardsMem=[1.0,1.0,1.0,1.0]
-		self.opCards=json.dumps(opCardArray)
-		self.aiCards=json.dumps(aiCardArray)
-		self.discardTopValue=json.dumps(topValue)
-		self.decayRate = 0.001 #use some equation of difficult (probs 1/e^diff and some stuff)
-		self.decayMemory = [1.0,1.0,1.0,1.0]
-
-		#Store this AI into the database to along with this session
-		#https://groups.google.com/forum/?fromgroups=#!topic/google-appengine/iX2fEjv5jsM ... uh
-		db.Model.__init__(self,key_name=sessionID,pkSessionID=sessionID,estAIScore=self.estAIScore,estOppScore=self.estOppScore,opCardsMem=self.opCardsMem,aiCardsMem=self.aiCardsMem,opCards=self.opCards,aiCards=self.aiCards,discardTopValue=self.discardTopValue,decayRate=self.decayRate,decayMemory=self.decayMemory)
-		self.put()
+	def testMe(self):
+		logging.info("Test Satisfactory")
 
 	def rememberTopCard(self,topCard):
 		'''
@@ -115,6 +84,7 @@ class HAL(db.Model):
 		#We now have a card, is it a regular card or a power card?
 		if(card < 10):
 			#Regular Card
+			pass
 		else:
 			#Power Card. Really wish we had  a switch... (python)
 			if(card==10):
@@ -125,11 +95,7 @@ class HAL(db.Model):
 				return self.swap(state)
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
-
-
-
-
-		pass
+				pass
 
 
 
@@ -283,22 +249,6 @@ class HAL(db.Model):
 				compRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
 		#Return two things at once #YOLO
 		return humanRep,compRep
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
