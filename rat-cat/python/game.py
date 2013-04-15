@@ -71,6 +71,10 @@ class GameHandler(Handler):
 			post
 			Responds to post requests for the resource.
 			Takes in the json object from the view and, according to the state, executes the necessary data changes.
+			
+			**** TODO: when an oldState comes in we need to check to see if there are cards left in the deck. if there aren't,
+			we need to direct program flow to endgame. If there are, then we can proceed as normal, according to the information
+			included in the oldState.
 		'''
 		# logging.info(self.request.arguments())
 
@@ -80,13 +84,18 @@ class GameHandler(Handler):
 		# reset all of the active flags in the json (to remove all glowing effects and prepare for new ones)
 		oldState = self.resetActiveFlags(oldState)
 
-		# send the object to the state parser, and get the new state of the gameboard
-		newState = self.parseState(oldState)
+		# if the deck is empty, its time for the endgame state
+		if( len(oldState['deck']) == 0 ):
+			logging.info("Deck is empty")
+			newState = self.endGame(oldState)
+		# otherwise, proceed as normal
+		else:
+			# send the object to the state parser, and get the new state of the gameboard
+			newState = self.parseState(oldState)
 		
 		#write the new data out as a response for the view to render
 		newState = json.dumps(newState)
 
-		# self.HAL(oldState)
 		self.write(newState)
 
 
@@ -97,7 +106,6 @@ class GameHandler(Handler):
 			Returns:
 				initialState, the initial state of the gameboard
 		'''
-		global sessionId
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
 		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
@@ -112,7 +120,7 @@ class GameHandler(Handler):
 		# shuffle(deck)
 
 		# smaller deck to test endgame conditions
-		deck = [9,9,9,9,0,0,0,0,0]
+		deck = [0,0,0,0,0,9,9,9,9]
 		discardCard = [12]
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
