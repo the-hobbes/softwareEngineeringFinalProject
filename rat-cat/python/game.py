@@ -670,7 +670,7 @@ class GameHandler(Handler):
 		pScore = 0
 		cScore = 0
 
-		# set the cards to visible at this time as well
+		# set the cards to visible, get the score, and swap out any power cards
 		for pCard in statePassedIn['playCard']:
 			pScore += int(pCard['image'])
 			pCard['visible'] = 1
