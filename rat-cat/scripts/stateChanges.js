@@ -338,12 +338,12 @@ function playerChoice(state){
 		pClick = pClick + 1;
 		console.log(pClick);
 
-		// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
-		showLoader();
-
 		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
+			// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
+			showLoader();
+			
 		    var request = $.ajax({
 		        url: "/game",
 		        type: 'POST',
@@ -355,6 +355,7 @@ function playerChoice(state){
 		    // callback handler that will be called on success
 		    request.done(function (response, textStatus, jqXHR){
 		        console.log('Returned from playerChoiceAJAX callback');
+		        hideLoader();
 		        // console.log(response);
 
 		        //Remove the click so we don't send a ajax request to the server while this 
@@ -364,12 +365,12 @@ function playerChoice(state){
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
 		        //close the loading popup
-				hideLoader();
 		        renderState(1,state);
 		    });
 
 		    // callback handler that will be called on failure
 		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	hideLoader();
 		        // log the error to the console
 		        console.error(
 		            "The following error occured: "+
