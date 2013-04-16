@@ -144,7 +144,11 @@ class GameHandler(Handler):
 
 		# encode it
 		# logging.info(newState)
-		# self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
+		#TODO
+		#
+		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
+		#
+		#self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
 
 		return json.dumps(newState)
 
@@ -326,7 +330,7 @@ class GameHandler(Handler):
 
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		newState = ai.doTurn(statePassedIn)
+		newState = self.ai.doTurn(statePassedIn)
 
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
