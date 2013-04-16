@@ -109,8 +109,14 @@ class HAL(db.Model):
 				#Back of a card, aka we drew from an empty deck maybe?
 				#need to add in error checking
 				state['discardPile'].append(card)
-		#Should we knock??
 		
+		#Should we knock??
+		#We should knock if we think our cards are higher than the players by some threshold
+		self.shouldKnock()
+
+
+		#Slowly forget what our cards are\
+		self.alzheimer()
 		return state
 
 
@@ -348,7 +354,8 @@ class HAL(db.Model):
 
 	def findHighestInHand(self):
 		'''
-			Finds the highest card in the hand and returns it's index and value
+			findHighestInHand
+				Finds the highest card in the hand and returns it's index and value
 		'''
 		#The running max val
 		maxVal = 0
@@ -361,6 +368,64 @@ class HAL(db.Model):
 			j=j+1
 
 		return i,maxVal
+
+	def shouldKnock(self):
+		'''
+			shouldKnock
+				Returns true or false if we should try to end the game or not
+		'''
+		#Get what we remember
+		humanCards,aiCards = self.getMemory()
+		#Add up the values
+		#LAWL human value is nothing! so true!
+		humanValue = 0
+		compValue = 0
+		for c in humanCards:
+			humanValue = humanValue + int(c['image'])
+		for c in aiCards:
+			compValue = compValue + int(c['image'])
+		#Now here comes some math
+		#Quite frankly, if we just do a comparison that's silly. We'll end the game if the ai
+		#by chance believes itself to be in the right when it's really just remembering poorly
+		#while this isn't a terrible thing, we still have a pretty good chance that the AI will
+		#try to end the game really early (I don't feel like calculating the probabilty, but we 
+		# could if we got bored and wanted it on the presentation)
+		#The higher the difficulty the more we want to weight it in the AI's favor.
+		#So lets do some ratio work shall we?
+		if(humanValue/compValue < 1):
+			#compValue is larger than the human value but to what degree?
+			#If they are close we will be closer to 1, the more towards zero the more confident 
+			#the computer is
+			if(humanValue/compValue < .75):
+				#pretty unsure, what difficult are we on?
+				if(self.diff > 1):
+					#we're on hard... which means we've got alright memory
+					#flip a coin.
+					if(  randZ() > humanValue/compValue):
+						#Let's knock!
+						state['knockState'] = True
+				else:
+					#We're not on hard, let's do it with some very small probability
+					if(randZ() < .15):
+						state['knockState'] = True
+			elif(humanValue/compValue < .4)	:
+				#pretty confident
+				if(self.diff > 0):
+					#if we're not on easy we'll flip a coid
+					if( randZ() > humanValue/compValue):
+						#60% chance of knocking
+						state['knockState'] = True
+			else:
+				#we're above 75 we aint knocking.
+				pass
+		else:
+			#The human's cards are more than ours, so we wont knock
+			pass
+
+					
+
+
+	
 
 
 
