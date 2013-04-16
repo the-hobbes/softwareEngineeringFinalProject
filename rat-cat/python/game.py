@@ -114,7 +114,7 @@ class GameHandler(Handler):
 		shuffle(deck)
 		subDeck = sum(powerCards, [])
 		shuffle(subDeck)
-		discardCard = str(deck.pop(choice(deck)))
+		discardCard = deck.pop(choice(deck))
 		for p in subDeck:
 			deck.append(p)
 		shuffle(deck)
