@@ -136,7 +136,7 @@ class DatastoreInteraction():
 			Returns:
 				totalGameScore, the total score for the game so far. 
 		'''
-		logging.info("got to get total game score")
+		logging.info("got to get total game score!")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			playerScore = result.score
@@ -227,5 +227,22 @@ class DatastoreInteraction():
 		halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'decayMemory':decayMemory, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
 
 		return halDict
+
+	def updateAiCards(self, opCards, aiCards):
+		'''
+			updateAiCards
+			Used to update the HAL datastore entity with the current card set of the player and computer.
+			Parameters:
+				opcards, the cards the player has (opcards because the player is the opponent of HAL) 
+				aiCards, the cards of the AI itself
+		'''
+		logging.info("Made it to updateAiCards")
+		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		for result in results:
+			logging.info(result.opCards)
+			result.opCards = opCards
+			logging.info(result.aiCards)
+			result.aiCards = aiCards
+			result.put()
 
 
