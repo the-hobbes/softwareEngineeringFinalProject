@@ -37,11 +37,9 @@ class HAL(db.Model):
 	#list for the actual card values we know
 	opCards = db.StringProperty(str)
 	aiCards = db.StringProperty(str)
-	discardTopValue = db.StringProperty(default="0")
+	discardTopValue = db.IntegerProperty(default=0)
 	#Memory decay rate, abs and rounded between 0.01-.99
 	decayRate = db.FloatProperty(default=0.0)
-	#decayMemory list, represents chance of remembering correctly
-	decayMemory = db.ListProperty(float)
 	#This will be a string that builds up to tell the view what to do
 	actionsToTake = ""
 	diff =0
@@ -66,7 +64,7 @@ class HAL(db.Model):
 		#Decide whether or not to draw from the discard pile or the deck
 		#If the card on the discard pile is lower than the largest number we think we have
 		#take it, else draw from the deck
-		discardPile = state['discardPile'][-1]
+		discardPile = state['discard'][-1]
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
@@ -79,7 +77,7 @@ class HAL(db.Model):
 		card = 0
 		if(maxVal > discardPile):
 			#Pull from the discard pile
-			card = state['discardPile'].pop()
+			card = state['discard'].pop()
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Discard"
 		else:
 			#Pull from the deck
@@ -95,14 +93,14 @@ class HAL(db.Model):
 			if(card < highVal):
 				#Yes we do!
 				#give us the card and we remember it well becuase we just got it
-				state['discardPile'].append(self.aiCards['image'])
+				state['discard'].append(self.aiCards['image'])
 				self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
 				#NO!
 				self.actionsToTake = self.actionsToTake + " HAL discarded the card."
-				state['discardPile'].append(card)
+				state['discard'].append(card)
 		else:
 			#Power Card. Really wish we had  a switch... (python)
 			if(card==10):
@@ -117,7 +115,7 @@ class HAL(db.Model):
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
 				#need to add in error checking
-				state['discardPile'].append(card)
+				state['discard'].append(card)
 		
 		#Should we knock??
 		#We should knock if we think our cards are higher than the players by some threshold
@@ -162,12 +160,12 @@ class HAL(db.Model):
 				if(card < highVal):
 					#Yes we do!
 					#give us the card and we remember it well becuase we just got it
-					state['discardPile'].append(self.aiCards['image'])
+					state['discard'].append(self.aiCards['image'])
 					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
 					self.aiCardsMem[indexOfHighest] = 1.0
 				else:
 					#Meh we could do without it
-					state['discardPile'].append(card)
+					state['discard'].append(card)
 					#Lets draw a new card (yo dawg I heard you like try catches...)
 					try:
 						card = state['deck'].pop()
@@ -182,12 +180,12 @@ class HAL(db.Model):
 							indexOfHighest,highVal = self.findHighestInHand()
 							if(card < highVal):
 								#We want it!
-								state['discardPile'].append(self.aiCards['image'])
+								state['discard'].append(self.aiCards['image'])
 								self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
 								self.aiCardsMem[indexOfHighest] = 1.0
 							else:
 								#We dont want it!
-								state['discardPile'].append(card)
+								state['discard'].append(card)
 
 						else:
 							#It's a power card! Let's use it!
@@ -200,7 +198,7 @@ class HAL(db.Model):
 							else:
 								#back of a card or something strange? 
 								#push whatever it was onto the discard pile
-								state['discardPile'].append(card)
+								state['discard'].append(card)
 								pass			
 
 
@@ -215,7 +213,7 @@ class HAL(db.Model):
 				else:
 					#back of a card or something strange? 
 					#push whatever it was onto the discard pile
-					state['discardPile'].append(card)
+					state['discard'].append(card)
 					pass
 
 
@@ -354,7 +352,7 @@ class HAL(db.Model):
 			else:
 				#Remembered incorrectly
 				humanRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
-			if(self.aiCardsMem[i] < randz()):
+			if(self.aiCardsMem[i] < randZ()):
 				#Remembered correctly
 				compRep[i] = self.aiCards[i]
 			else:

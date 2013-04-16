@@ -113,7 +113,7 @@ class GameHandler(Handler):
 
 		# smaller deck to test endgame conditions
 		deck = [9,9,9,9,0,0,0,0,0]
-		discardCard = [12]
+		discardCard = 12
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -148,7 +148,9 @@ class GameHandler(Handler):
 		#
 		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
 		#
-		#self.ai = HAL.HAL(self.request.get("sessionId"),0,newState['compCard'],newState['playCard'],newState['displayCard'])
+		disc = newState['discard'][0]
+		global ai
+		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
 
 		return json.dumps(newState)
 
@@ -330,7 +332,9 @@ class GameHandler(Handler):
 
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		newState = self.ai.doTurn(statePassedIn)
+		global ai
+		logging.info("LE DERP DERP" + str(ai))
+		newState = ai.doTurn(statePassedIn)
 
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's

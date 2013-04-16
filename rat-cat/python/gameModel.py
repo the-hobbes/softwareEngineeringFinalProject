@@ -224,7 +224,7 @@ class DatastoreInteraction():
 		# retrieve difficulty from datastore 
 		difficulty = self.getDifficulty()
 		logging.info(difficulty)
-		halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'decayMemory':decayMemory, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
+		halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
 
 		return halDict
 
