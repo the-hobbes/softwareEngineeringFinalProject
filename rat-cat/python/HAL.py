@@ -84,6 +84,18 @@ class HAL(db.Model):
 		#We now have a card, is it a regular card or a power card?
 		if(card < 10):
 			#Regular Card
+			#Choose whichever card is highest in our hand, if card is lower then take it
+			#else discard
+			indexOfHighest,highVal = self.findHighestInHand()
+				if(card < highVal):
+					#Yes we do!
+					#give us the card and we remember it well becuase we just got it
+					state['discardPile'].append(self.aiCards['image'])
+					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+					self.aiCardsMem[indexOfHighest] = 1.0
+				else:
+					#NO!
+					state['discardPile'].append(card)
 			pass
 		else:
 			#Power Card. Really wish we had  a switch... (python)
@@ -95,18 +107,102 @@ class HAL(db.Model):
 				return self.swap(state)
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
-				pass
+				#need to add in error checking
+				state['discardPile'].append(card)
+		#Should we knock??
+		
+		return state
 
 
 
 	def drawTwo(self,state):
 		'''
 			drawTwo:
-				The AI decides what to do with a draw two car 
+				The AI decides what to do with a draw two card
 			Parameters:
 				state, the state of the game
 
 		'''
+		#The AI draws a card and decides if it will keep it, 
+		#To decide if it keeps it or not really depends on the value of the card
+		#if the value of the card is greater than any it thinks it has in it's hand it will
+		#keep it. If it finds a power card it will use it 
+
+		#We draw our first card (from the deck because by the logic in do turn we already disregarded the discard)
+		try:
+			card = state['deck'].pop()
+		except Exception, e:
+			#well crap. We're out of cards
+			#we disregarded the discard already so we'll just knock and be done with it.
+			state['knockState'] = True;
+			return state
+		else:
+			#We have a card!
+			#Is it any good?
+			if(card < 10):
+				#It's a number! 
+				#Do we want it?
+				indexOfHighest,highVal = self.findHighestInHand()
+				if(card < highVal):
+					#Yes we do!
+					#give us the card and we remember it well becuase we just got it
+					state['discardPile'].append(self.aiCards['image'])
+					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+					self.aiCardsMem[indexOfHighest] = 1.0
+				else:
+					#Meh we could do without it
+					state['discardPile'].append(card)
+					#Lets draw a new card (yo dawg I heard you like try catches...)
+					try:
+						card = state['deck'].pop()
+					except Exception, e:
+						#well how damn there wasn't anything left to grab!
+						state['knockState'] = True
+						return state
+					else:
+						#well goody gumdrops lets get going!
+						if(card < 10):
+							#well doesnt this seem awfully familiar...
+							indexOfHighest,highVal = self.findHighestInHand()
+							if(card < highVal):
+								#We want it!
+								state['discardPile'].append(self.aiCards['image'])
+								self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+								self.aiCardsMem[indexOfHighest] = 1.0
+							else:
+								#We dont want it!
+								state['discardPile'].append(card)
+
+						else:
+							#It's a power card! Let's use it!
+							if(card==10):
+								return self.drawTwo(state)
+							elif(card==11):
+								return self.peek(state)
+							elif(card==12):
+								return self.swap(state)
+							else:
+								#back of a card or something strange? 
+								#push whatever it was onto the discard pile
+								state['discardPile'].append(card)
+								pass			
+
+
+			else:
+				#It's a power card! Let's use it!
+				if(card==10):
+					return self.drawTwo(state)
+				elif(card==11):
+					return self.peek(state)
+				elif(card==12):
+					return self.swap(state)
+				else:
+					#back of a card or something strange? 
+					#push whatever it was onto the discard pile
+					state['discardPile'].append(card)
+					pass
+
+
 
 		return state
 
@@ -126,7 +222,7 @@ class HAL(db.Model):
 				val = self.aiCardsMem[j]
 				i = j
 		#reset the memory (this is effectively the same as us looking at it)
-		self.aiCardsMem[i] = 1
+		self.aiCardsMem[i] = 1.0
 
 		return state
 
@@ -249,6 +345,23 @@ class HAL(db.Model):
 				compRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
 		#Return two things at once #YOLO
 		return humanRep,compRep
+
+	def findHighestInHand(self):
+		'''
+			Finds the highest card in the hand and returns it's index and value
+		'''
+		#The running max val
+		maxVal = 0
+		i,j=0,0
+		human,aiCards = self.getMemory()
+		for c in aiCards:
+			if(maxVal < int(c['image'])):
+				i=j
+				maxVal = int(c['image'])
+			j=j+1
+
+		return i,maxVal
+
 
 
 
