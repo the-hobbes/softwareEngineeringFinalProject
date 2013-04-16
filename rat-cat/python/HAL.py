@@ -61,6 +61,8 @@ class HAL(db.Model):
 		Does the HAL's turn, this function is essentially a way for the AI to keep
 
 		'''
+		#clear old actions
+		self.actionsToTake = ""
 		#Decide whether or not to draw from the discard pile or the deck
 		#If the card on the discard pile is lower than the largest number we think we have
 		#take it, else draw from the deck
@@ -78,32 +80,39 @@ class HAL(db.Model):
 		if(maxVal > discardPile):
 			#Pull from the discard pile
 			card = state['discardPile'].pop()
+			self.actionsToTake = self.actionsToTake + " HAL pulling from Discard"
 		else:
 			#Pull from the deck
 			card = state['deck'].pop()
+			self.actionsToTake = self.actionsToTake + " HAL pulling from Deck"
 		#We now have a card, is it a regular card or a power card?
+		self.actionsToTake = self.actionsToTake + " HAL pulled a " + card
 		if(card < 10):
 			#Regular Card
 			#Choose whichever card is highest in our hand, if card is lower then take it
 			#else discard
 			indexOfHighest,highVal = self.findHighestInHand()
-				if(card < highVal):
-					#Yes we do!
-					#give us the card and we remember it well becuase we just got it
-					state['discardPile'].append(self.aiCards['image'])
-					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
-					self.aiCardsMem[indexOfHighest] = 1.0
-				else:
-					#NO!
-					state['discardPile'].append(card)
-			pass
+			if(card < highVal):
+				#Yes we do!
+				#give us the card and we remember it well becuase we just got it
+				state['discardPile'].append(self.aiCards['image'])
+				self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				self.aiCardsMem[indexOfHighest] = 1.0
+				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
+			else:
+				#NO!
+				self.actionsToTake = self.actionsToTake + " HAL discarded the card."
+				state['discardPile'].append(card)
 		else:
 			#Power Card. Really wish we had  a switch... (python)
 			if(card==10):
+				self.actionsToTake = self.actionsToTake + " HAL has a draw two card. "
 				return self.drawTwo(state)
 			elif(card==11):
+				self.actionsToTake = self.actionsToTake + " HAL is peeking at his cards."
 				return self.peek(state)
 			elif(card==12):
+				self.actionsToTake = self.actionsToTake + " HAL is going into a swap state"
 				return self.swap(state)
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
@@ -114,6 +123,7 @@ class HAL(db.Model):
 		#We should knock if we think our cards are higher than the players by some threshold
 		self.shouldKnock()
 
+		logging.info(self.actionsToTake)
 
 		#Slowly forget what our cards are\
 		self.alzheimer()
@@ -229,6 +239,7 @@ class HAL(db.Model):
 				i = j
 		#reset the memory (this is effectively the same as us looking at it)
 		self.aiCardsMem[i] = 1.0
+		self.actionsToTake = self.actionsToTake + " HAL remembers his " + i + "th card!"
 
 		return state
 

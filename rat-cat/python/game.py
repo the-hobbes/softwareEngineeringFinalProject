@@ -318,16 +318,21 @@ class GameHandler(Handler):
 		#	The chance of remembering what he has seen is related to the difficulty level he has been set to. This can be done
 		#	in the database, or perhaps just in a variable here, or even in the json. 
 		
-		statePassedIn['state'] = "waitingForDraw"
 		logging.info("Made it to the HAL State")
 		# self.ai.testMe()
 		# newModel = DatastoreInteraction(statePassedIn['sessionId'])
 		# parameterDict = newModel.getHAL()
 		# logging.info(parameterDict)
 
+		#Did the player knock and the counter is down?? 
+		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
+		newState = ai.doTurn(statePassedIn)
+
+
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
+		statesPassedIn['state'] = "waitingForDraw"
 		logging.info(statePassedIn)
 		return statePassedIn
 
