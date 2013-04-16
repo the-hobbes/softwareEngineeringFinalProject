@@ -19,6 +19,7 @@
 			$('#creditsDialog').jqm();
 			$('#rulesDialog').jqm();
 			$('#popupDialog').jqm();
+			$('#loadingDialog').jqm();
 
 			//add event handlers to each button, which will fire when clicked and call jqmShow() on the dialogs
 			 // $('#startButton').live('click',function(){
@@ -30,6 +31,7 @@
 			 $('#rulesLink').live('click',function(){
 			      $('#rulesDialog').jqmShow();
 			 });
+			 
 		});
 		</script>
 	</head>
@@ -61,7 +63,7 @@
 			<div id="characterAvatar" class="shadow" style="background:url(images/characters/thumbs/{{thumbnailImage}});"></div><!-- end characterAvatar -->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<button id="knockButton" class="shadow" onclick="testPost()">Knock</button><!--end knockButton-->
+			<button id="knockButton" class="shadow" onclick="showLoader()">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -82,6 +84,7 @@
 		{% include "rules.html" %}
 		{% include "credits.html" %}
 		{% include "popup.html" %}
+		{% include "loading.html" %}
 
 		<script>
 		var currentState;

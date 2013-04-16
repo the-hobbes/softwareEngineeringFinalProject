@@ -1,7 +1,7 @@
 /*
  * Created 14MAR2013 
  * Authors:
- * 	Ethan
+ * 	Ethan, Phelan
  *
  * The purpose of this file is to provide the changes to the view upon each change of state. The following functions
  * are defined here:
@@ -337,8 +337,11 @@ function playerChoice(state){
 		state.playerClicks.push(this.id);
 		pClick = pClick + 1;
 		console.log(pClick);
-		//Use ajax to yell over to the server that something has happened
 
+		// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
+		showLoader();
+
+		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
 		    var request = $.ajax({
@@ -360,6 +363,8 @@ function playerChoice(state){
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
+		        //close the loading popup
+				hideLoader();
 		        renderState(1,state);
 		    });
 
@@ -523,6 +528,8 @@ function draw2PlayerChoice(state){
 function endGame(state){
 	//render the board visible
 	renderState(1,state);
+	//close the loading popup
+	hideLoader();
 	//show the dialog popup
 	$('#popupDialog').jqmShow();
 	//call the interaction function, passing in the state.
