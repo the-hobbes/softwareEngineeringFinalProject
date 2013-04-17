@@ -228,10 +228,38 @@ function HAL(state){
 	//getting.
 	console.log('HAL Says');
 	console.log(state);
-	state.state = 'waitingForDraw';	
-	state.discardActivity = 1
-	state.deckActivity = 1
-	waitingForDraw(state);
+
+	var request = $.ajax({
+			        url: "/game",
+			        type: 'POST',
+					data: JSON.stringify(state),
+					contentType: "application/json",
+					dataType: 'json'
+			    });
+
+			    // callback handler that will be called on success
+			    request.done(function (response, textStatus, jqXHR){
+			        console.log('Returned from playerChoiceAJAX callback');
+			        // console.log(response);
+
+			        //We're done with HAL's turn, render the players
+			        state = handleState(response);      
+			        renderState(1,state);
+			    });
+
+			    // callback handler that will be called on failure
+			    request.fail(function (jqXHR, textStatus, errorThrown){
+			        // log the error to the console
+			        console.error(
+			            "The following error occured: "+
+			            textStatus, errorThrown,jqXHR
+			        );
+			    });
+
+	//state.state = 'waitingForDraw';	
+	//state.discardActivity = 1
+	//state.deckActivity = 1
+	//waitingForDraw(state);
 	
 
 	return state;
