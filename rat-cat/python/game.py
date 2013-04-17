@@ -675,7 +675,7 @@ class GameHandler(Handler):
 
 		# check to see if the deck has enough cards in it to accomodate swapping all potential power cards
 		# also, remove all power cards, so they cannot be distributed again
-		if(len(statePassedIn['deck']) > 8):
+		if( len(statePassedIn['deck']) > len(statePassedIn['discard']) ):
 			# indeed it does. Draw power cards from the deckActivity
 			cardReplace = [value for value in statePassedIn['deck'] if value < 10]
 		else:
