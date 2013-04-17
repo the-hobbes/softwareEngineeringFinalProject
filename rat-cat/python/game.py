@@ -675,12 +675,13 @@ class GameHandler(Handler):
 
 		# check to see if the deck has enough cards in it to accomodate swapping all potential power cards
 		# also, remove all power cards, so they cannot be distributed again
-		if( len(statePassedIn['deck']) > len(statePassedIn['discard']) ):
-			# indeed it does. Draw power cards from the deckActivity
-			cardReplace = [value for value in statePassedIn['deck'] if value < 10]
-		else:
-			# it does not. use the discard pile instead
-			cardReplace = [value for value in statePassedIn['discard'] if value < 10]	
+		# if( len(statePassedIn['deck']) > len(statePassedIn['discard']) ):
+		# 	# indeed it does. Draw power cards from the deckActivity
+		# 	cardReplace = [value for value in statePassedIn['deck'] if value < 10]
+		# else:
+		# 	# it does not. use the discard pile instead
+		# 	cardReplace = [value for value in statePassedIn['discard'] if value < 10]	
+		cardReplace = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
 
 		# set the cards to visible, get the score, and swap out any power cards
 		for pCard in statePassedIn['playCard']:
