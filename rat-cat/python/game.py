@@ -3,7 +3,10 @@
 # Authors:
 # 	Phelan
 # 	Ethan
-# This handler executes the actual game environment. 
+# This handler executes the actual game environment. The initial gameboard is setup and displayed as a response to an http GET
+#	request. The GameHandler class fills the role of a 'Controller' in the MVC paradigm. It manages game logic and responds to
+#	POST requests from the View (a collection of Javascript and HTML code). In addition to having a method to handle each state,
+#	the GameHander class also possesses several utility functions (including setup, swapping translation, etc...). 
 
 from handler import *
 from random import shuffle
