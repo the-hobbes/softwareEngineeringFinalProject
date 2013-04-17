@@ -123,8 +123,8 @@ class GameHandler(Handler):
 		shuffle(deck)
 
 		# smaller deck to test endgame conditions
-		# deck = [0,0,0,10,0,1,1,1,11]
-		# discardCard = [12, 2, 4, 5, 6, 2, 5, 11, 11, 4, 5, 12]
+		# deck = [0,0,0,10,0,1,1,1,11,2]
+		# discardCard = [12]
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -675,28 +675,26 @@ class GameHandler(Handler):
 
 		# check to see if the deck has enough cards in it to accomodate swapping all potential power cards
 		# also, remove all power cards, so they cannot be distributed again
-		# if( len(statePassedIn['deck']) > len(statePassedIn['discard']) ):
-		# 	# indeed it does. Draw power cards from the deckActivity
-		# 	cardReplace = [value for value in statePassedIn['deck'] if value < 10]
-		# else:
-		# 	# it does not. use the discard pile instead
-		# 	cardReplace = [value for value in statePassedIn['discard'] if value < 10]	
-		cardReplace = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		cardReplace = sum(numberCards, [])
+		shuffle(cardReplace)
+		
 		# set the cards to visible, get the score, and swap out any power cards
 		for pCard in statePassedIn['playCard']:
+			cardVal = int(pCard['image'])
 			# if the card is a power card, replace it
-			if(pCard['image'] >= 10):
+			if(cardVal >= 10):
 				pCard['image'] = cardReplace.pop()
 			# add to running total and set visible
-			pScore += int(pCard['image'])
+			pScore += cardVal
 			pCard['visible'] = 1
 
 		for cCard in statePassedIn['compCard']:
+			cardVal = int(cCard['image'])
 			# if the card is a power card, replace it
-			if(cCard['image'] >= 10):
+			if(cardVal >= 10):
 				cCard['image'] = cardReplace.pop()
-			cScore += int(cCard['image'])
+			cScore += cardVal
 			cCard['visible'] = 1
 
 		logging.info("This is the player score")

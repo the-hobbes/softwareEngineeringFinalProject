@@ -267,7 +267,7 @@ function playerChoice(state){
 
 	//Add a click pushing function to the opponents cards if we are able to swap:
 	if(state.displayCard.image == '12'){
-		alert('SWAPPING TIME');
+		// alert('SWAPPING TIME');
 		var $oDivs = $('#opponentCards').children('div').each(function(){
 			$(this).addClass('opSwap');
 		});	
