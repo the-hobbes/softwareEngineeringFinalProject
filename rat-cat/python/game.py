@@ -340,14 +340,13 @@ class GameHandler(Handler):
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
 		global ai
-		# logging.info("LE DERP DERP" + str(ai))
 		newState = ai.doTurn(statePassedIn)
 
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
-		statesPassedIn['state'] = "waitingForDraw"
+		statePassedIn['state'] = "waitingForDraw"
 		logging.info(statePassedIn)
 		return statePassedIn
 

@@ -81,7 +81,16 @@ class HAL(db.Model):
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Discard"
 		else:
 			#Pull from the deck
-			card = state['deck'].pop()
+			card = -1
+			try:
+				card = state['deck'].pop()
+			except Exception, e:
+				#well fuck. no more cards?!
+				state['state'] = 'endgame'
+				return state
+			else:
+				pass
+			
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Deck"
 		#We now have a card, is it a regular card or a power card?
 		self.actionsToTake = self.actionsToTake + " HAL pulled a " + card
@@ -105,12 +114,18 @@ class HAL(db.Model):
 			#Power Card. Really wish we had  a switch... (python)
 			if(card==10):
 				self.actionsToTake = self.actionsToTake + " HAL has a draw two card. "
+				logging.info("ACTIONS")
+				logging.info(self.actionsToTake)
 				return self.drawTwo(state)
 			elif(card==11):
 				self.actionsToTake = self.actionsToTake + " HAL is peeking at his cards."
+				logging.info("ACTIONS")
+				logging.info(self.actionsToTake)
 				return self.peek(state)
 			elif(card==12):
 				self.actionsToTake = self.actionsToTake + " HAL is going into a swap state"
+				logging.info("ACTIONS")
+				logging.info(self.actionsToTake)
 				return self.swap(state)
 			else:
 				#Back of a card, aka we drew from an empty deck maybe?
@@ -121,6 +136,7 @@ class HAL(db.Model):
 		#We should knock if we think our cards are higher than the players by some threshold
 		self.shouldKnock()
 
+		logging.info("ACTIONS")
 		logging.info(self.actionsToTake)
 
 		#Slowly forget what our cards are\
@@ -345,16 +361,18 @@ class HAL(db.Model):
 		'''
 		humanRep = [0,0,0,0]
 		compRep  = [9,9,9,9]
+		aiCards = json.loads(self.aiCards)
+		humanCards = json.loads(self.opCards)
 		for i in range(len(self.opCardsMem)):
 			if(self.opCardsMem[i] < randZ()):
 				#Remember correctly
-				humanRep[i] = self.opCards[i]
+				humanRep[i] = humanCards[i]
 			else:
 				#Remembered incorrectly
 				humanRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
 			if(self.aiCardsMem[i] < randZ()):
 				#Remembered correctly
-				compRep[i] = self.aiCards[i]
+				compRep[i] = aiCards[i]
 			else:
 				#Remembered incorrectly
 				compRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
