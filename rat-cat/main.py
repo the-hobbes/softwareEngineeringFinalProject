@@ -19,18 +19,15 @@
 # 	Ethan, Phelan
 # 
 # This is the main app driver file. Requests will hit here when users first enter the page
-
-from google.appengine.ext import db
-
 from python.handler import *
 from python.game import *
+from python.scores import *
+from python.scoreinfo import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
 from python.HAL import *
 from python.unit import *
-from python.scores import *
-from python.datastore import *
 
 class MasterControlProgram(Handler):
 	'''
@@ -58,10 +55,10 @@ class MasterControlProgram(Handler):
 app = webapp2.WSGIApplication([
 	('/', MasterControlProgram),
 	('/game',GameHandler),
+	('/scores',ScoresHandler),
+	('/scoreinfo',ScoreInfoHandler),
 	('/playerinfo',PlayerInfoHandler),
 	('/difficulty',DifficultyHandler),
 	('/characterchoice',CharacterHandler),
-	('/unit',UnitHarness),
-	('/scores',ScoresHandler),
-	('/datastore',MyHandler)
+	('/unit',UnitHarness)
 ], debug=True)

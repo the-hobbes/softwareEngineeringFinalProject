@@ -1,0 +1,32 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8">
+		<title>Landing Page</title>
+		<meta name="description" content="">
+		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+	</head>
+	<body>
+		<div id="container" class="shadow">
+			<div class="shadow">
+				<!-- print out the player's total score, total games/rounds played, wins and losses -->
+				{% for player in players %}
+				<h2>Player {{player.name}}'s Info</h2>
+				<!--<div id="characterAvatar" class="shadow" style="background:url(images/characters/thumbs/{{thumbnailImage}});"></div>-->
+				<hr>
+				<ul>
+					<li>Total Score: <span style="color:blue">{{player.scoreTotal}}</span></li>
+					<li>Total Games Played: <span style="color:blue">{{player.games}}</span></li>
+					<li>Games Won: <span style="color:blue">{{player.gamesWon}}</span></li>
+					<li>Games Lost: <span style="color:blue">{{player.gamesLost}}</span></li>
+					<li>Total Rounds Played: <span style="color:blue">{{player.roundsTotal}}</span></li>
+					<li>Rounds Won: <span style="color:blue">{{player.roundsWonTotal}}</span></li>
+					<li>Rounds Lost: <span style="color:blue">{{player.roundsLostTotal}}</span></li>
+				</ul>
+				{% endfor %}
+				<hr>
+				<form action="/scores" method="GET"><button id="scoresButton" class="shadow">Scores</button></form>
+				<form action="/" method="GET"><button id="homeButton" class="shadow">Home</button></form>
+			</div>
+		</div>
+	</body>
+</html>
