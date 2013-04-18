@@ -340,7 +340,7 @@ class GameHandler(Handler):
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
 		global ai
-		logging.info("LE DERP DERP" + str(ai))
+		# logging.info("LE DERP DERP" + str(ai))
 		newState = ai.doTurn(statePassedIn)
 
 
