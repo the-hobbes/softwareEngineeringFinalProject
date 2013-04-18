@@ -40,7 +40,7 @@ function initialState(state){
 	setTimeout(function(){
 		$('#playerCard1').css("background-image", 'url(images/cards/smallCards/13.png)');
 		$('#playerCard4').css("background-image", 'url(images/cards/smallCards/13.png)');
-	},5000);
+	},6000);
 
 	//No real need for an ajax call we'll just update things here
 	state.state = 'waitingForDraw';
