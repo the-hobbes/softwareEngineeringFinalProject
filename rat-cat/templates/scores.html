@@ -14,7 +14,7 @@
 				<!-- also, use a counter to set an item as even or odd for styling purposes -->
 				<ul>
 				{% for player in players %}
-					{% if player.gamesWon != None %}
+					{% if player.gamesWon > 0 %}
 						<li class="{{ loop.cycle('odd', 'even') }}">
 							Player <span style="color:pink">{{player.name}}</span>
 							has a total score of <span style="color:pink">{{player.scoreTotal}}</span>
