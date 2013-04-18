@@ -18,7 +18,7 @@
 # Authors:
 # 	Ethan, Phelan
 # 
-# This is the main app driver file. Requests will hit here when users first enter the page
+# This is the main app driver file. Requests will hit here when users first enter the page.
 
 from google.appengine.ext import db
 
