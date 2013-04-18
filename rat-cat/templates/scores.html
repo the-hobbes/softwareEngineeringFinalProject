@@ -12,22 +12,23 @@
 				<hr>
 				<!-- print out each of the top ten, and their score -->
 				<!-- also, use a counter to set an item as even or odd for styling purposes -->
-				<form action="/datastore" method="post">
-					<p>Name: <input type="text"
-							name="name" value="" id="name"></p>
-					<p>Score: <input type="number"
-							name="scoreTotal" value="" id="scoreTotal"></p>
-					<p><input type="submit" value="Insert Player"></p>
-				</form>
-				<hr>
 				<ul>
 				{% for player in players %}
-					<li>
-						Player <span style="color:pink">{{player.name}}</span>
-						has a total score of <span style="color:pink">{{player.scoreTotal}}</span>
-					</li>
+					{% if player.gamesWon != None %}
+						<li class="{{ loop.cycle('odd', 'even') }}">
+							Player <span style="color:pink">{{player.name}}</span>
+							has a total score of <span style="color:pink">{{player.scoreTotal}}</span>
+						</li>
+					{% endif %}
 				{% endfor %}
 				</ul>
+				<hr>
+				<!-- form method to retrieve a player's score info -->
+				<form action="/scoreinfo" method="POST">
+					<p>Name: <input type="text" name="name" value="" id="name"></p>
+					<p><input type="submit" value="View Player Info"></p>
+				</form>
+				<hr>
 				<form action="/" method="GET"><button id="homeButton" class="shadow">Home</button></form>
 			</div><!--end topten-->
 		</div><!--end container-->
