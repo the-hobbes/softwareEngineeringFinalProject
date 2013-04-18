@@ -43,4 +43,4 @@ class ScoreInfoHandler(Handler):
 			thumbnailImage = "tommyCatThumb.png"
 		'''
 
-		self.render("scoreInfo.html", players=players, thumbnailImage=thumbnailImage)
+		self.render("scoreInfo.html", players=players)
