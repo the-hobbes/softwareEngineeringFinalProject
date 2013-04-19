@@ -68,7 +68,9 @@ class HAL(db.Model):
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
+		logging.info("HEY JUdE DONT BE AFRAID")
 		for c in aiCards:
+			logging.info(c)
 			if(maxVal < int(c['image'])):
 				i=j
 				maxVal = int(c['image'])
@@ -77,6 +79,7 @@ class HAL(db.Model):
 		card = 0
 		if(maxVal > discardPile):
 			#Pull from the discard pile
+			
 			card = state['discard'].pop()
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Discard"
 		else:
@@ -345,16 +348,21 @@ class HAL(db.Model):
 		'''
 		humanRep = [0,0,0,0]
 		compRep  = [9,9,9,9]
+		aiCards = json.loads(self.aiCards)
+		humanCards = json.loads(self.opCards)
+		logging.info(aiCards)
 		for i in range(len(self.opCardsMem)):
 			if(self.opCardsMem[i] < randZ()):
 				#Remember correctly
-				humanRep[i] = self.opCards[i]
+				humanRep[i] = humanCards[i]
 			else:
 				#Remembered incorrectly
 				humanRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
 			if(self.aiCardsMem[i] < randZ()):
 				#Remembered correctly
-				compRep[i] = self.aiCards[i]
+				compRep[i] = aiCards[i]
+				
+				logging.info(compRep)
 			else:
 				#Remembered incorrectly
 				compRep[i] = {'image' : str(randint(0,9)), 'active' : 0, 'visible' : 0}
