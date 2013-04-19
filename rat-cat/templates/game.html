@@ -9,6 +9,7 @@
 		<script src="scripts/jqModal.js"></script>
 		<script src="scripts/stateChanges.js"></script>
 		<script src="scripts/gameRender.js"></script>
+		<script src="scripts/animations.js"></script>
 
 		<script>
 
@@ -79,7 +80,7 @@
 
 		{% include "rules.html" %}
 		{% include "credits.html" %}
-
+		
 		<script>
 		var currentState;
 		currentState = renderState({{oldState}},{{newState}});

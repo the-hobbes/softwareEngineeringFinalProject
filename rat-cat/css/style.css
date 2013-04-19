@@ -280,6 +280,7 @@ submitButton:active{position:relative;top:2px;}
   border-radius:10px;
 }
 #deck{
+  position:relative;
   width:135px;
   height:175px;
   background-color: rgba(0,0,0,.2);
@@ -321,6 +322,7 @@ submitButton:active{position:relative;top:2px;}
   cursor: pointer;
   margin-top: 10px;
   margin-right: 5px;
+  position:relative;
 
   -moz-border-radius:10px;-webkit-border-radius:10px;
   border-radius:10px;

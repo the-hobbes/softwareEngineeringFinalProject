@@ -78,8 +78,7 @@ function waitingForDraw(state){
 	}, 2000);
 	
 	
-	//Add listeners for clicks that will fire off whatever interaction we need
-	//and will also remove the glow
+
 
 	$('.waitingForDrawAJAX').bind('click',function(){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
@@ -95,20 +94,19 @@ function waitingForDraw(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
-
+		var localClicks = state.playerClicks;
+	    
 	    // callback handler that will be called on success
 	    requestDeck.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from waitingForDrawAJAX callback');
 	        // console.log(response);
-
+	       	
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
 			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
-
-
+	        renderState(1,state,localClicks);
 	    });
 
 	    // callback handler that will be called on failure
@@ -121,9 +119,8 @@ function waitingForDraw(state){
 	    });
 
 		//Remove the glow from both glowing pieces in this state
-		$('#deck').removeClass('glowing');
+		$('#deck').removeClass('glowing');	
 		$('#discardPile').removeClass('glowing');
-		
 	});
 
 
@@ -170,6 +167,8 @@ function waitingForPCard(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
+		
+		var localClicks = state.playerClicks;
 
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
@@ -182,7 +181,7 @@ function waitingForPCard(state){
 	    	$('.waitingForPCardAJAX').unbind('click');
 	    	$('.waitingForPCardAJAX').removeClass('waitingForPCardAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
+	        renderState(1,state,localClicks);
 
 	    });
 
