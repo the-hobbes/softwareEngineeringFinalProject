@@ -244,7 +244,7 @@ function HAL(state){
 
 			        //We're done with HAL's turn, render the players
 			        state = handleState(response);      
-			        renderState(1,state);
+			        renderState(1,state,[]);
 			    });
 
 			    // callback handler that will be called on failure
@@ -560,7 +560,7 @@ function draw2PlayerChoice(state){
  */
 function endGame(state){
 	//render the board visible
-	renderState(1,state);
+	renderState(1,state,[]);
 	//close the loading popup
 	hideLoader();
 	//show the dialog popup
