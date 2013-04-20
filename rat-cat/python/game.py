@@ -761,6 +761,8 @@ class GameHandler(Handler):
 		if(playerTotalScore >= self.ENDGAME_SCORE or computerTotalScore >= self.ENDGAME_SCORE):
 			logging.info("Game is now over")
 
+			newModel.updateGames()
+
 			# update the json to reflect that the game is now over
 			statePassedIn['gameOver'] = 1
 
@@ -959,7 +961,7 @@ class GameHandler(Handler):
 
 		elif(knockStatus == 1):
 			statePassedIn['knockState'] = 0
-			statePassedIn['state'] = endGame
+			statePassedIn['state'] = 'endGame'
 
 		else:
 			pass

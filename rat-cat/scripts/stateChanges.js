@@ -14,6 +14,51 @@
  *	handleState(state)
  */
 
+// globally scoped knock variable
+knock = 1;
+
+/*updateKnock: This function is used to switch the value of knock on or off. If the value is on (1), users will be prompted to 
+ * 	knock every time their turn ends. If the value is off (0), then they won't be prompted and their turn will pass over to  	
+ * 	the AI.
+ */
+function updateKnock(){
+	console.log("got to updateKnock");
+	if(knock ==1 ){
+		//if on, switch off. make it look like it has been pressed down
+		knock = 0;
+		var pressMe = $('#knockButton');
+		pressMe.removeClass('pressed');
+	}
+	else{
+		// if off, switch on. remove the css that makes it look pressed down
+		knock = 1;
+		var pressMe = $('#knockButton');
+		pressMe.addClass('pressed');
+	}
+	console.log(knock);
+}
+
+function updateKnockState(){
+	// knocking logic to update knockstate before the state is Posted
+	if(knock == 1){
+		//returns a boolean, telling us if they want to knock or not. 
+		result = confirm("Would you like to knock? If you don't want to get this prompt, uncheck the knock button.");
+		// console.log("the result of that was:");
+		// console.log(result);
+		if(result == true){
+			//if they want to knock, we will update the knockstate to
+			return 2;
+		}
+		else{
+			//if they don't want to knock, we will update the knockstate to do nothing.
+			return 0;			
+		}
+	}
+	else{
+		//otherwise, knockstate isn't checked and we return 0
+		return 0;
+	}
+}
 
 /*initialState: This function shows the player their cards for a brief time and then transitions 
  *			to the next state
@@ -25,7 +70,6 @@
  */
 function initialState(state){
 	console.log('initialState entered');
-
 	//Any fancy animations for shuffling and dealing go here, such as tweening cards from the deck to the players hands
 
 	//Show the player their two outermost cards for a short time:
@@ -76,7 +120,6 @@ function waitingForDraw(state){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
 	
-	
 
 
 	$('.waitingForDrawAJAX').bind('click',function(){
@@ -84,8 +127,10 @@ function waitingForDraw(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
-		//Use ajax to yell over to the server that something has happened
+		// knocking logic to update knockstate before the state is passed back. is this the right place for it i wonder?
+		state.knockState = updateKnockState();
 
+		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
 	        type: 'POST',
@@ -159,8 +204,24 @@ function waitingForPCard(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		//Use ajax to yell over to the server that something has happened
 
+		// knocking logic
+		if(knock == 1){
+			//returns a boolean, telling us if they want to knock or not. 
+			result = confirm("Would you like to knock? If you don't want to get this prompt, uncheck the knock button.");
+			// console.log("the result of that was:");
+			// console.log(result);
+			if(result == true){
+				//if they want to knock, update the knockstate
+				state.knockState = 2;
+			}
+			else{
+				//if they don't want to knock, update the knockstate to do nothing.
+				state.knockState = 0;
+			}
+		}
+
+		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
 	        url: "/game",
 	        type: 'POST',

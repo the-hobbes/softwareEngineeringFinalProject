@@ -162,6 +162,7 @@ class DatastoreInteraction():
 			updateGameWin
 			Used to update the game table with the boolean value of win. 
 		'''
+		logging.info("made it to updateGamesWin")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.win = True
@@ -169,7 +170,6 @@ class DatastoreInteraction():
 
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
-			result.games += 1
 			result.gamesWon += 1
 			result.put()
 
@@ -178,6 +178,7 @@ class DatastoreInteraction():
 			updateGameWin
 			Used to update the game table with the boolean value of lose. 
 		'''
+		logging.info("made it to updateGamesLose")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.win = False
@@ -185,9 +186,20 @@ class DatastoreInteraction():
 
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
-			result.games += 1
 			result.gamesLost += 1
 			result.put()
+
+	def updateGames(self):
+		'''
+			updateGames
+			Used to update the player entity's # of games. 
+		'''
+		logging.info("made it to updateGames")
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.games += 1
+			result.put()
+
 		
 	def updateGameRounds(self):
 		'''
