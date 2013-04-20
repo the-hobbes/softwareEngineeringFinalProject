@@ -228,7 +228,7 @@ function HAL(state){
 
 	console.log('HAL Says');
 	console.log(state);
-
+	showHalLoader();
 	var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -241,7 +241,10 @@ function HAL(state){
 			    request.done(function (response, textStatus, jqXHR){
 			        console.log('Returned from playerChoiceAJAX callback');
 			        // console.log(response);
-
+			        setTimeout(function(){
+						hideHalLoader();
+					},3000);
+			        // hideHalLoader();
 			        //We're done with HAL's turn, render the players
 			        state = handleState(response);      
 			        renderState(1,state,[]);

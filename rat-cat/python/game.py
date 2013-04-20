@@ -121,8 +121,8 @@ class GameHandler(Handler):
 		# 	deck.append(p)
 		# shuffle(deck)
 
-		deck = [12,12,12,12,12,12,12,12,12,12,12,12]
-		discardCard = 11		
+		deck = [9,2,5,2,5,7,10,12,8,3,0,11]
+		discardCard = 0		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -773,18 +773,21 @@ class GameHandler(Handler):
 				logging.info("Player Loses")
 				gameText = "You Lose,"
 				newModel.updateGameLose()
+				newModel.updateRoundsLostTotal()
 			elif(computerTotalScore > playerTotalScore):
 				# player wins
 				logging.info("Player Wins")
 				gameText = "You Win,"
 				statePassedIn["win"] = 1
 				newModel.updateGameWin()
+				newModel.updateRoundsWonTotal()
 			else:
 				# a tie
 				logging.info("A tie has occurred")
 				gameText = "It was a tie,"
 				statePassedIn["win"] = 2
 				newModel.updateGameLose()
+				newModel.updateRoundsPlayedTotal()
 
 			time.sleep(1)
 
