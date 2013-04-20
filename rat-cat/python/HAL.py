@@ -138,6 +138,7 @@ class HAL(db.Model):
 				#give us the card and we remember it well becuase we just got it	
 				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 				self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				logging.info(indexOfHighest)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
