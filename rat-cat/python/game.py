@@ -118,7 +118,7 @@ class GameHandler(Handler):
 		# shuffle(subDeck)
 		# discardCard = deck.pop(choice(deck))
 		# for p in subDeck:
-		# 	deck.append(p)
+		#	deck.append(p)
 		# shuffle(deck)
 
 		deck = [9,9,9,9,9,9,9,9,9,9]
