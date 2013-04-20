@@ -159,6 +159,7 @@ class GameHandler(Handler):
 		#
 		disc = newState['discard'][0]
 		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
+		ai.put()
 
 		return json.dumps(newState)
 
