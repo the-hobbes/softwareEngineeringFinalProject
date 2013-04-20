@@ -73,7 +73,6 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
- 	console.log(newState.state)
 	//determining what animation to fire
 	console.log("this is the playerClicks");
 	console.log(playerClicks[0]);
@@ -100,6 +99,9 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  	}
  	 else if (playerClicks[0] == 'playerCard4'){
  		animateP4Discard(playerClicks);
+ 	}
+ 	else {
+ 	//YOU GET NOTHING!!	
  	}
  	
  	//If the old state is not null then we really only need to update whatever differs between them.
