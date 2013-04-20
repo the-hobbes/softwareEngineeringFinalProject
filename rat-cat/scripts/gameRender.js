@@ -21,7 +21,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  * 			 "displayCard" : {}, "knockState" : 0 | 1, "state" : "state specified by specs" }			 
  *	returns: the new state of the game
  */
- function renderState(oldState,newState){
+ function renderState(oldState,newState,playerClicks){
  	if(oldState == null){
  		//Initializing the game so the newState is correct
  		//TODO: We need to decide the first state of the game and glow appropriate things
@@ -72,6 +72,34 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		//Update the state of the board to show the appropriate state (call stateChange.js function)
  		return handleState(newState);
 
+ 	}
+ 	console.log(newState.state)
+	//determining what animation to fire
+	console.log("this is the playerClicks");
+	console.log(playerClicks[0]);
+	console.log("this is the state");
+	console.log(newState.state);
+	
+	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
+ 		animateDeckToCurrent(playerClicks);
+ 	}
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForPCard"){
+ 		animateDiscardToCurrent(playerClicks);
+ 	} 
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForDraw"){
+ 		animateDiscardToCurrent(playerClicks);
+ 	}
+ 	else if (playerClicks[0] == 'playerCard1'){
+ 		animateP1Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard2'){
+ 		animateP2Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard3'){
+ 		animateP3Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard4'){
+ 		animateP4Discard(playerClicks);
  	}
  	
  	//If the old state is not null then we really only need to update whatever differs between them.

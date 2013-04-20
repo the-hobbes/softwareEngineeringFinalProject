@@ -166,7 +166,7 @@ class HAL(db.Model):
 		
 		#Should we knock??
 		#We should knock if we think our cards are higher than the players by some threshold
-		self.shouldKnock()
+		self.shouldKnock(state)
 
 		logging.info("ACTIONS")
 		logging.info(self.actionsToTake)
@@ -436,7 +436,7 @@ class HAL(db.Model):
 
 		return i,maxVal
 
-	def shouldKnock(self):
+	def shouldKnock(self, state):
 		'''
 			shouldKnock
 				Returns true or false if we should try to end the game or not
