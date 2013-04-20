@@ -43,8 +43,6 @@ class Games(db.Model):
 	win = db.BooleanProperty()
 	score = db.IntegerProperty(default=0)
 	rounds = db.IntegerProperty(default=0)
-	roundsWon = db.IntegerProperty(default=0)
-	roundsLost = db.IntegerProperty(default=0)
 
 	# foreign key
 	sessionId = db.StringProperty()
