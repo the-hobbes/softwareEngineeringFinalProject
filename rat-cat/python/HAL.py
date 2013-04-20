@@ -75,6 +75,7 @@ class HAL(db.Model):
 		self.pkSessionID = valueDict['pkSessionID']
 		self.estAIScore = valueDict['estAIScore']
 		self.estOppScore = valueDict['estOppScore']
+		logging.info(valueDict['aiCardsMem'])
 		self.opCardsMem = valueDict['opCardsMem']
 		self.aiCardsMem = valueDict['aiCardsMem']
 		tmpOP = valueDict['opCards'].encode('utf-8').replace("u","")
@@ -144,6 +145,7 @@ class HAL(db.Model):
 				#give us the card and we remember it well becuase we just got it	
 				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 				self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				logging.info(indexOfHighest)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
@@ -216,7 +218,7 @@ class HAL(db.Model):
 				if(card < highVal):
 					#Yes we do!
 					#give us the card and we remember it well becuase we just got it
-					state['discard'].append(self.aiCards['image'])
+					state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
 					self.aiCardsMem[indexOfHighest] = 1.0
 				else:
