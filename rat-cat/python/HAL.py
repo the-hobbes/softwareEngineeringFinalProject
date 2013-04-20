@@ -43,6 +43,8 @@ class HAL(db.Model):
 	#This will be a string that builds up to tell the view what to do
 	actionsToTake = ""
 	diff =0
+	realOpCards = []
+	realAiCards = []
 
 	def testMe(self):
 		logging.info("Test Satisfactory")
@@ -73,10 +75,15 @@ class HAL(db.Model):
 		self.pkSessionID = valueDict['pkSessionID']
 		self.estAIScore = valueDict['estAIScore']
 		self.estOppScore = valueDict['estOppScore']
+		logging.info(valueDict['aiCardsMem'])
 		self.opCardsMem = valueDict['opCardsMem']
 		self.aiCardsMem = valueDict['aiCardsMem']
-		self.opCards = json.dumps(valueDict['opCards'])
-		self.aiCards = json.dumps(valueDict['aiCards'])
+		tmpOP = valueDict['opCards'].encode('utf-8').replace("u","")
+		tmpAI = valueDict['aiCards'].encode('utf-8').replace("u","")
+		self.realOpCards = eval(str(tmpOP))
+		self.realAiCards = eval(str(tmpAI))
+		self.opCards = tmpOP
+		self.aiCards = tmpAI
 		self.discardTopValue = valueDict['discardTopValue']
 		self.decayRate = valueDict['decayRate']
 
@@ -126,16 +133,19 @@ class HAL(db.Model):
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Deck"
 		#We now have a card, is it a regular card or a power card?
 		self.actionsToTake = self.actionsToTake + " HAL pulled a " + str(card)
+		
 		if(card < 10):
 			#Regular Card
 			#Choose whichever card is highest in our hand, if card is lower then take it
 			#else discard
 			indexOfHighest,highVal = self.findHighestInHand()
+			logging.info("HAMSTER")
 			if(card < highVal):
 				#Yes we do!
-				#give us the card and we remember it well becuase we just got it
-				state['discard'].append(self.aiCards['image'])
-				self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				#give us the card and we remember it well becuase we just got it	
+				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
+				self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				logging.info(indexOfHighest)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
@@ -208,7 +218,7 @@ class HAL(db.Model):
 				if(card < highVal):
 					#Yes we do!
 					#give us the card and we remember it well becuase we just got it
-					state['discard'].append(self.aiCards['image'])
+					state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
 					self.aiCardsMem[indexOfHighest] = 1.0
 				else:
@@ -311,7 +321,7 @@ class HAL(db.Model):
 			i=0
 			#Look through the cards we remember and find the lowest value
 			for c in self.opCards:
-				if( int(c['image']) < humanValue):
+				if(c < humanValue):
 					humanCard = i 
 					humanValue = int(c['image'])
 				i=i+1
@@ -320,9 +330,9 @@ class HAL(db.Model):
 			compValue = 0
 			i=0
 			for c in self.aiCards:
-				if(int(c['image']) > compValue ) :
+				if(c > compValue ) :
 					compCard = i 
-					compValue = int(c['image'])
+					compValue = c
 				i=i+1
 			#Now that we know, we perform the swap
 			tmp = state['playCard'][humanCard]['image']
@@ -343,19 +353,21 @@ class HAL(db.Model):
 			humanValue = 15
 			i=0
 			#Look through the cards we remember and find the lowest value
+			logging.info("HAMSTERS")
+			logging.info(humanCards)
 			for c in humanCards:
-				if( int(c['image']) < humanValue):
+				if( c < humanValue):
 					humanCard = i 
-					humanValue = int(c['image'])
+					humanValue = c
 				i=i+1
 			#Find out highest cards
 			compCard = 0
 			compValue = 0
 			i=0
 			for c in compCards:
-				if(int(c['image']) > compValue ) :
+				if(c > compValue ) :
 					compCard = i 
-					compValue = int(c['image'])
+					compValue = c
 				i=i+1
 			#Update our representation of it (note this propagates remembering wrong)
 			tmp = humanCards[humanCard]
@@ -399,8 +411,8 @@ class HAL(db.Model):
 		# logging.info(type( json.dumps(self.aiCards) ) )
 		# logging.info(self.aiCards)
 
-		aiCards = json.loads(self.aiCards)
-		humanCards = json.loads(self.opCards)
+		aiCards = self.aiCards
+		humanCards = self.opCards
 		for i in range(len(self.opCardsMem)):
 			if(self.opCardsMem[i] < randZ()):
 				#Remember correctly
@@ -488,15 +500,3 @@ class HAL(db.Model):
 		else:
 			#The human's cards are more than ours, so we wont knock
 			pass
-
-					
-
-
-	
-
-
-
-
-
-
-
