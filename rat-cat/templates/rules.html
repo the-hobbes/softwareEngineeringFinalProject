@@ -3,9 +3,63 @@
 <div id="rulesBox">
 </div><!-- end rulesBox-->
 
-<div class="jqmWindow hideMe" id="rulesDialog">
+<div class="jqmWindow hideMe" id="rulesDialog" style="height:400px; overflow:scroll;">
 	<a href="#" class="jqmClose">Close</a>
-	<p>This is a lightbox for the rules thing. Fill this up with rules.</p>
+	<h2 style="text-decoration:underline;">Rules of Rat-a-Tat-Cat (Web Edition)</h2>
+	<h3>Objectives</h3>
+	<p>
+		The main objective is to have the lowest score at the end of the game. 
+		The game ends when either player reaches 60 points.
+		Each game is made up of several rounds. Rounds end when there are no more cards left in the deck, or when a player knocks.
+	</p>
+	<h3>Starting the Game</h3>
+	<p>
+		The player gets a chance to peek at the outermost two cards in their spread, then they are hidden again. 
+		Power cards can only be activated when they are drawn from the deck. 
+	</p>
+	<h3>A Round</h3>
+	<p>
+		Each turn, a player has two options:
+		<ol>
+			<li>Draw top card from discard pile.</li>
+			<li>Draw top card from deck.</li>
+		</ol>
+		The player may then swap out the card they have drawn with one of their own cards, or if they drew it from the deck, discard the card. The choice a player makes to swap or discard is based on their recollection of the values of the four cards in front of them. You don't want to replace a low value card already in front of you with a higher value card you swap in.
+	</p>
+	<h3>Power Cards</h3>
+	<p>
+		Power cards have no point value. If you have a power card in your four cards at the end of the game, they are automatically replaced at random from the deck or discard pile. If a Power card is discarded, it may not be used again by any player.
+		There are three kinds of Power card, Peek, Draw Two, and Swap.
+		<ol>
+			<li>Peek</li>
+			<ul>
+				<li>Draw a Peek Card.</li>
+				<li>Choose any of your cards to take a look at.</li>
+				<li>The Peek card is then discarded into the discard pile.</li>
+				<li>The turn ends and the other player takes control.</li>
+			</ul>
+			<li>Swap</li>
+			<ul>
+				<li>Draw a Swap Card.</li>
+				<li>Choose one of your cards and swap it with another player's (you cannot look at either card).</li>
+				<li>The Swap card is then discarded into the discard pile.</li>
+				<li>The turn ends and the other player takes control.</li>
+			</ul>
+			<li>Draw Two</li>
+			<ul>
+				<li>Draw a Draw Two Card.</li>
+				<li>Draw the next card from the draw pile.</li>
+				<li>You may either use the card you have drawn and end your turn, or discard this card and draw another (which may be used or discarded).</li>
+				<li>If either card is a draw 2 card, the draw 2 sequence starts again.</li>
+				<li>The turn ends and the other player takes control.</li>
+			</ul>
+		</ol>
+		<h3>Ending the Game</h3>
+		<p>
+			After several rounds, one of the players will reach a total of 60 points. When this occurs the game ends, and the player with the lowest score wins. 
+		</p>
+	</p>
+
 </div><!-- end startDialog-->
 	<!-- End Rules Button Lightbox-->
 {% endblock %}

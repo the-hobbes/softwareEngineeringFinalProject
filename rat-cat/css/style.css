@@ -42,6 +42,10 @@ body {
   margin-right: 5px;
   float:left;
 }
+#popupBox{
+  margin-right: 5px;
+  float:left;
+}
 #scoresBox{
   margin-right: 5px;
   float:left;
@@ -347,6 +351,15 @@ submitButton:active{position:relative;top:2px;}
 }
 #opCard1, #playerCard1{
   margin-left:65px;
+}
+#characterAvatar{
+  height:150px;
+  width: 150px;
+  background-color: rgba(0,0,0,.7);
+  position: absolute;
+  margin-left:370px;
+  border: 1px solid black;
+  opacity: .7;
 }
 
 /*

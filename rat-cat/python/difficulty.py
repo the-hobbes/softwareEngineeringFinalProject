@@ -8,6 +8,7 @@
 # before the game begins
 
 from handler import *
+from python import HAL
 
 class DifficultyHandler(Handler):
 	'''
@@ -32,6 +33,17 @@ class DifficultyHandler(Handler):
 		
 		if difficulty:
 			#add the difficulty to the database
+			# add the choice of character to the database
+			results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=sessionId)
+			for result in results:
+				result.difficulty = difficulty
+				result.put()
+
+			# create a new instance of the AI
+			self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId") )
+			self.ai.put()
+			
+			# redirect to the game
 			self.redirect("/game" + "?sessionId=" + sessionId)
 		else:
 			self.render("selectDifficulty.html")

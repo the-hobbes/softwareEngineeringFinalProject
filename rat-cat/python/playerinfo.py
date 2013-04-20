@@ -9,7 +9,9 @@ from handler import *
 from datetime import *
 import hashlib
 #re = regular expresion module
-import re;
+import re
+from python.datastore import Players
+from python.datastore import Games
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 
@@ -77,9 +79,18 @@ class PlayerInfoHandler(Handler):
 		m.digest()
 		
 		valid,error=self.validateInput(name,age)
+		sessionId = m.hexdigest()
 
 		if valid:
-			self.redirect("/characterchoice" + "?sessionId=" + m.hexdigest())
+			# add a new player to the datastore
+			playerObj = Players(name=name, age=int(age), sessionId=sessionId)
+			playerObj.put()
+			# add a corresponding new game to the datastore
+			gameObj = Games(sessionId=sessionId)
+			gameObj.put()
+
+			# redirect, with sessionID as a GET parameter
+			self.redirect("/characterchoice" + "?sessionId=" + sessionId)
 		else:
 			self.renderPlayerInfo(name, age, error)
 		

@@ -79,7 +79,6 @@ function animateP1Discard(pClicks){
     newElement.appendTo('#playerCard1');
     
     console.log(newElement);
-    
     if (pClicks[0] == "playerCard1") {
 
         newElement.animate({
@@ -87,9 +86,11 @@ function animateP1Discard(pClicks){
             top:'-=300px',
             opacity:'0.5',
          }, 900,
-         function(){$(this).remove();})
+         function(){
+            $(this).remove();})
     } 
-}
+
+}    
 function animateP2Discard(pClicks){
 	console.log("move playerCard2 to discard and current to 2")
 

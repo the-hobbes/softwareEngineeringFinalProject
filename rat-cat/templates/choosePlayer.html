@@ -30,58 +30,98 @@
 					});
 				});
 
-				//handle clicks for each radiobutton in order to change the central image
-				function changeMainImage(selector){
-					// console.log(selector)
-					$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
-					//We could load this information from somewhere either async, or have it sent out to the
-					//page into the value of the labels maybe?
-					$('#characterName').text(capitaliseFirstLetter(selector.substring(0,selector.length-4)));
-					$('#characterDescription').text($('#'+selector.substring(0,selector.length-4)).attr('alt'));
-					// console.log("images/characters/" + selector)
-					// $("#imageBox").text("The image should be #: " + selector);
+			//handle clicks for each radiobutton in order to change the central image
+			function changeMainImage(selector, name){
+				// console.log(selector)
+				$('#imageBox').css("background-image", "url(/images/characters/"+ selector+")"); 
+				//We could load this information from somewhere either async, or have it sent out to the
+				//page into the value of the labels maybe?
+				$('#characterName').text(name);
+				description = getDescription(name);
+				$('#characterDescription').text(description);
+				// console.log("images/characters/" + selector)
+				// $("#imageBox").text("The image should be #: " + selector);
+			}
+
+			//handle displaying the title and description of each character, based on its name. 
+			function getDescription(name){
+				switch(name){
+					case 'Betty, Queen of Rats':
+						return "The sexiest of all rats, and the most regal. Betty is fear and envied.";
+						break;
+					case 'Jason H.':
+						return "Master of rat-geneering.";
+						break;
+					case 'The RatMan':
+						return "Its simple. We kill the ratman.";
+						break;
+					case 'The Crazy Cat Lady':
+						return "BLARARARGHAR BULBLBB.";
+						break;
+					case 'The Big Lebowscat':
+						return "Dude...";
+						break;
+					case 'Tommy Cat':
+						return "That is one bad-ass cat.";
+						break;
+					default:
+						return "The default case";
+						break;
 				}
-			</script>
-		</head>
+			}
+		</script>
+	</head>
 
 		<body>
 		  
 			<div id="container" class="shadow">
 				<form id="characterForm" method="post">
+				<div id="characterStripLeft">
+					<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg', 'Betty, Queen of Rats')"/>
+			        <label for="character1"><img src="images/characters/thumbs/bettyThumb.png"/></label>
 
-					<div id="characterStripLeft">
-						<input type="radio" name="characterGroup" id="character1" value="character1" onclick="changeMainImage('betty.jpg')"/>
-				        <label for="character1"><img alt="Queen Betty of the Rats may look like a mess, but watch out, she might make you look messier than her!" src="images/characters/thumbs/bettyThumb.png" id="betty"/></label>
+					<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg', 'Jason H.')"/>
+			        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png"/></label>
 
-						<input type="radio" name="characterGroup" id="character2" value="character2" onclick="changeMainImage('jason.jpg')"/>
-				        <label for="character2"><img src="images/characters/thumbs/jasonThumb.png" id="jason" alt="Jason is a smart Rat, the best engineer around! His IQ and memory makes him a terrifying opponent."/></label>
+					<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg', 'The RatMan')"/>
+			        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png"/></label>
+				</div><!--end characterStripLeft-->
 
-						<input type="radio" name="characterGroup" id="character3" value="character3" onclick="changeMainImage('ratMan.jpg')"/>
-				        <label for="character3"><img src="images/characters/thumbs/batRatThumb.png" id="ratMan" alt="Ratman is a rat by day, super hero by night, and going to play against the cats all the time!"/></label>
-					</div><!--end characterStripLeft-->
+			     <div id="characterStripRight">
+					<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg', 'The Crazy Cat Lady')"/>
+			        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png"/></label>
 
-				     <div id="characterStripRight">
-						<input type="radio" name="characterGroup" id="character4" value="character4" onclick="changeMainImage('catLady.jpg')"/>
-				        <label for="character4"><img src="images/characters/thumbs/catLadyThumb.png" id="catLady" alt="The catLady isn't just crazy, she's good at games too!"/></label>
+					<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg', 'The Big Lebowscat')"/>
+			        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png"/></label>
 
-						<input type="radio" name="characterGroup" id="character5" value="character5" onclick="changeMainImage('lebowsCat.jpg')"/>
-				        <label for="character5"><img src="images/characters/thumbs/lebowsCatThumb.png" id="lebowsCat" alt="White russian, oppinions, mullet? LebowsCat mean's business."/></label>
-
-						<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg')"/>
-				        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png" id="tommyCat" alt="You thought he was named after the gun? Nope. The tommy gun was named after this bad cat right here."/></label>
-					</div><!--end characterStripRight-->
+					<input type="radio" name="characterGroup" id="character6" value="character6" onclick="changeMainImage('tommyCat.jpg', 'Tommy Cat')"/>
+			        <label for="character6"><img src="images/characters/thumbs/tommyCatThumb.png"/></label>
+				</div><!--end characterStripRight-->
 
 	 				 <div id="imageBox" class="shadow"></div><!-- end imageBox -->
 
-	 				<div id="characterInfo">
-	 					<h2 id="characterName">Character Name</h2>
-	 					<p id="characterDescription" >This is a brief description of the character</p>
-		 				<br/>
-	 					<input id="characterButton" class="submitButton" type="submit">
-	 				</div><!-- end characterInfo-->
-	 						
-				</form><!-- end characterForm-->
-			</div><!-- end container-->
+ 				<div id="characterInfo">
+ 					<h2 id="characterName">Choose your Character</h2>
+ 					<p id="characterDescription">Hold tight your buns, if buns you do hold dear.</p>
+	 				</br>
+ 					<input id="characterButton" class="submitButton" type="submit">
+ 				</div><!-- end characterInfo-->
+ 						
+			</form><!-- end characterForm-->
+		</div><!-- end container-->
+
+			<!-- begin analytics code -->
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			  ga('create', 'UA-40175389-1', 'rat-a-tat-cat.appspot.com');
+			  ga('send', 'pageview');
+
+			</script>
+			<!-- end analytics code -->
 
 		</body>
 	</html>

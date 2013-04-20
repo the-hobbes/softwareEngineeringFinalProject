@@ -7,6 +7,9 @@
 # characters, and then forwards the user to the next screen with that information. 
 
 from handler import *
+import logging
+from python.datastore import Players
+from python.datastore import Games
 
 class CharacterHandler(Handler):
 	'''
@@ -28,10 +31,15 @@ class CharacterHandler(Handler):
 		'''
 		radioAnswer = self.request.get("characterGroup")
 		sessionId = self.request.get("sessionId")
-		
-		
+				
 		if radioAnswer:
-			#add the choice of character to the database
+			# add the choice of character to the database
+			results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=sessionId)
+			for result in results:
+				result.avatar = radioAnswer
+				result.put()
+
+			# redirect to the right page, passing along the session ID
 			self.redirect("/difficulty" +"?sessionId=" + sessionId)
 		else:
 			self.render("choosePlayer.html")
