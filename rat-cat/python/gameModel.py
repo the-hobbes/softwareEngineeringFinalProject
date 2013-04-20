@@ -8,6 +8,7 @@ from handler import *
 import logging
 from python.datastore import *
 from python.HAL import *
+from google.appengine.api.datastore import Key
 
 class DatastoreInteraction():
 	'''
@@ -218,9 +219,16 @@ class DatastoreInteraction():
 		'''
 		logging.info("Made it to get HAL")
 		# retrieve HAL object from datastore
-		logging.info(self.sessionId)
-		# results = db.GqlQuery("SELECT * FROM HAL WHERE key_name = :sess", sess=self.sessionId)
-		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = KEY(" + "'" + self.sessionId + "'" + ")")
+		# logging.info(self.sessionId)
+		
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+		logging.info("this is the key:")
+		logging.info(key)
+
+		# SELECT * FROM YourModel WHERE __key__ = KEY('YourModel',1)
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
 		# logging.info(self.sessionId)
 		# logging.info(results[0].pkSessionID)
 		for result in results:
@@ -251,7 +259,14 @@ class DatastoreInteraction():
 				aiCards, the cards of the AI itself
 		'''
 		logging.info("Made it to updateAiCards")
-		results = db.GqlQuery("SELECT * FROM HAL WHERE key_name = :sess", sess=self.sessionId)
+		
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+		logging.info("this is the key:")
+		logging.info(key)
+
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
 		for result in results:
 			logging.info(result.opCards)
 			result.opCards = opCards
