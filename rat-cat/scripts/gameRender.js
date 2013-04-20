@@ -73,28 +73,31 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
-
+ 	console.log(newState.state)
 	//determining what animation to fire
 	if (playerClicks[0] == null){
 
 	}
-	else if((playerClicks[0] == 'deck')){
- 		animateDeckToCurrent(newState.displayCard.image);
+	else if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
+ 		animateDeckToCurrent(playerClicks);
  	}
- 	else if ((playerClicks[0] == 'discardPile')){
- 		animateDiscardToCurrent(newState.displayCard.image);
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForPCard"){
+ 		animateDiscardToCurrent(playerClicks);
  	} 
- 	else if ((playerClicks[0] == 'playerCard1')){
- 		animateP1Discard(newState.displayCard.image);
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForDraw"){
+ 		animateDiscardToCurrent(playerClicks);
  	}
- 	 else if ((playerClicks[0] == 'playerCard2')){
- 		animateP2Discard(newState.displayCard.image);
+ 	else if (playerClicks[0] == 'playerCard1'){
+ 		animateP1Discard(playerClicks);
  	}
- 	 else if ((playerClicks[0] == 'playerCard3')){
- 		animateP3Discard(newState.displayCard.image);
+ 	 else if (playerClicks[0] == 'playerCard2'){
+ 		animateP2Discard(playerClicks);
  	}
- 	 else if ((playerClicks[0] == 'playerCard4')){
- 		animateP4Discard(newState.displayCard.image);
+ 	 else if (playerClicks[0] == 'playerCard3'){
+ 		animateP3Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard4'){
+ 		animateP4Discard(playerClicks);
  	}
  	
  	//If the old state is not null then we really only need to update whatever differs between them.

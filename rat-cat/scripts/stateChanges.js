@@ -227,7 +227,7 @@ function HAL(state){
 	console.log(state)
 	state.state = 'waitingForDraw';	
 	state = handleState(state);
-
+	renderState(1,state,state.playerClicks);
 
 	return state;
 }
@@ -251,8 +251,6 @@ function playerChoice(state){
 		$(this).addClass('glowing');
 		$(this).addClass('playerChoiceAJAX');
 	});
-
-	
 
 	//Keep track of cards clicked:
 	var pClick = 0;
@@ -281,6 +279,8 @@ function playerChoice(state){
 					contentType: "application/json",
 					dataType: 'json'
 			    });
+				
+				var localClicks = state.playerClicks;
 
 			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
@@ -293,7 +293,7 @@ function playerChoice(state){
 			    	$('.playerChoiceAJAX').unbind('click');
 			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 			        state = handleState(response);      
-			        renderState(1,state);
+			        renderState(1,state,localClicks);
 			    });
 
 			    // callback handler that will be called on failure
@@ -334,6 +334,7 @@ function playerChoice(state){
 				dataType: 'json'
 		    });
 
+		     var localClicks = 
 		    // callback handler that will be called on success
 		    request.done(function (response, textStatus, jqXHR){
 		        console.log('Returned from playerChoiceAJAX callback');
@@ -344,7 +345,7 @@ function playerChoice(state){
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
-		        renderState(1,state);
+		        renderState(1,state,localClicks);
 		    });
 
 		    // callback handler that will be called on failure
@@ -382,7 +383,7 @@ function playerChoice(state){
 			    	$('.playerChoiceAJAX').unbind('click');
 			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 			        state = handleState(response);      
-			        renderState(1,state);
+			        renderState(1,state,localClicks);
 			    });
 
 			    // callback handler that will be called on failure
@@ -460,7 +461,7 @@ function draw2PlayerChoice(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
-
+	    var localClicks = state.playerClicks;
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from draw2PlayerChoiceAJAX callback');
@@ -471,7 +472,7 @@ function draw2PlayerChoice(state){
 	    	$('.draw2PlayerChoiceAJAX').unbind('click');
 	    	$('.draw2PlayerChoiceAJAX').removeClass('draw2PlayerChoiceAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
+	        renderState(1,state,localClicks);
 
 	    });
 
