@@ -101,7 +101,6 @@ class HAL(db.Model):
 		human,aiCards = self.getMemory()
 		logging.info("in do turn...")
 		for c in aiCards:
-			logging.info(c)
 			if(maxVal < c):
 				i=j
 				maxVal = c
@@ -127,7 +126,6 @@ class HAL(db.Model):
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Deck"
 		#We now have a card, is it a regular card or a power card?
 		self.actionsToTake = self.actionsToTake + " HAL pulled a " + str(card)
-		
 		if(card < 10):
 			#Regular Card
 			#Choose whichever card is highest in our hand, if card is lower then take it
@@ -137,7 +135,7 @@ class HAL(db.Model):
 				#Yes we do!
 				#give us the card and we remember it well becuase we just got it	
 				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
-				self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				self.realAiCards[indexOfHighest] = {'image' : card, 'active' : 0, 'visible' : 0}
 				self.aiCards = json.dumps(self.realAiCards)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
@@ -169,15 +167,11 @@ class HAL(db.Model):
 		
 		#Should we knock??
 		#We should knock if we think our cards are higher than the players by some threshold
-		self.shouldKnock(state)
+		state = self.shouldKnock(state)
 
-		logging.info("END OF LINE")
-		logging.info(state)
-		logging.info("ACTIONS")
-		logging.info(self.actionsToTake)
+		state['compCard'] = json.loads(self.aiCards)
 
 		self.put()
-		logging.info("put em away boys")
 		time.sleep(2)
 
 		#Slowly forget what our cards are\
@@ -468,3 +462,4 @@ class HAL(db.Model):
 		else:
 			#The human's cards are more than ours, so we wont knock
 			pass
+		return state
