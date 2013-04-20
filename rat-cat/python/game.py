@@ -355,7 +355,7 @@ class GameHandler(Handler):
 		if( len(newState['deck']) == 0 ):
 			logging.info("Deck is empty")
 			freshState = self.endGame(newState)
-		# otherwise, proceed as normal
+		# otherwise, proceed as normal.
 
 		return statePassedIn
 
