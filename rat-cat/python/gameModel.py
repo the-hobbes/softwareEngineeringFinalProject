@@ -166,6 +166,12 @@ class DatastoreInteraction():
 			result.win = True
 			result.put()
 
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.games += 1
+			result.gamesWon += 1
+			result.put()
+
 	def updateGameLose(self):
 		'''
 			updateGameWin
@@ -174,6 +180,12 @@ class DatastoreInteraction():
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.win = False
+			result.put()
+
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.games += 1
+			result.gamesLost += 1
 			result.put()
 		
 	def updateGameRounds(self):
