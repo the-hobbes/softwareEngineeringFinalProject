@@ -225,7 +225,7 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
-<<<<<<< HEAD
+
 	console.log('HAL Says');
 	console.log(state);
 
@@ -261,12 +261,9 @@ function HAL(state){
 	//state.deckActivity = 1
 	//waitingForDraw(state);
 	
-=======
-	console.log(state)
 	state.state = 'waitingForDraw';	
 	state = handleState(state);
 	renderState(1,state,state.playerClicks);
->>>>>>> 18871d58e2c48693d8e82b626bf48e67a06186a1
 
 	return state;
 }
@@ -292,12 +289,6 @@ function playerChoice(state){
 		$(this).addClass('playerChoiceAJAX');
 	});
 
-<<<<<<< HEAD
-	
-	
-
-=======
->>>>>>> 18871d58e2c48693d8e82b626bf48e67a06186a1
 	//Keep track of cards clicked:
 	var pClick = 0;
 	var oClick = 0;
@@ -404,12 +395,9 @@ function playerChoice(state){
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
-<<<<<<< HEAD
-		        //close the loading popup
-		        renderState(1,state);
-=======
+
 		        renderState(1,state,localClicks);
->>>>>>> 18871d58e2c48693d8e82b626bf48e67a06186a1
+
 		    });
 
 		    // callback handler that will be called on failure
