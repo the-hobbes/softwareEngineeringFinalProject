@@ -402,17 +402,17 @@ submitButton:active{position:relative;top:2px;}
 #scoresButton{
   width:100px;
   font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
-  margin-top: 21px;
+  margin-top: 20px;
 }
 #homeButton{
   width:100px;
   font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
-  margin-top: 21px;
+  margin-top: 20px;
 }
 #viewPlayerInfo{
   width:210px;
   font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
-  margin-top: 21px;
+  margin-top: 20px;
 }
 /*
   Styling for links on the credit page

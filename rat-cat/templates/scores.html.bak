@@ -16,8 +16,8 @@
 				{% for player in players %}
 					{% if player.gamesWon > 0 %}
 						<li class="{{ loop.cycle('odd', 'even') }}">
-							Player <span class="playerName">{{player.name}}</span>
-							has a total score of <span class="playerScore">{{player.scoreTotal}}</span>
+							Player <span style="color:red">{{player.name}}</span>
+							has a total score of <span style="color:red">{{player.scoreTotal}}</span>
 						</li>
 					{% endif %}
 				{% endfor %}
