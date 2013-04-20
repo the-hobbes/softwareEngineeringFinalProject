@@ -369,6 +369,7 @@ function playerChoice(state){
 		pClick = pClick + 1;
 		console.log(pClick);
 
+
 		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
@@ -418,7 +419,10 @@ function playerChoice(state){
 		}else{
 			//Swap playerChoice, we need to use the number of clicks
 			//so far to say yes we can submit the ajax request.
-			if(pClick > 0 && oClick > 0){
+			if(this.id == "discardPile"){
+				state.playerClicks.push(this.id);
+				pClick = 0;
+				oClick = 0;
 				var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -426,41 +430,76 @@ function playerChoice(state){
 					contentType: "application/json",
 					dataType: 'json'
 			    });
-
-			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
-			        console.log('Returned from playerChoiceAJAX callback');
-			        // console.log(response);
+				        console.log('Returned from playerChoiceAJAX callback');
+				        // console.log(response);
 
-			        //Remove the click so we don't send a ajax request to the server while this 
-			        //click shouldn't do anything
-			        $('.opSwap').unbind('click');
-			    	$('.playerChoiceAJAX').unbind('click');
-			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
-			        state = handleState(response);      
-			        renderState(1,state,localClicks);
-			    });
+				        //Remove the click so we don't send a ajax request to the server while this 
+				        //click shouldn't do anything
+				        $('.opSwap').unbind('click');
+				    	$('.playerChoiceAJAX').unbind('click');
+				    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+				        state = handleState(response);      
+				        renderState(1,state,localClicks);
+				    });
 
-			    // callback handler that will be called on failure
-			    request.fail(function (jqXHR, textStatus, errorThrown){
-			        // log the error to the console
-			        console.error(
-			            "The following error occured: "+
-			            textStatus, errorThrown
-			        );
-			    });
+				    // callback handler that will be called on failure
+				    request.fail(function (jqXHR, textStatus, errorThrown){
+				        // log the error to the console
+				        console.error(
+				            "The following error occured: "+
+				            textStatus, errorThrown
+				        );
+				    });
 
 
-				//Remove the glow from discard and player cards
-				$('.glowing').removeClass('glowing');	
-			}else if(pClick || oClick){
-				$('#discardPile').removeClass('glowing');
-				$('#discardPile').removeClass('playerChoiceAJAX');
-				$('#discardPile').unbind('click');
-				
-				var $oDivs = $('#playerCards').children('div').each(function(){
-					$(this).removeClass('glowing');
-				});	
+					//Remove the glow from discard and player cards
+					$('.glowing').removeClass('glowing');	
+			}else{
+				if(pClick > 0 && oClick > 0){
+					var request = $.ajax({
+				        url: "/game",
+				        type: 'POST',
+						data: JSON.stringify(state),
+						contentType: "application/json",
+						dataType: 'json'
+				    });
+
+				    // callback handler that will be called on success
+				    request.done(function (response, textStatus, jqXHR){
+				        console.log('Returned from playerChoiceAJAX callback');
+				        // console.log(response);
+
+				        //Remove the click so we don't send a ajax request to the server while this 
+				        //click shouldn't do anything
+				        $('.opSwap').unbind('click');
+				    	$('.playerChoiceAJAX').unbind('click');
+				    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+				        state = handleState(response);      
+				        renderState(1,state,localClicks);
+				    });
+
+				    // callback handler that will be called on failure
+				    request.fail(function (jqXHR, textStatus, errorThrown){
+				        // log the error to the console
+				        console.error(
+				            "The following error occured: "+
+				            textStatus, errorThrown
+				        );
+				    });
+
+
+					//Remove the glow from discard and player cards
+					$('.glowing').removeClass('glowing');	
+				}else if(pClick || oClick){
+					$('#discardPile').removeClass('glowing');
+					$('#discardPile').removeClass('playerChoiceAJAX');
+					$('#discardPile').unbind('click');
+					
+					var $oDivs = $('#playerCards').children('div').each(function(){
+						$(this).removeClass('glowing');
+					});	
+				}
 			}
 		}	
 	});
