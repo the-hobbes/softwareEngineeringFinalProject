@@ -9,7 +9,8 @@
  * 
  * $Version: 03/01/2009 +r14
  *
- * Phelan says: This is the stuff that runs the lightbox! 
+ * Phelan says: This is the stuff that runs the lightbox! Changed modal to true, so that the box can't be closed by clicking
+ * 	the overlay!
  */
 (function($) {
 $.fn.jqm=function(o){
@@ -21,7 +22,7 @@ trigger: '.jqModal',
 ajax: F,
 ajaxText: '',
 target: F,
-modal: F,
+modal: true,
 toTop: F,
 onShow: F,
 onHide: F,
