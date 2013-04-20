@@ -153,7 +153,7 @@ class GameHandler(Handler):
 
 		# encode it
 		disc = newState['discard'][0]
-		ai = HAL.HAL(ID=12, key_name=self.sessionId, pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
+		ai = HAL.HAL(key_name=self.sessionId, pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
 		ai.put()
 		time.sleep(1)
 
