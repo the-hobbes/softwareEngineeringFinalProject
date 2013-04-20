@@ -127,15 +127,15 @@ class GameHandler(Handler):
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
-						{"image" : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}],  
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0},
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}],  
 					"playCard" : [
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0},
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}], 
 					"discard" : [discardCard],
 					"discardActivity" : 1,
 					"deck" : deck,
@@ -342,7 +342,8 @@ class GameHandler(Handler):
 
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		global ai
+		ai = HAL.HAL()
+		ai.setupAIObject(statePassedIn['sessionId'])
 		newState = ai.doTurn(statePassedIn)
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
