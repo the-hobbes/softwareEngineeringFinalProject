@@ -225,6 +225,7 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
+
 	console.log('HAL Says');
 	console.log(state);
 
@@ -243,7 +244,7 @@ function HAL(state){
 
 			        //We're done with HAL's turn, render the players
 			        state = handleState(response);      
-			        renderState(1,state);
+			        renderState(1,state,[]);
 			    });
 
 			    // callback handler that will be called on failure
@@ -260,6 +261,7 @@ function HAL(state){
 	//state.deckActivity = 1
 	//waitingForDraw(state);
 	console.log(state)
+
 	state.state = 'waitingForDraw';	
 	state = handleState(state);
 	renderState(1,state,state.playerClicks);
@@ -397,6 +399,7 @@ function playerChoice(state){
 
 		        //close the loading popup
 		        renderState(1,state,localClicks);
+
 		    });
 
 		    // callback handler that will be called on failure
@@ -559,7 +562,7 @@ function draw2PlayerChoice(state){
  */
 function endGame(state){
 	//render the board visible
-	renderState(1,state);
+	renderState(1,state,[]);
 	//close the loading popup
 	hideLoader();
 	//show the dialog popup
