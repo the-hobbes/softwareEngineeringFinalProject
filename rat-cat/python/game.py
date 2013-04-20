@@ -203,6 +203,7 @@ class GameHandler(Handler):
 			# what was the card they picked? 
 			try:
 				selectedCard = statePassedIn['discard'].pop()
+
 			except:
 				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
 				# 	to compensate for this. Set the message visible, then simply pass back the state. 
@@ -222,7 +223,6 @@ class GameHandler(Handler):
 			statePassedIn['playerClicks'] = []
 			# set the new state of the game to be "waitingForPCard", as per our documentation (this will glow the players' cards, etc)
 			statePassedIn['state'] = "waitingForPCard"
-
 
 		# if the user has chosen a card from the deck:
 		else:
@@ -294,12 +294,15 @@ class GameHandler(Handler):
 		if(swapCard == 'playerCard1'):
 			statePassedIn['discard'].append(statePassedIn['playCard'][0]['image'])
 			statePassedIn['playCard'][0]['image'] = activeCard['image']
+
 		elif(swapCard == 'playerCard2'):
 			statePassedIn['discard'].append(statePassedIn['playCard'][1]['image'])
 			statePassedIn['playCard'][1]['image'] = activeCard['image']
+
 		elif(swapCard == 'playerCard3'):
 			statePassedIn['discard'].append(statePassedIn['playCard'][2]['image'])
-			statePassedIn['playCard'][2]['image'] = activeCard['image']	
+			statePassedIn['playCard'][2]['image'] = activeCard['image']
+
 		else:
 			statePassedIn['discard'].append(statePassedIn['playCard'][3]['image'])
 			statePassedIn['playCard'][3]['image'] = activeCard['image']
