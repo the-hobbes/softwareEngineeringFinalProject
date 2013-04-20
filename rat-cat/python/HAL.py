@@ -411,8 +411,8 @@ class HAL(db.Model):
 		# logging.info(type( json.dumps(self.aiCards) ) )
 		# logging.info(self.aiCards)
 
-		aiCards = self.aiCards
-		humanCards = self.opCards
+		aiCards = self.realAiCards
+		humanCards = self.realOpCards
 		for i in range(len(self.opCardsMem)):
 			if(self.opCardsMem[i] < randZ()):
 				#Remember correctly
@@ -460,9 +460,10 @@ class HAL(db.Model):
 		humanValue = 0
 		compValue = 0
 		for c in humanCards:
-			humanValue = humanValue + c
+			logging.info(c)
+			humanValue = humanValue + int(c['image'])
 		for c in aiCards:
-			compValue = compValue + c
+			compValue = compValue + int(c['image'])
 		#Now here comes some math
 		#Quite frankly, if we just do a comparison that's silly. We'll end the game if the ai
 		#by chance believes itself to be in the right when it's really just remembering poorly
