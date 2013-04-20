@@ -93,7 +93,7 @@ class HAL(db.Model):
 			
 			self.actionsToTake = self.actionsToTake + " HAL pulling from Deck"
 		#We now have a card, is it a regular card or a power card?
-		self.actionsToTake = self.actionsToTake + " HAL pulled a " + card
+		self.actionsToTake = self.actionsToTake + " HAL pulled a " + str(card)
 		if(card < 10):
 			#Regular Card
 			#Choose whichever card is highest in our hand, if card is lower then take it
