@@ -342,13 +342,21 @@ class GameHandler(Handler):
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
 		ai = HAL.HAL()
 		ai.setupAIObject(statePassedIn['sessionId'])
-		newState = ai.doTurn(statePassedIn)
+		newState = ai.doTurn(statePassedIn)		
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
 		statePassedIn['state'] = "waitingForDraw"
 		logging.info(statePassedIn)
+
+		# need to check the deck to see if the deck is empty
+		# if the deck is empty, its time for the endgame state
+		if( len(newState['deck']) == 0 ):
+			logging.info("Deck is empty")
+			freshState = self.endGame(newState)
+		# otherwise, proceed as normal
+
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):
