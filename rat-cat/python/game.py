@@ -152,14 +152,10 @@ class GameHandler(Handler):
 				}
 
 		# encode it
-		# logging.info(newState)
-		#TODO
-		#
-		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
-		#
 		disc = newState['discard'][0]
-		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
+		ai = HAL.HAL(key_name=self.sessionId, pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
 		ai.put()
+		time.sleep(1)
 
 		return json.dumps(newState)
 
@@ -775,6 +771,7 @@ class GameHandler(Handler):
 				gameText = "You Lose,"
 				newModel.updateGameLose()
 				newModel.updateRoundsLostTotal()
+				time.sleep(1)
 			elif(computerTotalScore > playerTotalScore):
 				# player wins
 				logging.info("Player Wins")
@@ -782,6 +779,7 @@ class GameHandler(Handler):
 				statePassedIn["win"] = 1
 				newModel.updateGameWin()
 				newModel.updateRoundsWonTotal()
+				time.sleep(1)
 			else:
 				# a tie
 				logging.info("A tie has occurred")
@@ -789,6 +787,7 @@ class GameHandler(Handler):
 				statePassedIn["win"] = 2
 				newModel.updateGameLose()
 				newModel.updateRoundsPlayedTotal()
+				time.sleep(1)
 
 			time.sleep(1)
 
