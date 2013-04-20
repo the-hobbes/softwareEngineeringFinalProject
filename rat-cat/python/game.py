@@ -25,7 +25,6 @@ class GameHandler(Handler):
 		template rendering.
 	'''
 	# class variables 
-	ai = object()
 	sessionId = ""
 	ENDGAME_SCORE = 60
 	thumbnailImage = ""
@@ -159,7 +158,6 @@ class GameHandler(Handler):
 		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
 		#
 		disc = newState['discard'][0]
-		global ai
 		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
 
 		return json.dumps(newState)
