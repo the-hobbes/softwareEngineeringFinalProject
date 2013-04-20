@@ -65,30 +65,23 @@ class HAL(db.Model):
 			Parameters:
 				sessionId, the sessionId which identifies the HAL entity we are working with. 
 		'''
-		logging.info("got to the setupAIObject function")
 		newModel = DatastoreInteraction(sessionId)
 		valueDict = newModel.getHAL()
-
-		# logging.info("this is the value dict sessionId")
-		# logging.info(valueDict['pkSessionID'])
 
 		self.pkSessionID = valueDict['pkSessionID']
 		self.estAIScore = valueDict['estAIScore']
 		self.estOppScore = valueDict['estOppScore']
-		logging.info(valueDict['aiCardsMem'])
 		self.opCardsMem = valueDict['opCardsMem']
 		self.aiCardsMem = valueDict['aiCardsMem']
 		tmpOP = valueDict['opCards'].encode('utf-8').replace("u","")
 		tmpAI = valueDict['aiCards'].encode('utf-8').replace("u","")
+		#Welcome to hack central. where python has type issues!
 		self.realOpCards = eval(str(tmpOP))
 		self.realAiCards = eval(str(tmpAI))
 		self.opCards = tmpOP
 		self.aiCards = tmpAI
 		self.discardTopValue = valueDict['discardTopValue']
 		self.decayRate = valueDict['decayRate']
-
-		logging.info("made it here !!!!!!")
-
 
 	def doTurn(self,state):
 		'''
@@ -139,13 +132,11 @@ class HAL(db.Model):
 			#Choose whichever card is highest in our hand, if card is lower then take it
 			#else discard
 			indexOfHighest,highVal = self.findHighestInHand()
-			logging.info("HAMSTER")
 			if(card < highVal):
 				#Yes we do!
 				#give us the card and we remember it well becuase we just got it	
 				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 				self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
-				logging.info(indexOfHighest)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
@@ -353,8 +344,6 @@ class HAL(db.Model):
 			humanValue = 15
 			i=0
 			#Look through the cards we remember and find the lowest value
-			logging.info("HAMSTERS")
-			logging.info(humanCards)
 			for c in humanCards:
 				if( c < humanValue):
 					humanCard = i 
@@ -407,10 +396,6 @@ class HAL(db.Model):
 		humanRep = [0,0,0,0]
 		compRep  = [9,9,9,9]
 
-		# logging.info("This is the type of the ai cards:")
-		# logging.info(type( json.dumps(self.aiCards) ) )
-		# logging.info(self.aiCards)
-
 		aiCards = self.realAiCards
 		humanCards = self.realOpCards
 		for i in range(len(self.opCardsMem)):
@@ -438,9 +423,7 @@ class HAL(db.Model):
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
-		# logging.info("findHighestInHand, here are the values for the images:")
 		for c in aiCards:
-			# logging.info(c)
 			if(maxVal < c):
 				i=j
 				maxVal = c
@@ -460,7 +443,6 @@ class HAL(db.Model):
 		humanValue = 0
 		compValue = 0
 		for c in humanCards:
-			logging.info(c)
 			humanValue = humanValue + int(c['image'])
 		for c in aiCards:
 			compValue = compValue + int(c['image'])
