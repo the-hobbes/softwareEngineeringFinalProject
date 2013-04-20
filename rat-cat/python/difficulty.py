@@ -38,10 +38,6 @@ class DifficultyHandler(Handler):
 			for result in results:
 				result.difficulty = difficulty
 				result.put()
-
-			# create a new instance of the AI
-			self.ai = HAL.HAL(	pkSessionID=self.request.get("sessionId") )
-			self.ai.put()
 			
 			# redirect to the game
 			self.redirect("/game" + "?sessionId=" + sessionId)
