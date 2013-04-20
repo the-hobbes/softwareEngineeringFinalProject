@@ -25,7 +25,6 @@ class GameHandler(Handler):
 		template rendering.
 	'''
 	# class variables 
-	ai = object()
 	sessionId = ""
 	ENDGAME_SCORE = 60
 	thumbnailImage = ""
@@ -111,28 +110,31 @@ class GameHandler(Handler):
 		'''
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
-		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-		powerCards = [ [10]*3, [11]*3, [12]*3 ]
-		deck = sum(numberCards, [])
-		shuffle(deck)
-		subDeck = sum(powerCards, [])
-		shuffle(subDeck)
-		discardCard = deck.pop(choice(deck))
-		for p in subDeck:
-			deck.append(p)
-		shuffle(deck)
+		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		# deck = sum(numberCards, [])
+		# shuffle(deck)
+		# subDeck = sum(powerCards, [])
+		# shuffle(subDeck)
+		# discardCard = deck.pop(choice(deck))
+		# for p in subDeck:
+		# 	deck.append(p)
+		# shuffle(deck)
+
+		deck = [9,9,9,9,9,9,9,9,9,9]
+		discardCard = 11		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
-						{"image" : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}],  
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0},
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}],  
 					"playCard" : [
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}, 
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0},
-						{'image' : str(deck.pop()), 'active' : 0, 'visible' : 0}], 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}, 
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0},
+						{"image" : str(deck.pop()), "active" : 0, "visible" : 0}], 
 					"discard" : [discardCard],
 					"discardActivity" : 1,
 					"deck" : deck,
@@ -156,7 +158,6 @@ class GameHandler(Handler):
 		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
 		#
 		disc = newState['discard'][0]
-		global ai
 		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
 
 		return json.dumps(newState)
@@ -342,15 +343,23 @@ class GameHandler(Handler):
 
 		#Did the player knock and the counter is down?? 
 		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		global ai
-		newState = ai.doTurn(statePassedIn)
-
+		ai = HAL.HAL()
+		ai.setupAIObject(statePassedIn['sessionId'])
+		newState = ai.doTurn(statePassedIn)		
 
 		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
 		statePassedIn['state'] = "waitingForDraw"
 		logging.info(statePassedIn)
+
+		# need to check the deck to see if the deck is empty
+		# if the deck is empty, its time for the endgame state
+		if( len(newState['deck']) == 0 ):
+			logging.info("Deck is empty")
+			freshState = self.endGame(newState)
+		# otherwise, proceed as normal
+
 		return statePassedIn
 
 	def playerChoice(self, statePassedIn):

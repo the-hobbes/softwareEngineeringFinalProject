@@ -12,8 +12,8 @@ from random import random as randZ
 from google.appengine.ext import db
 import logging
 import json
-import python.gameModel as gm
-
+# import python.gameModel as gm
+from python.gameModel import DatastoreInteraction
 
 class HAL(db.Model):
 	'''
@@ -54,11 +54,41 @@ class HAL(db.Model):
 		'''
 		self.discardTopValue = topCard
 
+	def setupAIObject(self, sessionId):
+		'''
+			setupAIObject
+			This is used to retrieve all of the information from the datstore about the AI object and set the class variables
+			equal to the values of the entitites retrieved in this way. This should be called whenever a new instance of 
+			HAL is created. 
+			Parameters:
+				sessionId, the sessionId which identifies the HAL entity we are working with. 
+		'''
+		logging.info("got to the setupAIObject function")
+		newModel = DatastoreInteraction(sessionId)
+		valueDict = newModel.getHAL()
+
+		# logging.info("this is the value dict sessionId")
+		# logging.info(valueDict['pkSessionID'])
+
+		self.pkSessionID = valueDict['pkSessionID']
+		self.estAIScore = valueDict['estAIScore']
+		self.estOppScore = valueDict['estOppScore']
+		self.opCardsMem = valueDict['opCardsMem']
+		self.aiCardsMem = valueDict['aiCardsMem']
+		self.opCards = json.dumps(valueDict['opCards'])
+		self.aiCards = json.dumps(valueDict['aiCards'])
+		self.discardTopValue = valueDict['discardTopValue']
+		self.decayRate = valueDict['decayRate']
+
+		logging.info("made it here !!!!!!")
+
+
 	def doTurn(self,state):
 		'''
 		Does the HAL's turn, this function is essentially a way for the AI to keep
 
 		'''
+		logging.info("made it to Hal's DO TURN!")
 		#clear old actions
 		self.actionsToTake = ""
 		#Decide whether or not to draw from the discard pile or the deck
@@ -68,10 +98,12 @@ class HAL(db.Model):
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
+		logging.info("in do turn...")
 		for c in aiCards:
-			if(maxVal < int(c['image'])):
+			logging.info(c)
+			if(maxVal < c):
 				i=j
-				maxVal = int(c['image'])
+				maxVal = c
 			j=j+1
 		#Now we know what the maxVal is
 		card = 0
@@ -359,8 +391,14 @@ class HAL(db.Model):
 				This function uses the probability of rememberance of the AI
 				to determine the representations
 		'''
+		logging.info("made it to HAL's get Memory!!")
 		humanRep = [0,0,0,0]
 		compRep  = [9,9,9,9]
+
+		# logging.info("This is the type of the ai cards:")
+		# logging.info(type( json.dumps(self.aiCards) ) )
+		# logging.info(self.aiCards)
+
 		aiCards = json.loads(self.aiCards)
 		humanCards = json.loads(self.opCards)
 		for i in range(len(self.opCardsMem)):
@@ -388,10 +426,12 @@ class HAL(db.Model):
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
+		# logging.info("findHighestInHand, here are the values for the images:")
 		for c in aiCards:
-			if(maxVal < int(c['image'])):
+			# logging.info(c)
+			if(maxVal < c):
 				i=j
-				maxVal = int(c['image'])
+				maxVal = c
 			j=j+1
 
 		return i,maxVal
@@ -408,9 +448,9 @@ class HAL(db.Model):
 		humanValue = 0
 		compValue = 0
 		for c in humanCards:
-			humanValue = humanValue + int(c['image'])
+			humanValue = humanValue + c
 		for c in aiCards:
-			compValue = compValue + int(c['image'])
+			compValue = compValue + c
 		#Now here comes some math
 		#Quite frankly, if we just do a comparison that's silly. We'll end the game if the ai
 		#by chance believes itself to be in the right when it's really just remembering poorly

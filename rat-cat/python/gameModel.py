@@ -207,7 +207,7 @@ class DatastoreInteraction():
 		logging.info("Made it to get HAL")
 		# retrieve HAL object from datastore
 		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
-		logging.info(self.sessionId)
+		# logging.info(self.sessionId)
 		# logging.info(results[0].pkSessionID)
 		for result in results:
 			pkSessionID = result.pkSessionID
@@ -217,13 +217,13 @@ class DatastoreInteraction():
 			estAIScore = result.estAIScore
 			discardTopValue = result.discardTopValue
 			decayRate = result.decayRate
-			decayMemory = result.decayMemory
+			# decayMemory = result.decayMemory
 			aiCardsMem = result.aiCardsMem
 			aiCards = result.aiCards
 
 		# retrieve difficulty from datastore 
 		difficulty = self.getDifficulty()
-		logging.info(difficulty)
+		# logging.info(difficulty)
 		halDict = {'pkSessionID':pkSessionID, 'opCardsMem':opCardsMem, 'opCards':opCards, 'estOppScore':estOppScore, 'estAIScore':estAIScore, 'discardTopValue':discardTopValue, 'decayRate':decayRate, 'aiCardsMem':aiCardsMem, 'aiCards':aiCards, 'difficulty':difficulty}
 
 		return halDict
@@ -244,5 +244,8 @@ class DatastoreInteraction():
 			logging.info(result.aiCards)
 			result.aiCards = aiCards
 			result.put()
+	
+	def testMe(self):
+		logging.info("Test Satisfactory")
 
 
