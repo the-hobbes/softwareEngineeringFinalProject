@@ -177,6 +177,8 @@ class HAL(db.Model):
 		#Slowly forget what our cards are\
 		self.alzheimer()
 
+
+		# we need to use the model to update the datastore
 		self.put()
 		time.sleep(2)
 		return state
