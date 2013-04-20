@@ -285,6 +285,13 @@ class DatastoreInteraction():
 			logging.info(result.aiCards)
 			result.aiCards = aiCards
 			result.put()
+
+	def updateAiObject(self):
+		'''
+			updateAiObject
+			Must update the datastore by key. 
+			Everything must be updated besides the decayRate (and session id and key)
+		'''
 	
 	def testMe(self):
 		logging.info("Test Satisfactory")
