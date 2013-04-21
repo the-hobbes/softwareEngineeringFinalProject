@@ -179,7 +179,10 @@ class HAL(db.Model):
 
 		# we need to use the model to update the datastore
 		# self.put()
-		# DatastoreInteraction.updateAi(ALL THE STUFF THAT NEEDS TO BE PASSED TO THE DATASTORE)
+		newModel = DatastoreInteraction(state['sessionId'])
+		newModel.updateAiObject( self.pkSessionID, self.estAIScore, self.estOppScore, self.opCardsMem, 
+										self.aiCardsMem, self.opCards, self.aiCards, self.discardTopValue )
+
 		time.sleep(2)
 		return state
 

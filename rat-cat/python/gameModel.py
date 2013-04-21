@@ -236,8 +236,8 @@ class DatastoreInteraction():
 		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
 		lists = query.fetch(10) 
 		key = lists[0].key()
-		logging.info("this is the key:")
-		logging.info(key)
+		# logging.info("this is the key:")
+		# logging.info(key)
 
 		# SELECT * FROM YourModel WHERE __key__ = KEY('YourModel',1)
 		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
@@ -275,8 +275,8 @@ class DatastoreInteraction():
 		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
 		lists = query.fetch(10) 
 		key = lists[0].key()
-		logging.info("this is the key:")
-		logging.info(key)
+		# logging.info("this is the key:")
+		# logging.info(key)
 
 		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
 		for result in results:
@@ -286,12 +286,39 @@ class DatastoreInteraction():
 			result.aiCards = aiCards
 			result.put()
 
-	def updateAiObject(self):
+	def updateAiObject(self, pkSessionID, estAIScore, estOppScore, opCardsMem, aiCardsMem, tmpOP, tmpAI, discardTopValue):
 		'''
 			updateAiObject
 			Must update the datastore by key. 
 			Everything must be updated besides the decayRate (and session id and key)
+			Parameters:
+				pkSessionID
+				estAIScore
+				estOppScore
+				opCardsMem
+				aiCardsMem
+				tmpOP => called opCards in the datastore
+				tmpAI => called aiCards in the datastore
+				discardTopValue
 		'''
+		# get and make key
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+
+		# retrieve entity by key
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
+		for result in results:
+			# update results with what has been passed in
+			result.pkSessionID = pkSessionID
+			result.estAIScore = estAIScore
+			result.estOppScore = estOppScore
+			result.opCardsMem = opCardsMem
+			result.aiCardsMem = aiCardsMem
+			result.opCards = tmpOP
+			result.aiCards = tmpAI
+			result.discardTopValue = discardTopValue
+			result.put()
 	
 	def testMe(self):
 		logging.info("Test Satisfactory")
