@@ -276,7 +276,7 @@ function HAL(state){
 	setTimeout(function(){
 		showHalLoader();
 	},1000);
-	
+
 	var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -291,7 +291,7 @@ function HAL(state){
 			        // console.log(response);
 			        setTimeout(function(){
 						hideHalLoader();
-					},1000);
+					},2000);
 			        // hideHalLoader();
 			        //We're done with HAL's turn, render the players
 			        state = handleState(response);      
