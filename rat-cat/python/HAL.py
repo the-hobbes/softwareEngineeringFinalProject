@@ -173,6 +173,8 @@ class HAL(db.Model):
 
 		self.put()
 		time.sleep(2)
+		logging.info("ACTIONS")
+		logging.info(self.actionsToTake)
 
 		#Slowly forget what our cards are\
 		self.alzheimer()

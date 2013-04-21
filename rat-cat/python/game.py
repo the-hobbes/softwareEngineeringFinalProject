@@ -121,7 +121,7 @@ class GameHandler(Handler):
 		# 	deck.append(p)
 		# shuffle(deck)
 
-		deck = [9,2,5,2,5,7,10,12,8,3,0,11]
+		deck = [4,3,2,1,10,1,2,3,4,5,6,7,8]
 		discardCard = 0		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
@@ -441,6 +441,9 @@ class GameHandler(Handler):
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
 						return self.endGame(statePassedIn)
 
+					logging.info("PASSION")
+					logging.info(drawnCard)
+
 					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
 
@@ -489,7 +492,8 @@ class GameHandler(Handler):
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				if(statePassedIn['state'] != 'draw2PlayerChoice'):
+					statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
 		# check for knock state

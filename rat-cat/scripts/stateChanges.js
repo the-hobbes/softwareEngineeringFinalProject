@@ -288,9 +288,17 @@ function playerChoice(state){
 
 	$('#discardPile').addClass('playerChoiceAJAX');
 
+
+	if(state.displayCard.image == '10'){
+		//If we've selected a draw2 card then that means we get to add the call onto the deck
+		$('#deck').addClass('playerChoiceAJAX');		
+	}
+
 	//Iterate through each div within playerCards and add the glowing class
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('playerChoiceAJAX');
+		if(state.displayCard.image != '10'){
+			$(this).addClass('playerChoiceAJAX');	
+		}
 	});
 
 	//Keep track of cards clicked:
@@ -533,6 +541,7 @@ function draw2PlayerChoice(state){
 
 	//Add glow
 	state = glowActiveCards(state);
+	renderState(1,state,[null]);
 
 	//Add ajax method
 	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
