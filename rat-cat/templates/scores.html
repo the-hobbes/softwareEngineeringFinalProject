@@ -4,6 +4,7 @@
 		<title>Scores Page</title>
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<div id="container" class="shadow">
@@ -49,6 +50,25 @@
 			  ga('send', 'pageview');
 
 			</script>
+			<div id="sound"></div>
 			<!-- end analytics code -->		
+
+			<script type="text/javascript">
+				//Replace this code with the function call to peters add sound once it's commited
+				
+
+						var embed=document.createElement('object');
+		  				embed.setAttribute('type','audio/wav');
+				  		embed.setAttribute('data', 'sounds/scores.mp3');
+				  		embed.setAttribute('enablejavascript', true);
+				  		embed.setAttribute('autostart',true);
+				  		embed.setAttribute('width',0);
+				  		embed.setAttribute('height',0);
+  				
+					$('#sound').append(embed);
+			
+				
+			</script>
+			
 	</body>
 </html>
