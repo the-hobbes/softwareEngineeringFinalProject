@@ -13,7 +13,6 @@ from google.appengine.ext import db
 import logging
 import json
 import time
-# import python.gameModel as gm
 from python.gameModel import DatastoreInteraction
 
 class HAL(db.Model):
@@ -177,7 +176,6 @@ class HAL(db.Model):
 		#Slowly forget what our cards are\
 		self.alzheimer()
 
-		self.put()
 		time.sleep(2)
 		return state
 
