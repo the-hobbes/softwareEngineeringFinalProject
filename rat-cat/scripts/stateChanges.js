@@ -122,11 +122,13 @@ function waitingForDraw(state){
 	
 
 
-	$('.waitingForDrawAJAX').bind('click',function(){
+	$('.waitingForDrawAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
+		e.stopImmediatePropagation();
+		e.preventDefault();
 
 		console.log("The waitingForDrawAJAX bind has been fired");
 
@@ -635,10 +637,12 @@ function draw2PlayerChoice(state){
 
 
 	//Define the AJAX call to the server 
-	$('.draw2PlayerChoiceAJAX').bind('click',function(){
+	$('.draw2PlayerChoiceAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
 		
+		e.stopImmediatePropagation();
+		e.preventDefault();
 
 		//Use ajax to yell over to the server that something has happened
 
