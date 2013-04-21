@@ -150,7 +150,7 @@ class GameHandler(Handler):
 					"sessionId" : self.sessionId,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
-					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
+					"message": {"visible" : 0, "text" : "Initial Message"}
 				}
 
 		# encode it
@@ -210,6 +210,7 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				statePassedIn['message']['visible'] = 1
+				statePassedIn['message']['text'] = "This text has been changed in waitingForDraw, line 213"
 				
 				return statePassedIn
 
@@ -354,6 +355,7 @@ class GameHandler(Handler):
 
 			if(statePassedIn['state']=='endGame'):
 				self.endgame(statePassedIn)
+				return statePassedIn
 
 
 		# need to check the deck to see if the deck is empty
@@ -365,6 +367,8 @@ class GameHandler(Handler):
 
 		# check for knock state
 		statePassedIn = self.checkKnock(statePassedIn)
+		if(statePassedIn['state']=='endGame'):
+			statePassedIn = self.endGame(statePassedIn)
 
 		return statePassedIn
 
@@ -966,7 +970,8 @@ class GameHandler(Handler):
 		statePassedIn['displayCard']['active'] = 0
 
 		# reset the message visibilty and it's text 
-		statePassedIn['message'] = {"visible" : 0, "text" : "There is no card to be selected here"}
+		if(statePassedIn['state'] != 'endGame'):
+			statePassedIn['message'] = {"visible" : 0, "text" : "MOTHERBEAST!!"}
 
 		return statePassedIn
 
