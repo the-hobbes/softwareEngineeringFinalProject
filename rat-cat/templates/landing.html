@@ -26,25 +26,23 @@
 			 $('#rulesButton').live('click',function(){
 			      $('#rulesDialog').jqmShow();
 			 });
+
+			 // this is a call to the tubular method of jquery.tubular to render an inspirational background video
+			$('#videoContainer').tubular({videoId: 'WdUyHe7XTEY'}); // where idOfYourVideo is the YouTube ID.
 		});
 		</script>
 	</head>
 
 	<body>
 
-	  <div id="container" class="shadow">
+	  <div id="container" class="shadow translucent">
 
-	  	<script>
-        jQuery().ready(function() {
-                $('#container').tubular({videoId: 'WdUyHe7XTEY'}); // where idOfYourVideo is the YouTube ID.
-        });
-	  	</script>
+		<div id="videoContainer"></div><!-- end videoContainer -->	  
 
-	  	
 	  	<div id="imageBox" class="shadow"><img src="../images/mainImage.png" alt=""/></div><!-- end imageBox-->
 
 	  	<div id="startBox">
-	  		<form action="/playerinfo" method="GET"><button id="startButton" class="shadow">Start</button></form	>
+	  		<form action="/playerinfo" method="GET"><button id="startButton" class="shadow">Start</button></form>
 	  	</div><!-- end startBox-->
 
 	  	<button id="creditsButton" class="shadow ">Credits</button>
