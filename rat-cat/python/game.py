@@ -581,6 +581,12 @@ class GameHandler(Handler):
 				# depending on what that newly drawn card is, set the right things glowing 
 				statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
+				for c in statePassedIn['playCard']:
+					c['active'] = 1
+				for c in statePassedIn['compCard']:
+					c['active'] = 0
+					
+
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
 				#	newly drawn card.
 				
