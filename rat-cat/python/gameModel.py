@@ -9,6 +9,7 @@ import logging
 from python.datastore import *
 from python.HAL import *
 from google.appengine.api.datastore import Key
+import time
 
 class DatastoreInteraction():
 	'''
@@ -168,10 +169,12 @@ class DatastoreInteraction():
 			result.win = True
 			result.put()
 
-		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
-		for result in results:
-			result.gamesWon += 1
-			result.put()
+		time.sleep(1)
+
+		results1 = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result1 in results1:
+			result1.gamesWon += 1
+			result1.put()
 
 	def updateGameLose(self):
 		'''
@@ -183,6 +186,8 @@ class DatastoreInteraction():
 		for result in results:
 			result.win = False
 			result.put()
+			
+		time.sleep(1)
 
 		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:

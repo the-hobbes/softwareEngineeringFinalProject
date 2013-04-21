@@ -73,29 +73,38 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
+<<<<<<< HEAD
+=======
+ 	console.log(newState.state)
+	//determining what animation to fire
+	// console.log("this is the playerClicks");
+	// console.log(playerClicks[0]);
+	// console.log("this is the state");
+	// console.log(newState.state);
+>>>>>>> 6d48232e827dc1b17100612d46ae57dee7c60ac2
 	
 	// animation section
-	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
- 		animateDeckToCurrent(playerClicks);
- 	}
- 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForPCard"){
- 		animateDiscardToCurrent(playerClicks);
- 	} 
- 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForDraw"){
- 		animateDiscardToCurrent(playerClicks);
- 	}
- 	else if (playerClicks[0] == 'playerCard1'){
- 		animateP1Discard(playerClicks);
- 	}
- 	 else if (playerClicks[0] == 'playerCard2'){
- 		animateP2Discard(playerClicks);
- 	}
- 	 else if (playerClicks[0] == 'playerCard3'){
- 		animateP3Discard(playerClicks);
- 	}
- 	 else if (playerClicks[0] == 'playerCard4'){
- 		animateP4Discard(playerClicks);
- 	}
+	// if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
+ // 		animateDeckToCurrent(playerClicks);
+ // 	}
+ // 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForPCard"){
+ // 		animateDiscardToCurrent(playerClicks);
+ // 	} 
+ // 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForDraw"){
+ // 		animateDiscardToCurrent(playerClicks);
+ // 	}
+ // 	else if (playerClicks[0] == 'playerCard1'){
+ // 		animateP1Discard(playerClicks);
+ // 	}
+ // 	 else if (playerClicks[0] == 'playerCard2'){
+ // 		animateP2Discard(playerClicks);
+ // 	}
+ // 	 else if (playerClicks[0] == 'playerCard3'){
+ // 		animateP3Discard(playerClicks);
+ // 	}
+ // 	 else if (playerClicks[0] == 'playerCard4'){
+ // 		animateP4Discard(playerClicks);
+ // 	}
  	
  	//If the old state is not null then we really only need to update whatever differs between them.
  	//Start with the computer cards:
