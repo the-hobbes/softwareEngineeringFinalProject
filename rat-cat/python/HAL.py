@@ -171,13 +171,14 @@ class HAL(db.Model):
 
 		state['compCard'] = json.loads(self.aiCards)
 
-		self.put()
-		time.sleep(2)
 		logging.info("ACTIONS")
 		logging.info(self.actionsToTake)
 
 		#Slowly forget what our cards are\
 		self.alzheimer()
+
+		self.put()
+		time.sleep(2)
 		return state
 
 
