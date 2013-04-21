@@ -418,6 +418,8 @@ class GameHandler(Handler):
 					statePassedIn['playCard'][3]['image'] = currentCard 
 
 				# housekeeping
+				for oCard in statePassedIn['compCard']:
+					oCard['active'] = 0
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = "HAL"
@@ -460,7 +462,9 @@ class GameHandler(Handler):
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
 					statePassedIn['draw2Counter'] = 2
-
+					for oCard in statePassedIn['compCard']:
+						oCard['active'] = 0
+					logging.info(statePassedIn)
 					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
@@ -906,6 +910,8 @@ class GameHandler(Handler):
 		'''
 		if(drawnCard == 10):
 			# draw 2. Glow the deck and discard
+			for oCard in statePassedIn['compCard']:
+				oCard['active'] = 0
 			statePassedIn['deckActivity'] = 1
 		elif(drawnCard == 12):
 			# swap. glow the discard, opponents cards, and the player's cards.
