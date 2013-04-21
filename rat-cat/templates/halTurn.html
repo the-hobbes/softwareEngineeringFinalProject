@@ -9,7 +9,10 @@
 			* showLoader: This function is used to show the hal gif. It is called from stateChanges.js
 			*/
 			function showHalLoader(){
-				$('#halTurnDialog').jqmShow();				
+				$('#halTurnDialog').jqmShow();		
+				console.log("HEY JUDE");
+				console.log($('#halTurnDialog').css("z-index"));
+				$('#halTurnDialog').css("z-index",2999);
 				// console.log("got to showLoader");
 			}
 
