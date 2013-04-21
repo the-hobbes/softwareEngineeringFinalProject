@@ -127,9 +127,6 @@ function waitingForDraw(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
-		// knocking logic to update knockstate before the state is passed back. is this the right place for it i wonder?
-		state.knockState = updateKnockState();
-
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
@@ -205,21 +202,7 @@ function waitingForPCard(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
-		// knocking logic
-		if(knock == 1){
-			//returns a boolean, telling us if they want to knock or not. 
-			result = confirm("Would you like to knock? If you don't want to get this prompt, uncheck the knock button.");
-			// console.log("the result of that was:");
-			// console.log(result);
-			if(result == true){
-				//if they want to knock, update the knockstate
-				state.knockState = 2;
-			}
-			else{
-				//if they don't want to knock, update the knockstate to do nothing.
-				state.knockState = 0;
-			}
-		}
+		state.knockState = updateKnockState();
 
 		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
@@ -380,6 +363,7 @@ function playerChoice(state){
 			oClick = oClick + 1;
 			console.log(oClick);
 			if(oClick > 0 && pClick > 0){
+				state.knockState = updateKnockState();
 				//Fire Ajax
 				var request = $.ajax({
 			        url: "/game",
@@ -440,8 +424,7 @@ function playerChoice(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 		pClick = pClick + 1;
-		console.log(pClick);
-
+		state.knockState = updateKnockState();
 
 		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
@@ -627,7 +610,8 @@ function draw2PlayerChoice(state){
 	$('.draw2PlayerChoiceAJAX').bind('click',function(){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
-		
+		state.knockState = updateKnockState();
+
 		//Use ajax to yell over to the server that something has happened
 
 	    var request = $.ajax({

@@ -146,14 +146,17 @@ function animateP4Discard(pClicks){
          function(){$(this).remove();})
     }
 }
+//not used function, needs to work around animation queue issues
 function animateCurrentToHand(){
     var newElement = $("#currentCard").clone();
     newElement.appendTo('#currentCard');
 
     newElement.animate({
-        marginLeft:'+500px'
-    })
-
-
-
+        marginLeft:'+550px',
+        width:'-=135px',
+        height:'-=175px',
+        top:'+100px',
+        opacity:'0.3',
+    }, 5000,
+     function(){$(this).remove();})
 }

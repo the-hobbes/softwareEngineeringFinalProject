@@ -3,9 +3,10 @@
 		<meta charset="utf-8">
 		<title>Landing Page</title>
 		<meta name="description" content="">
-		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="css/landingStyle.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/jqModal.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="scripts/jquery.tubular.1.0.js"></script>
 		<script src="scripts/jqModal.js"></script>
 		<script>
 		jQuery().ready(function($){
@@ -33,6 +34,13 @@
 
 	  <div id="container" class="shadow">
 
+	  	<script>
+        jQuery().ready(function() {
+                $('#container').tubular({videoId: 'WdUyHe7XTEY'}); // where idOfYourVideo is the YouTube ID.
+        });
+	  	</script>
+
+	  	
 	  	<div id="imageBox" class="shadow"><img src="../images/mainImage.png" alt=""/></div><!-- end imageBox-->
 
 	  	<div id="startBox">
