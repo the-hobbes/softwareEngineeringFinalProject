@@ -15,6 +15,10 @@ import python.HAL as ai
 import python.game as gh
 import logging
 import json
+from google.appengine.ext.db import stats
+
+global_stat = stats.GlobalStat.all().get()
+
 
 class UnitHarness(Handler):
 	'''
@@ -35,7 +39,9 @@ class UnitHarness(Handler):
 		self.testPlayerInfo()
 		self.testHAL()
 		self.testGame()
-		self.render("unit.html",tests=self.tests)
+		totalBytes = 'Total bytes stored: %d' % global_stat.bytes
+		totalEntities ='Total entities stored: %d' % global_stat.count
+		self.render("unit.html",tests=self.tests,totalBytes=totalBytes,totalEntities=totalEntities)
 		
 
 	def addTest(self,name,passed=False,message="No Message Set"):

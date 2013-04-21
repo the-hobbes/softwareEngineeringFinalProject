@@ -42,6 +42,10 @@ body {
   margin-right: 5px;
   float:left;
 }
+#popupBox{
+  margin-right: 5px;
+  float:left;
+}
 #scoresBox{
   margin-right: 5px;
   float:left;
@@ -279,6 +283,7 @@ submitButton:active{position:relative;top:2px;}
   top:-35px;
 }
 #discardPile{
+  position: relative;
   width:135px;
   height:175px;
   background-color: rgba(0,0,0,.2);
@@ -289,6 +294,7 @@ submitButton:active{position:relative;top:2px;}
   border-radius:10px;
 }
 #deck{
+  position:relative;
   width:135px;
   height:175px;
   background-color: rgba(0,0,0,.2);
@@ -315,6 +321,13 @@ submitButton:active{position:relative;top:2px;}
   position: relative;
   right: 70px;
 }
+#knockButton:hover{
+  background-color:blue;
+}
+.pressed{
+  /*width: 200px;*/
+  background-color: red;
+}
 #playerCards{
   width:700px;
   height:200px;
@@ -330,6 +343,7 @@ submitButton:active{position:relative;top:2px;}
   cursor: pointer;
   margin-top: 10px;
   margin-right: 5px;
+  position:relative;
 
   -moz-border-radius:10px;-webkit-border-radius:10px;
   border-radius:10px;
@@ -361,6 +375,7 @@ submitButton:active{position:relative;top:2px;}
   position: absolute;
   margin-left:370px;
   border: 1px solid black;
+  opacity: .7;
 }
 
 /*

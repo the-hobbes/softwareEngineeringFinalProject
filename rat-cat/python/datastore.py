@@ -14,8 +14,6 @@ class Players(db.Model):
 		Players
 		Datastore entity for Players. Used to record relevent player information. Inherits from db.Model
 	'''
-	# playerID = db.StringProperty(required=True)
-
 	# player specific information
 	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
@@ -43,6 +41,7 @@ class Games(db.Model):
 	win = db.BooleanProperty()
 	score = db.IntegerProperty(default=0)
 	rounds = db.IntegerProperty(default=0)
+	halScore = db.IntegerProperty(default=0)
 
 	# foreign key
 	sessionId = db.StringProperty()

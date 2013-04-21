@@ -8,6 +8,7 @@
 # before the game begins
 
 from handler import *
+from python import HAL
 
 class DifficultyHandler(Handler):
 	'''
@@ -37,7 +38,7 @@ class DifficultyHandler(Handler):
 			for result in results:
 				result.difficulty = difficulty
 				result.put()
-
+			
 			# redirect to the game
 			self.redirect("/game" + "?sessionId=" + sessionId)
 		else:

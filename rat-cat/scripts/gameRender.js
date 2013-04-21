@@ -21,7 +21,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  * 			 "displayCard" : {}, "knockState" : 0 | 1, "state" : "state specified by specs" }			 
  *	returns: the new state of the game
  */
- function renderState(oldState,newState){
+ function renderState(oldState,newState,playerClicks){
  	if(oldState == null){
  		//Initializing the game so the newState is correct
  		//TODO: We need to decide the first state of the game and glow appropriate things
@@ -73,6 +73,35 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
+ 	console.log(newState.state)
+	//determining what animation to fire
+	console.log("this is the playerClicks");
+	console.log(playerClicks[0]);
+	console.log("this is the state");
+	console.log(newState.state);
+	
+	// animation section
+	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
+ 		animateDeckToCurrent(playerClicks);
+ 	}
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForPCard"){
+ 		animateDiscardToCurrent(playerClicks);
+ 	} 
+ 	else if (playerClicks[0] == 'discardPile' && newState.state == "waitingForDraw"){
+ 		animateDiscardToCurrent(playerClicks);
+ 	}
+ 	else if (playerClicks[0] == 'playerCard1'){
+ 		animateP1Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard2'){
+ 		animateP2Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard3'){
+ 		animateP3Discard(playerClicks);
+ 	}
+ 	 else if (playerClicks[0] == 'playerCard4'){
+ 		animateP4Discard(playerClicks);
+ 	}
  	
  	//If the old state is not null then we really only need to update whatever differs between them.
  	//Start with the computer cards:
@@ -121,7 +150,8 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  	//Check the knock state
  	if(newState.knockState){
  		//We should have some type of pop up or some type of change that says it's the user's last turn.
- 		alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 		// alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 		// alert("HAL has knocked, this is your last turn!");
  	}
 
  	//We return newState for no particular reason. keep it in the space I guess 
