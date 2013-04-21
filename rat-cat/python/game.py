@@ -113,19 +113,19 @@ class GameHandler(Handler):
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
 
-		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
-		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
-		# deck = sum(numberCards, [])
-		# shuffle(deck)
-		# subDeck = sum(powerCards, [])
-		# shuffle(subDeck)
-		# discardCard = deck.pop(choice(deck))
-		# for p in subDeck:
-		#	deck.append(p)
-		# shuffle(deck)
+		numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
+		powerCards = [ [10]*3, [11]*3, [12]*3 ]
+		deck = sum(numberCards, [])
+		shuffle(deck)
+		subDeck = sum(powerCards, [])
+		shuffle(subDeck)
+		discardCard = deck.pop(choice(deck))
+		for p in subDeck:
+			deck.append(p)
+		shuffle(deck)
 
-		deck = [4,3,2,1,10,1,2,3,4,5,6,7,8]
-		discardCard = 0		
+		# deck = [4,3,2,1,10,1,2,3,4,5,6,7,8]
+		# discardCard = 0		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [

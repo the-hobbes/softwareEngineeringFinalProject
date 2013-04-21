@@ -127,6 +127,8 @@ function waitingForDraw(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
+		console.log("The waitingForDrawAJAX bind has been fired");
+
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
