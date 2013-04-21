@@ -786,6 +786,7 @@ class GameHandler(Handler):
 		elif (pScore > cScore):
 			# computer wins
 			logging.info("computer wins")
+			statePassedIn["win"] = 0
 			newModel.updateRoundsLostTotal()
 			time.sleep(1)
 
@@ -817,6 +818,7 @@ class GameHandler(Handler):
 			logging.info("Game is now over")
 
 			newModel.updateGames()
+			time.sleep(1)
 
 			# update the json to reflect that the game is now over
 			statePassedIn['gameOver'] = 1
