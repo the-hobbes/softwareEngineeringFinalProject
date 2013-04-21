@@ -63,7 +63,6 @@ class GameHandler(Handler):
 		# update the opcards and aicards in the hal object in the datastore
 		halState = json.loads(newState)
 		newModel = DatastoreInteraction(self.sessionId)
-		logging.info(newModel)
 		newModel.updateAiCards(str(halState['playCard']), aiCards=str(halState['compCard']))
 
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=self.thumbnailImage)
@@ -351,7 +350,7 @@ class GameHandler(Handler):
 		statePassedIn['deckActivity'] = 1
 		statePassedIn['discardActivity'] = 1
 		statePassedIn['state'] = "waitingForDraw"
-		logging.info(statePassedIn)
+
 
 		# need to check the deck to see if the deck is empty
 		# if the deck is empty, its time for the endgame state
@@ -464,7 +463,6 @@ class GameHandler(Handler):
 					statePassedIn['draw2Counter'] = 2
 					for oCard in statePassedIn['compCard']:
 						oCard['active'] = 0
-					logging.info(statePassedIn)
 					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
@@ -591,7 +589,6 @@ class GameHandler(Handler):
 
 				#They have already drawn a card once, but they clicked the deck to draw again
 				if(userChoice=='deck'):
-					logging.info(statePassedIn['draw2Counter'])
 					if(statePassedIn['draw2Counter']==2):
 						#We draw 1 card, but are now drawing another
 						statePassedIn['draw2Counter']=1
@@ -981,8 +978,6 @@ class GameHandler(Handler):
 		# determine if the card was a user or computer card
 		if (divToTranslate[0] == 'p'):
 			# this is a playerCard. 
-			logging.info(statePassedIn)
-
 			cardChoice = statePassedIn['playCard'][cardIndex]
 			cardArray = 'playCard'
 
