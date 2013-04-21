@@ -322,7 +322,7 @@ submitButton:active{position:relative;top:2px;}
   right: 70px;
 }
 #knockButton:hover{
-  background-color:red;
+  background-color:blue;
 }
 .pressed{
   /*width: 200px;*/
