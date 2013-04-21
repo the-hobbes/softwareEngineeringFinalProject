@@ -202,7 +202,7 @@ function waitingForPCard(state){
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
-		state.knockState = updateKnockState();
+		
 
 		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
@@ -356,13 +356,18 @@ function playerChoice(state){
 			$(this).addClass('opSwap');
 		});	
 
-		$('.opSwap').bind('click', function(){
+		$('.opSwap').bind('click', function(e){
 			state.playerClicks.push(this.id);
 			//Conditional ajax call here if the player has selected their card already
 			oClick = oClick + 1;
 			console.log(oClick);
+
+			e.stopImmediatePropagation();
+        	e.preventDefault();
+
 			if(oClick > 0 && pClick > 0){
-				state.knockState = updateKnockState();
+				console.log("hello2");
+				state.knockState = updateKnockState();	
 				//Fire Ajax
 				var request = $.ajax({
 			        url: "/game",
@@ -418,19 +423,25 @@ function playerChoice(state){
 
 
 	//Define the AJAX call to the server 
-	$('.playerChoiceAJAX').bind('click',function(){
+	$('.playerChoiceAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 		pClick = pClick + 1;
-		state.knockState = updateKnockState();
+		
+		e.stopImmediatePropagation();
+        e.preventDefault();
 
 		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
+
+			console.log("hello1");
+			state.knockState = updateKnockState();
+
 			// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
 			showLoader();
-			
+		
 		    var request = $.ajax({
 		        url: "/game",
 		        type: 'POST',
@@ -478,6 +489,8 @@ function playerChoice(state){
 				state.playerClicks.push(this.id);
 				pClick = 0;
 				oClick = 0;
+				console.log("hello");
+				state.knockState = updateKnockState();
 				var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -512,6 +525,8 @@ function playerChoice(state){
 					$('.glowing').removeClass('glowing');	
 			}else{
 				if(pClick > 0 && oClick > 0){
+					console.log("hello3");
+					state.knockState = updateKnockState();
 					var request = $.ajax({
 				        url: "/game",
 				        type: 'POST',
@@ -609,7 +624,7 @@ function draw2PlayerChoice(state){
 	$('.draw2PlayerChoiceAJAX').bind('click',function(){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
-		state.knockState = updateKnockState();
+		
 
 		//Use ajax to yell over to the server that something has happened
 
