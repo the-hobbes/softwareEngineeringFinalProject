@@ -79,7 +79,6 @@ function animateP1Discard(pClicks){
     newElement.appendTo('#playerCard1');
     
     console.log(newElement);
-    
     if (pClicks[0] == "playerCard1") {
 
         newElement.animate({
@@ -87,9 +86,11 @@ function animateP1Discard(pClicks){
             top:'-=300px',
             opacity:'0.5',
          }, 900,
-         function(){$(this).remove();})
+         function(){
+            $(this).remove();})
     } 
-}
+
+}    
 function animateP2Discard(pClicks){
 	console.log("move playerCard2 to discard and current to 2")
 
@@ -144,4 +145,18 @@ function animateP4Discard(pClicks){
          }, 900,
          function(){$(this).remove();})
     }
+}
+//not used function, needs to work around animation queue issues
+function animateCurrentToHand(){
+    var newElement = $("#currentCard").clone();
+    newElement.appendTo('#currentCard');
+
+    newElement.animate({
+        marginLeft:'+550px',
+        width:'-=135px',
+        height:'-=175px',
+        top:'+100px',
+        opacity:'0.3',
+    }, 5000,
+     function(){$(this).remove();})
 }
