@@ -471,7 +471,7 @@ class GameHandler(Handler):
 					statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
-					statePassedIn['draw2Counter'] = 2
+					statePassedIn['draw2Counter'] = 1
 					for oCard in statePassedIn['compCard']:
 						oCard['active'] = 0
 					statePassedIn['state'] = 'draw2PlayerChoice'
@@ -544,7 +544,6 @@ class GameHandler(Handler):
 
 		# if the user's choice was to discard:
 		if(userChoice == 'discardPile'):
-
 			# what's the counter looking like? If it is 0, then the user has used up all of their discards and their turn is over.
 			if(statePassedIn['draw2Counter'] <= 0):
 				# put current display card into discard pile and reset it
@@ -585,7 +584,7 @@ class GameHandler(Handler):
 					c['active'] = 1
 				for c in statePassedIn['compCard']:
 					c['active'] = 0
-					
+
 
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
 				#	newly drawn card.
