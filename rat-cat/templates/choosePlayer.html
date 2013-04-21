@@ -47,16 +47,8 @@
 
 			   	//Play sound affect for character
 			   	var soundSrc = getSoundSource(name);
-			   	console.log("play sound" + soundSrc);
 
-			   	//Refactor this to call peters sound code
-			   	var embed=document.createElement('object');
-		  		embed.setAttribute('type','audio/wav');
-				embed.setAttribute('data', 'sounds/' + soundSrc);
-			 	embed.setAttribute('enablejavascript', true);
-				embed.setAttribute('autostart',true);
-				embed.setAttribute('width',0);
-				embed.setAttribute('height',0);
+				insertAudio('audio/mp3','sounds/' + soundSrc);
   				
 				$('#sound').append(embed);
 					    
@@ -89,12 +81,15 @@
 						break;
 				}
 			}
+<<<<<<< HEAD
 
+=======
+>>>>>>> e346a3e57b12b9b77adbd3730fdecea7646cbc37
 			//handle displaying the title and description of each character, based on its name. 
 			function getSoundSource(name){
 				switch(name){
 					case 'Betty, Queen of Rats':
-						return "betty";
+						return "betty.mp3";
 						break;
 					case 'Jason H.':
 						return "hibbels";
@@ -103,13 +98,13 @@
 						return "ratman";
 						break;
 					case 'The Crazy Cat Lady':
-						return "cat";
+						return "catLady.mp3";
 						break;
 					case 'The Big Lebowscat':
 						return "lebow.mp3";
 						break;
 					case 'Tommy Cat':
-						return "tommy";
+						return "tommy.mp3";
 						break;
 					default:
 						return "";
