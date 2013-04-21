@@ -18,8 +18,7 @@ class ScoreInfoHandler(Handler):
 		'''
 			POST method to return a player's score information, one that exists within the database.
 		'''
-		inputName = self.request.get("name")
-		players = db.GqlQuery("SELECT * FROM Players WHERE name = :name", name=inputName)
+		players = db.GqlQuery("SELECT * FROM Players WHERE name = :name", name=self.request.get("name"))
 		thumbnailImage = ""
 		name = False
 		error = "Invalid username!"

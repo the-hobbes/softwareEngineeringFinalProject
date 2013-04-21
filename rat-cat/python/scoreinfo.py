@@ -16,7 +16,8 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 class ScoreInfoHandler(Handler):
 	def post(self):
 		'''
-			POST method to return a player's score information, one that exists within the database.
+			POST method to return a player's score information based on valid input by using a boolean value.
+			If true, returns player's score info in a separate page. Otherwise, refreshes scores page with an error.
 		'''
 		players = db.GqlQuery("SELECT * FROM Players WHERE name = :name", name=self.request.get("name"))
 		thumbnailImage = ""
@@ -40,6 +41,6 @@ class ScoreInfoHandler(Handler):
 				thumbnailImage = "tommyCatThumb.png"
 		
 		if name:
-			self.render("scoreInfo.html", players=players, thumbnailImage=thumbnailImage, name=name)
+			self.render("scoreInfo.html", players=players, thumbnailImage=thumbnailImage)
 		else:
 			self.render("scores.html", error=error)
