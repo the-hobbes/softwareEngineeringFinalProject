@@ -345,20 +345,23 @@ class GameHandler(Handler):
 			#time to play (if knockstate was 1 then that means we knocked previously and the player took their turn)
 			ai = HAL.HAL()
 			ai.setupAIObject(statePassedIn['sessionId'])
-			newState = ai.doTurn(statePassedIn)		
+			statePassedIn = ai.doTurn(statePassedIn)		
 
 			#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
 			statePassedIn['deckActivity'] = 1
 			statePassedIn['discardActivity'] = 1
 			statePassedIn['state'] = "waitingForDraw"
 
+			if(statePassedIn['state']=='endGame'):
+				self.endgame(statePassedIn)
 
-			# need to check the deck to see if the deck is empty
-			# if the deck is empty, its time for the endgame state
-			if( len(newState['deck']) == 0 ):
-				logging.info("Deck is empty")
-				freshState = self.endGame(newState)
-			# otherwise, proceed as normal.
+
+		# need to check the deck to see if the deck is empty
+		# if the deck is empty, its time for the endgame state
+		if( len(statePassedIn['deck']) == 0 ):
+			logging.info("Deck is empty")
+			statePassedIn = self.endGame(statePassedIn)
+		# otherwise, proceed as normal.
 
 		# check for knock state
 		statePassedIn = self.checkKnock(statePassedIn)
