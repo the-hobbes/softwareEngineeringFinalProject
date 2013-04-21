@@ -1,4 +1,24 @@
 {% block halTurn %}
+<script>
+	function playHALSound(){
+		//Choose a random HAL sound to play
+		var path = 'sounds/HAL/HAL('; //number)
+		var  endpath =').wav';
+		var randomnumber=Math.floor(Math.random()*12)+1//between 1 and 13
+		
+		//Replace this code with the function call to peters add sound once it's commited
+		var embed=document.createElement('object');
+  		embed.setAttribute('type','audio/wav');
+  		embed.setAttribute('data', path + randomnumber + endpath);
+  		embed.setAttribute('enablejavascript', true);
+  		embed.setAttribute('autostart',true);
+  		embed.setAttribute('width',0);
+  		embed.setAttribute('height',0);
+  				
+				$('#sound').append(embed);
+	}
+</script>
+
 <div class="jqmWindow hideMe" id="halTurnDialog" style="text-align:center;">
 	<!-- <div style="width:100%; text-align: center;"> -->
 		<img id="loadingImage" alt="" src="images/hal.gif" style="margin-top:10px;"/>
@@ -9,6 +29,7 @@
 			* showLoader: This function is used to show the hal gif. It is called from stateChanges.js
 			*/
 			function showHalLoader(){
+				playHALSound();
 				$('#halTurnDialog').jqmShow();		
 				$('#halTurnDialog').css("z-index",2999);
 				// console.log("got to showLoader");
