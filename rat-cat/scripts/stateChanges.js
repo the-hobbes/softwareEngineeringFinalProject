@@ -310,8 +310,9 @@ function HAL(state){
 	//state.state = 'waitingForDraw';	
 	//state.discardActivity = 1
 	//state.deckActivity = 1
-	//waitingForDraw(state);
+
 	console.log(state)
+
 
 	state.state = 'waitingForDraw';	
 	state = handleState(state);
