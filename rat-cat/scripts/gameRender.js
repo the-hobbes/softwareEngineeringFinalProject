@@ -73,6 +73,9 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
+
+ 	console.log(newState.state)
+
 	// animation section
 	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
  		animateDeckToCurrent(playerClicks);

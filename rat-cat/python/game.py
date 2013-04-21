@@ -112,6 +112,7 @@ class GameHandler(Handler):
 		'''
 		# logging.info("This is the session id: "  + sessionId)
 		# make a list of lists of cards, flatten it, pick out a discard card that isnt a power card, then shuffle the deck
+
 		# numberCards = [ [0]* 4, [1]*4, [2]*4, [3]*4, [4]*4, [5]*4, [6]*4, [7]*4, [8]*4, [9]*9 ]
 		# powerCards = [ [10]*3, [11]*3, [12]*3 ]
 		# deck = sum(numberCards, [])
@@ -150,7 +151,7 @@ class GameHandler(Handler):
 					"sessionId" : self.sessionId,
 					"playerClicks" : [],
 					"draw2Counter" : 0,
-					"message": {"visible" : 0, "text" : "There is no card to be selected here"}
+					"message": {"visible" : 0, "text" : "Initial Message"}
 				}
 
 		# encode it
@@ -210,6 +211,7 @@ class GameHandler(Handler):
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				statePassedIn['message']['visible'] = 1
+				statePassedIn['message']['text'] = "This text has been changed in waitingForDraw, line 213"
 				
 				return statePassedIn
 
@@ -354,6 +356,7 @@ class GameHandler(Handler):
 
 			if(statePassedIn['state']=='endGame'):
 				self.endgame(statePassedIn)
+				return statePassedIn
 
 
 		# need to check the deck to see if the deck is empty
@@ -365,6 +368,8 @@ class GameHandler(Handler):
 
 		# check for knock state
 		statePassedIn = self.checkKnock(statePassedIn)
+		if(statePassedIn['state']=='endGame'):
+			statePassedIn = self.endGame(statePassedIn)
 
 		return statePassedIn
 
@@ -467,7 +472,7 @@ class GameHandler(Handler):
 					statePassedIn = self.glowCards(drawnCard, statePassedIn)
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
-					statePassedIn['draw2Counter'] = 2
+					statePassedIn['draw2Counter'] = 1
 					for oCard in statePassedIn['compCard']:
 						oCard['active'] = 0
 					statePassedIn['state'] = 'draw2PlayerChoice'
@@ -540,7 +545,6 @@ class GameHandler(Handler):
 
 		# if the user's choice was to discard:
 		if(userChoice == 'discardPile'):
-
 			# what's the counter looking like? If it is 0, then the user has used up all of their discards and their turn is over.
 			if(statePassedIn['draw2Counter'] <= 0):
 				# put current display card into discard pile and reset it
@@ -576,6 +580,12 @@ class GameHandler(Handler):
 
 				# depending on what that newly drawn card is, set the right things glowing 
 				statePassedIn = self.glowCards(drawnCard, statePassedIn)
+
+				for c in statePassedIn['playCard']:
+					c['active'] = 1
+				for c in statePassedIn['compCard']:
+					c['active'] = 0
+
 
 				# leave state at draw2PlayerChoice, and return it to the view so the player can decide what to do with their
 				#	newly drawn card.
@@ -966,7 +976,8 @@ class GameHandler(Handler):
 		statePassedIn['displayCard']['active'] = 0
 
 		# reset the message visibilty and it's text 
-		statePassedIn['message'] = {"visible" : 0, "text" : "There is no card to be selected here"}
+		if(statePassedIn['state'] != 'endGame'):
+			statePassedIn['message'] = {"visible" : 0, "text" : "MOTHERBEAST!!"}
 
 		return statePassedIn
 
