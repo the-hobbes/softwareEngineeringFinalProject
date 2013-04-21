@@ -8,6 +8,8 @@ from handler import *
 import logging
 from python.datastore import *
 from python.HAL import *
+from google.appengine.api.datastore import Key
+import time
 
 class DatastoreInteraction():
 	'''
@@ -161,20 +163,48 @@ class DatastoreInteraction():
 			updateGameWin
 			Used to update the game table with the boolean value of win. 
 		'''
+		logging.info("made it to updateGamesWin")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.win = True
 			result.put()
+
+		time.sleep(1)
+
+		results1 = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result1 in results1:
+			result1.gamesWon += 1
+			result1.put()
 
 	def updateGameLose(self):
 		'''
 			updateGameWin
 			Used to update the game table with the boolean value of lose. 
 		'''
+		logging.info("made it to updateGamesLose")
 		results = db.GqlQuery("SELECT * FROM Games WHERE sessionId = :sess", sess=self.sessionId)
 		for result in results:
 			result.win = False
 			result.put()
+			
+		time.sleep(1)
+
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.gamesLost += 1
+			result.put()
+
+	def updateGames(self):
+		'''
+			updateGames
+			Used to update the player entity's # of games. 
+		'''
+		logging.info("made it to updateGames")
+		results = db.GqlQuery("SELECT * FROM Players WHERE sessionId = :sess", sess=self.sessionId)
+		for result in results:
+			result.games += 1
+			result.put()
+
 		
 	def updateGameRounds(self):
 		'''
@@ -206,7 +236,16 @@ class DatastoreInteraction():
 		'''
 		logging.info("Made it to get HAL")
 		# retrieve HAL object from datastore
-		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		# logging.info(self.sessionId)
+		
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+		# logging.info("this is the key:")
+		# logging.info(key)
+
+		# SELECT * FROM YourModel WHERE __key__ = KEY('YourModel',1)
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
 		# logging.info(self.sessionId)
 		# logging.info(results[0].pkSessionID)
 		for result in results:
@@ -237,12 +276,53 @@ class DatastoreInteraction():
 				aiCards, the cards of the AI itself
 		'''
 		logging.info("Made it to updateAiCards")
-		results = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+		# logging.info("this is the key:")
+		# logging.info(key)
+
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
 		for result in results:
 			logging.info(result.opCards)
 			result.opCards = opCards
 			logging.info(result.aiCards)
 			result.aiCards = aiCards
+			result.put()
+
+	def updateAiObject(self, pkSessionID, estAIScore, estOppScore, opCardsMem, aiCardsMem, tmpOP, tmpAI, discardTopValue):
+		'''
+			updateAiObject
+			Must update the datastore by key. 
+			Everything must be updated besides the decayRate (and session id and key)
+			Parameters:
+				pkSessionID
+				estAIScore
+				estOppScore
+				opCardsMem
+				aiCardsMem
+				tmpOP => called opCards in the datastore
+				tmpAI => called aiCards in the datastore
+				discardTopValue
+		'''
+		# get and make key
+		query = db.GqlQuery("SELECT * FROM HAL WHERE pkSessionID = :sess", sess=self.sessionId)
+		lists = query.fetch(10) 
+		key = lists[0].key()
+
+		# retrieve entity by key
+		results = db.GqlQuery("SELECT * FROM HAL WHERE __key__ = :sess", sess=key)
+		for result in results:
+			# update results with what has been passed in
+			result.pkSessionID = pkSessionID
+			result.estAIScore = estAIScore
+			result.estOppScore = estOppScore
+			result.opCardsMem = opCardsMem
+			result.aiCardsMem = aiCardsMem
+			result.opCards = tmpOP
+			result.aiCards = tmpAI
+			result.discardTopValue = discardTopValue
 			result.put()
 	
 	def testMe(self):

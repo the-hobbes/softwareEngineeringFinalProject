@@ -79,6 +79,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 	console.log("this is the state");
 	console.log(newState.state);
 	
+	// animation section
 	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
  		animateDeckToCurrent(playerClicks);
  	}
@@ -90,6 +91,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  	}
  	else if (playerClicks[0] == 'playerCard1'){
  		animateP1Discard(playerClicks);
+ 		animateCurrentToHand();
  	}
  	 else if (playerClicks[0] == 'playerCard2'){
  		animateP2Discard(playerClicks);
@@ -151,7 +153,8 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  	//Check the knock state
  	if(newState.knockState){
  		//We should have some type of pop up or some type of change that says it's the user's last turn.
- 		alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 		// alert("Hey home', I can dig it. Know ain't gonna lay no mo' big rap up on you, man! ");
+ 		// alert("HAL has knocked, this is your last turn!");
  	}
 
  	//We return newState for no particular reason. keep it in the space I guess 

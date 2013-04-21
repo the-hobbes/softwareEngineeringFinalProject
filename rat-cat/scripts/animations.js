@@ -146,3 +146,14 @@ function animateP4Discard(pClicks){
          function(){$(this).remove();})
     }
 }
+function animateCurrentToHand(){
+    var newElement = $("#currentCard").clone();
+    newElement.appendTo('#currentCard');
+
+    newElement.animate({
+        marginLeft:'+500px'
+    })
+
+
+
+}

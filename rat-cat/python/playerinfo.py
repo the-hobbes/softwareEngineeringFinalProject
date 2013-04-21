@@ -93,4 +93,3 @@ class PlayerInfoHandler(Handler):
 			self.redirect("/characterchoice" + "?sessionId=" + sessionId)
 		else:
 			self.renderPlayerInfo(name, age, error)
-		

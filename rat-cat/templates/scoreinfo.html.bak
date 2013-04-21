@@ -12,7 +12,7 @@
 				{% for player in players %}
 					<h2>Player <span class="playerName">{{player.name}}</span>'s Info</h2>
 					<img src="images/characters/thumbs/{{thumbnailImage}}">
-				<p></p>
+				<hr>
 					<ul>
 						<li>Total Score: <span style="color:pink">{{player.scoreTotal}}</span></li>
 						<li>Total Games Played: <span style="color:pink">{{player.games}}</span></li>

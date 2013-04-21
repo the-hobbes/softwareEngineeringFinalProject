@@ -63,7 +63,6 @@ class GameHandler(Handler):
 		# update the opcards and aicards in the hal object in the datastore
 		halState = json.loads(newState)
 		newModel = DatastoreInteraction(self.sessionId)
-		logging.info(newModel)
 		newModel.updateAiCards(str(halState['playCard']), aiCards=str(halState['compCard']))
 
 		self.render("game.html", oldState='null', newState=newState, thumbnailImage=self.thumbnailImage)
@@ -86,6 +85,8 @@ class GameHandler(Handler):
 		# reset all of the active flags in the json (to remove all glowing effects and prepare for new ones)
 		oldState = self.resetActiveFlags(oldState)
 
+		logging.info("HANDLING " + oldState['state'])
+
 		# if the deck is empty, its time for the endgame state
 		if( len(oldState['deck']) == 0 ):
 			logging.info("Deck is empty")
@@ -96,6 +97,7 @@ class GameHandler(Handler):
 			newState = self.parseState(oldState)
 		
 		#write the new data out as a response for the view to render
+		logging.info("NEW STATE IS " + newState['state'])
 		newState = json.dumps(newState)
 
 		self.write(newState)
@@ -121,8 +123,8 @@ class GameHandler(Handler):
 		#	deck.append(p)
 		# shuffle(deck)
 
-		deck = [9,9,9,9,9,9,9,9,9,9]
-		discardCard = 11		
+		deck = [4,3,2,1,10,1,2,3,4,5,6,7,8]
+		discardCard = 0		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
 		newState = {"compCard" : [
@@ -152,13 +154,10 @@ class GameHandler(Handler):
 				}
 
 		# encode it
-		# logging.info(newState)
-		#TODO
-		#
-		# WE NEED TO CREATE THE AI OBJECT HERE. DO THIS TOMORROW WITH PHELAN
-		#
 		disc = newState['discard'][0]
-		ai = HAL.HAL(pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
+		ai = HAL.HAL(key_name=self.sessionId, pkSessionID=self.sessionId, estAIScore=36,estOppScore=0,opCardsMem=[0.0,0.0,0.0,0.0],aiCardsMem=[1.0,0.0,0.0,1.0],opCards=json.dumps(newState['playCard']),aiCards=json.dumps(newState['compCard']),discardTopValue=int(disc) ,decayRate=0.01)
+		ai.put()
+		time.sleep(1)
 
 		return json.dumps(newState)
 
@@ -342,23 +341,30 @@ class GameHandler(Handler):
 		# logging.info(parameterDict)
 
 		#Did the player knock and the counter is down?? 
-		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		ai = HAL.HAL()
-		ai.setupAIObject(statePassedIn['sessionId'])
-		newState = ai.doTurn(statePassedIn)		
+		if( statePassedIn['knockState'] == 2 or statePassedIn['knockState'] == 0):
+			#time to play (if knockstate was 1 then that means we knocked previously and the player took their turn)
+			ai = HAL.HAL()
+			ai.setupAIObject(statePassedIn['sessionId'])
+			statePassedIn = ai.doTurn(statePassedIn)		
 
-		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
-		statePassedIn['deckActivity'] = 1
-		statePassedIn['discardActivity'] = 1
-		statePassedIn['state'] = "waitingForDraw"
-		logging.info(statePassedIn)
+			#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
+			statePassedIn['deckActivity'] = 1
+			statePassedIn['discardActivity'] = 1
+			statePassedIn['state'] = "waitingForDraw"
+
+			if(statePassedIn['state']=='endGame'):
+				self.endgame(statePassedIn)
+
 
 		# need to check the deck to see if the deck is empty
 		# if the deck is empty, its time for the endgame state
-		if( len(newState['deck']) == 0 ):
+		if( len(statePassedIn['deck']) == 0 ):
 			logging.info("Deck is empty")
-			freshState = self.endGame(newState)
+			statePassedIn = self.endGame(statePassedIn)
 		# otherwise, proceed as normal.
+
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
 
 		return statePassedIn
 
@@ -377,7 +383,7 @@ class GameHandler(Handler):
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
 		currentCard = statePassedIn['displayCard']['image']
-
+		logging.info("USER CHOICE: " + userChoice)
 		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
 		if(userChoice == 'discardPile'):
 			# logging.info('Choice was to discard it')
@@ -418,6 +424,8 @@ class GameHandler(Handler):
 					statePassedIn['playCard'][3]['image'] = currentCard 
 
 				# housekeeping
+				for oCard in statePassedIn['compCard']:
+					oCard['active'] = 0
 				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = "HAL"
@@ -432,7 +440,11 @@ class GameHandler(Handler):
 
 					# make the player's cards non-clickable (non-active)
 					for pCard in statePassedIn['playCard']:
-						pCard['active'] = 0
+						pCard['active'] = 1
+					for oCard in statePassedIn['compCard']:
+						oCard['active'] = 0
+					if(statePassedIn['draw2Counter']==1):
+						statePassedIn['deckActivity'] = 0
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
@@ -443,6 +455,7 @@ class GameHandler(Handler):
 						# no cards left in the deck. The round ends, so we should probably have a round end state? 
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
 						return self.endGame(statePassedIn)
+
 
 					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
@@ -455,7 +468,8 @@ class GameHandler(Handler):
 
 					# set the draw2 counter to 2, the initial value for a draw2 series
 					statePassedIn['draw2Counter'] = 2
-
+					for oCard in statePassedIn['compCard']:
+						oCard['active'] = 0
 					statePassedIn['state'] = 'draw2PlayerChoice'
 
 				elif(int(currentCard) == 11):
@@ -492,7 +506,8 @@ class GameHandler(Handler):
 				# put the power card in the discard pile
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				if(statePassedIn['state'] != 'draw2PlayerChoice'):
+					statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
 		# check for knock state
@@ -568,8 +583,7 @@ class GameHandler(Handler):
 				# check for knock state
 				statePassedIn = self.checkKnock(statePassedIn)
 
-				return statePassedIn
-
+				return statePassedIn	
 		# otherwise, the user's choice must've been to use the card that was drawn
 		else:
 			# we can learn about what the user clicked (how they decided to use the card) from the currently displayed card...
@@ -579,6 +593,37 @@ class GameHandler(Handler):
 			if(currentCard <= 9):
 				# add the current card to discard
 				statePassedIn['discard'].append(currentCard)
+
+				#They have already drawn a card once, but they clicked the deck to draw again
+				if(userChoice=='deck'):
+					if(statePassedIn['draw2Counter']==2):
+						#We draw 1 card, but are now drawing another
+						statePassedIn['draw2Counter']=1
+						statePassedIn['state'] = 'playerChoice'
+						statePassedIn['deckActivity'] = 0
+						
+						for pCard in statePassedIn['playCard']:
+							pCard['active'] = 1
+						for oCard in statePassedIn['compCard']:
+							oCard['active'] = 0
+						# pop out a new card for the user from the deck
+						try:
+							drawnCard = statePassedIn['deck'].pop()
+						except:
+							# no cards left in the deck. The round ends
+							return self.endGame(statePassedIn)
+						else:
+							statePassedIn['displayCard'] = {'image' : drawnCard, 'active' : 0}	
+							statePassedIn['discardActivity'] = 1
+					else:
+						#turn is over, reset counter and give ai control
+						statePassedIn['draw2Counter']=2
+						statePassedIn['state'] = 'HAL'
+						statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+					
+					statePassedIn['playerClicks'] = []
+					
+					return statePassedIn
 
 				# what was the card that the user clicked (translated from the value in the playerclicks array), and what was its
 				#	index position?
@@ -633,6 +678,13 @@ class GameHandler(Handler):
 			# if the card is an 11, then it is a peek card
 			elif(currentCard == 11):
 				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
+				
+				#They have already drawn a card once, but they clicked the deck to draw again
+				if(userChoice=='deck'):
+					#They have a peak  but clicked the deck for some reason.
+					#too bad you're seeing the 1st card in your hand for being stupid
+					userChoice = 'playCard1'
+		
 				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
 				# set its visibility to 1
 				statePassedIn[cardArray][idx]["visible"] = 1
@@ -734,6 +786,7 @@ class GameHandler(Handler):
 		elif (pScore > cScore):
 			# computer wins
 			logging.info("computer wins")
+			statePassedIn["win"] = 0
 			newModel.updateRoundsLostTotal()
 			time.sleep(1)
 
@@ -764,6 +817,9 @@ class GameHandler(Handler):
 		if(playerTotalScore >= self.ENDGAME_SCORE or computerTotalScore >= self.ENDGAME_SCORE):
 			logging.info("Game is now over")
 
+			newModel.updateGames()
+			time.sleep(1)
+
 			# update the json to reflect that the game is now over
 			statePassedIn['gameOver'] = 1
 
@@ -773,18 +829,24 @@ class GameHandler(Handler):
 				logging.info("Player Loses")
 				gameText = "You Lose,"
 				newModel.updateGameLose()
+				newModel.updateRoundsLostTotal()
+				time.sleep(1)
 			elif(computerTotalScore > playerTotalScore):
 				# player wins
 				logging.info("Player Wins")
 				gameText = "You Win,"
 				statePassedIn["win"] = 1
 				newModel.updateGameWin()
+				newModel.updateRoundsWonTotal()
+				time.sleep(1)
 			else:
 				# a tie
 				logging.info("A tie has occurred")
 				gameText = "It was a tie,"
 				statePassedIn["win"] = 2
 				newModel.updateGameLose()
+				newModel.updateRoundsPlayedTotal()
+				time.sleep(1)
 
 			time.sleep(1)
 
@@ -856,6 +918,8 @@ class GameHandler(Handler):
 		'''
 		if(drawnCard == 10):
 			# draw 2. Glow the deck and discard
+			for oCard in statePassedIn['compCard']:
+				oCard['active'] = 0
 			statePassedIn['deckActivity'] = 1
 		elif(drawnCard == 12):
 			# swap. glow the discard, opponents cards, and the player's cards.
@@ -925,8 +989,6 @@ class GameHandler(Handler):
 		# determine if the card was a user or computer card
 		if (divToTranslate[0] == 'p'):
 			# this is a playerCard. 
-			logging.info(statePassedIn)
-
 			cardChoice = statePassedIn['playCard'][cardIndex]
 			cardArray = 'playCard'
 
@@ -956,7 +1018,7 @@ class GameHandler(Handler):
 
 		elif(knockStatus == 1):
 			statePassedIn['knockState'] = 0
-			statePassedIn['state'] = endGame
+			statePassedIn['state'] = 'endGame'
 
 		else:
 			pass

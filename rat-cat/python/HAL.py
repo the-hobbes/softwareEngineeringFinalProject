@@ -12,7 +12,7 @@ from random import random as randZ
 from google.appengine.ext import db
 import logging
 import json
-# import python.gameModel as gm
+import time
 from python.gameModel import DatastoreInteraction
 
 class HAL(db.Model):
@@ -43,6 +43,8 @@ class HAL(db.Model):
 	#This will be a string that builds up to tell the view what to do
 	actionsToTake = ""
 	diff =0
+	realOpCards = []
+	realAiCards = []
 
 	def testMe(self):
 		logging.info("Test Satisfactory")
@@ -63,25 +65,23 @@ class HAL(db.Model):
 			Parameters:
 				sessionId, the sessionId which identifies the HAL entity we are working with. 
 		'''
-		logging.info("got to the setupAIObject function")
 		newModel = DatastoreInteraction(sessionId)
 		valueDict = newModel.getHAL()
-
-		# logging.info("this is the value dict sessionId")
-		# logging.info(valueDict['pkSessionID'])
 
 		self.pkSessionID = valueDict['pkSessionID']
 		self.estAIScore = valueDict['estAIScore']
 		self.estOppScore = valueDict['estOppScore']
 		self.opCardsMem = valueDict['opCardsMem']
 		self.aiCardsMem = valueDict['aiCardsMem']
-		self.opCards = json.dumps(valueDict['opCards'])
-		self.aiCards = json.dumps(valueDict['aiCards'])
+		tmpOP = valueDict['opCards'].encode('utf-8').replace("u","")
+		tmpAI = valueDict['aiCards'].encode('utf-8').replace("u","")
+		#Welcome to hack central. where python has type issues!
+		self.realOpCards = eval(str(tmpOP))
+		self.realAiCards = eval(str(tmpAI))
+		self.opCards = tmpOP
+		self.aiCards = tmpAI
 		self.discardTopValue = valueDict['discardTopValue']
 		self.decayRate = valueDict['decayRate']
-
-		logging.info("made it here !!!!!!")
-
 
 	def doTurn(self,state):
 		'''
@@ -100,7 +100,6 @@ class HAL(db.Model):
 		human,aiCards = self.getMemory()
 		logging.info("in do turn...")
 		for c in aiCards:
-			logging.info(c)
 			if(maxVal < c):
 				i=j
 				maxVal = c
@@ -133,9 +132,10 @@ class HAL(db.Model):
 			indexOfHighest,highVal = self.findHighestInHand()
 			if(card < highVal):
 				#Yes we do!
-				#give us the card and we remember it well becuase we just got it
-				state['discard'].append(self.aiCards['image'])
-				self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+				#give us the card and we remember it well becuase we just got it	
+				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
+				self.realAiCards[indexOfHighest] = {'image' : card, 'active' : 0, 'visible' : 0}
+				self.aiCards = json.dumps(self.realAiCards)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
 			else:
@@ -166,13 +166,23 @@ class HAL(db.Model):
 		
 		#Should we knock??
 		#We should knock if we think our cards are higher than the players by some threshold
-		self.shouldKnock(state)
+		state = self.shouldKnock(state)
+
+		state['compCard'] = json.loads(self.aiCards)
 
 		logging.info("ACTIONS")
 		logging.info(self.actionsToTake)
 
 		#Slowly forget what our cards are\
 		self.alzheimer()
+
+		# we need to use the model to update the datastore
+		# self.put()
+		newModel = DatastoreInteraction(state['sessionId'])
+		newModel.updateAiObject( self.pkSessionID, self.estAIScore, self.estOppScore, self.opCardsMem, 
+										self.aiCardsMem, self.opCards, self.aiCards, self.discardTopValue )
+
+		time.sleep(2)
 		return state
 
 
@@ -208,8 +218,9 @@ class HAL(db.Model):
 				if(card < highVal):
 					#Yes we do!
 					#give us the card and we remember it well becuase we just got it
-					state['discard'].append(self.aiCards['image'])
-					self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+					state['discard'].append(self.realAiCards[indexOfHighest]['image'])
+					self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+					self.aiCards = json.dumps(self.realAiCards)
 					self.aiCardsMem[indexOfHighest] = 1.0
 				else:
 					#Meh we could do without it
@@ -229,7 +240,8 @@ class HAL(db.Model):
 							if(card < highVal):
 								#We want it!
 								state['discard'].append(self.aiCards['image'])
-								self.aiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+								self.realAiCards[indexOfHighest] = {'image' : highVal, 'active' : 0, 'visible' : 0}
+								self.aiCards = json.dumps(self.realAiCards)
 								self.aiCardsMem[indexOfHighest] = 1.0
 							else:
 								#We dont want it!
@@ -304,34 +316,6 @@ class HAL(db.Model):
 			state['playCard'][humanCard]['image'] = state['compCard'][compCard]['image']
 			state['compCard'][compCard]['image'] = tmp
 			#done
-		elif(self.diff == 3):
-			#Perfect Recall of all cards that it knows. This is mean
-			humanCard  = 0
-			humanValue = 15
-			i=0
-			#Look through the cards we remember and find the lowest value
-			for c in self.opCards:
-				if( int(c['image']) < humanValue):
-					humanCard = i 
-					humanValue = int(c['image'])
-				i=i+1
-			#Find out highest cards
-			compCard = 0
-			compValue = 0
-			i=0
-			for c in self.aiCards:
-				if(int(c['image']) > compValue ) :
-					compCard = i 
-					compValue = int(c['image'])
-				i=i+1
-			#Now that we know, we perform the swap
-			tmp = state['playCard'][humanCard]['image']
-			state['playCard'][humanCard]['image'] = state['compCard'][compCard]['image']
-			state['compCard'][compCard]['image'] = tmp
-			#Update our representation of the cards
-			tmp = self.opCards[humanCard]
-			self.opCards[humanCard] = self.aiCards[compCard]
-			self.aiCards[compCard] = tmp
 		else:
 			#We have a difficuly of 1 or 2, which means basic memory decay and swappage
 			#Here is our fuzzy memory scheme:
@@ -344,23 +328,26 @@ class HAL(db.Model):
 			i=0
 			#Look through the cards we remember and find the lowest value
 			for c in humanCards:
-				if( int(c['image']) < humanValue):
+				if( c < humanValue):
 					humanCard = i 
-					humanValue = int(c['image'])
+					humanValue = c
 				i=i+1
 			#Find out highest cards
 			compCard = 0
 			compValue = 0
 			i=0
 			for c in compCards:
-				if(int(c['image']) > compValue ) :
+				if(c > compValue ) :
 					compCard = i 
-					compValue = int(c['image'])
+					compValue = c
 				i=i+1
 			#Update our representation of it (note this propagates remembering wrong)
 			tmp = humanCards[humanCard]
-			self.opCards[humanCard] = compCard[compCard]
-			self.aiCards[compCard] = tmp
+
+			self.realOpCards[humanCard] = compCard[compCard]
+			self.opCards = json.dumps(self.realOpCards)
+			self.realAiCards[compCard] = tmp
+			self.aiCards = json.dumps(self.realAiCards)
 			#Now perform the real swap
 			tmp = state['playCard'][humanCard]['image']
 			state['playCard'][humanCard]['image'] = state['compCard'][compCard]['image']
@@ -395,12 +382,8 @@ class HAL(db.Model):
 		humanRep = [0,0,0,0]
 		compRep  = [9,9,9,9]
 
-		# logging.info("This is the type of the ai cards:")
-		# logging.info(type( json.dumps(self.aiCards) ) )
-		# logging.info(self.aiCards)
-
-		aiCards = json.loads(self.aiCards)
-		humanCards = json.loads(self.opCards)
+		aiCards = self.realAiCards
+		humanCards = self.realOpCards
 		for i in range(len(self.opCardsMem)):
 			if(self.opCardsMem[i] < randZ()):
 				#Remember correctly
@@ -426,9 +409,7 @@ class HAL(db.Model):
 		maxVal = 0
 		i,j=0,0
 		human,aiCards = self.getMemory()
-		# logging.info("findHighestInHand, here are the values for the images:")
 		for c in aiCards:
-			# logging.info(c)
 			if(maxVal < c):
 				i=j
 				maxVal = c
@@ -448,9 +429,9 @@ class HAL(db.Model):
 		humanValue = 0
 		compValue = 0
 		for c in humanCards:
-			humanValue = humanValue + c
+			humanValue = humanValue + int(c['image'])
 		for c in aiCards:
-			compValue = compValue + c
+			compValue = compValue + int(c['image'])
 		#Now here comes some math
 		#Quite frankly, if we just do a comparison that's silly. We'll end the game if the ai
 		#by chance believes itself to be in the right when it's really just remembering poorly
@@ -488,15 +469,4 @@ class HAL(db.Model):
 		else:
 			#The human's cards are more than ours, so we wont knock
 			pass
-
-					
-
-
-	
-
-
-
-
-
-
-
+		return state
