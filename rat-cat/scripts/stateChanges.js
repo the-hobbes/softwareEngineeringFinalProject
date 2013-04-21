@@ -272,7 +272,11 @@ function HAL(state){
 
 	console.log('HAL Says');
 	console.log(state);
-	showHalLoader();
+
+	setTimeout(function(){
+		showHalLoader();
+	},1000);
+	
 	var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',

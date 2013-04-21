@@ -123,7 +123,7 @@ class GameHandler(Handler):
 		# 	deck.append(p)
 		# shuffle(deck)
 
-		deck = [4,3,2,1,10,1,2,3,4,5,6,7,8]
+		deck = [11,11,11,11,11,11,11,11,11,11,11,11,11]
 		discardCard = 0		
 
 		#intitial JSON array. Note that I've added a playerClicks array to track what the player has selected (eg discard or draw)
