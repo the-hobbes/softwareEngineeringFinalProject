@@ -31,7 +31,19 @@
 			}
 			else{
 				//they lost
+				console.log("AAAAAAA");
 				$("#resultImage").attr("src","images/lose.png");
+				var embed=document.createElement('object');
+  				embed.setAttribute('type','audio/mpeg');
+  				embed.setAttribute('data', 'sounds/endofline.mp3');
+  				embed.setAttribute('enablejavascript', true);
+  				embed.setAttribute('autostart',true);
+  				embed.setAttribute('width',0);
+  				embed.setAttribute('height',0);
+  				
+				$('#sound').append(embed);
+
+				
 			}
 			
 
