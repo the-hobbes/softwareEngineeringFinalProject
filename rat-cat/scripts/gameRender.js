@@ -73,12 +73,6 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  		return handleState(newState);
 
  	}
- 	console.log(newState.state)
-	//determining what animation to fire
-	console.log("this is the playerClicks");
-	console.log(playerClicks[0]);
-	console.log("this is the state");
-	console.log(newState.state);
 	
 	// animation section
 	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){

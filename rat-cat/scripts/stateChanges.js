@@ -39,7 +39,6 @@ function updateKnock(){
 }
 
 function updateKnockState(){
-	console.log("OH HEY")
 	// knocking logic to update knockstate before the state is Posted
 	if(knock == 1){
 		//returns a boolean, telling us if they want to knock or not. 
