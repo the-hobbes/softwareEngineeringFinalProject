@@ -341,23 +341,27 @@ class GameHandler(Handler):
 		# logging.info(parameterDict)
 
 		#Did the player knock and the counter is down?? 
-		#THIS CODE TO BE MODIFIED ONCE THE CLASS VARIABLE TO MAINTAIN KNOCKING FROM THE AI'S SIDE IS UP
-		ai = HAL.HAL()
-		ai.setupAIObject(statePassedIn['sessionId'])
-		newState = ai.doTurn(statePassedIn)		
+		if( statePassedIn['knockState'] == 2 or statePassedIn['knockState'] == 0):
+			#time to play (if knockstate was 1 then that means we knocked previously and the player took their turn)
+			ai = HAL.HAL()
+			ai.setupAIObject(statePassedIn['sessionId'])
+			newState = ai.doTurn(statePassedIn)		
 
-		#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
-		statePassedIn['deckActivity'] = 1
-		statePassedIn['discardActivity'] = 1
-		statePassedIn['state'] = "waitingForDraw"
+			#HAL needs to set the activity of the cards for the player to use on their turn before it ends it's
+			statePassedIn['deckActivity'] = 1
+			statePassedIn['discardActivity'] = 1
+			statePassedIn['state'] = "waitingForDraw"
 
 
-		# need to check the deck to see if the deck is empty
-		# if the deck is empty, its time for the endgame state
-		if( len(newState['deck']) == 0 ):
-			logging.info("Deck is empty")
-			freshState = self.endGame(newState)
-		# otherwise, proceed as normal.
+			# need to check the deck to see if the deck is empty
+			# if the deck is empty, its time for the endgame state
+			if( len(newState['deck']) == 0 ):
+				logging.info("Deck is empty")
+				freshState = self.endGame(newState)
+			# otherwise, proceed as normal.
+
+		# check for knock state
+		statePassedIn = self.checkKnock(statePassedIn)
 
 		return statePassedIn
 
@@ -1007,7 +1011,7 @@ class GameHandler(Handler):
 
 		elif(knockStatus == 1):
 			statePassedIn['knockState'] = 0
-			statePassedIn['state'] = endGame
+			statePassedIn['state'] = 'endGame'
 
 		else:
 			pass
