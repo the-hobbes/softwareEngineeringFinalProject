@@ -198,14 +198,17 @@ class GameHandler(Handler):
 		'''
 		# the div id of what the player clicked (either deck, or discardPile)
 		userChoice = statePassedIn['playerClicks'][0]
-
+		logging.info("this is the discard: ")
+		logging.info(statePassedIn['discard'])
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
 			try:
 				selectedCard = statePassedIn['discard'].pop()
-
+				logging.info("this is the selectedCard: ")
+				logging.info(selectedCard)
 			except:
+				logging.info("SHIT BROKE!!!!!!!!!!!")
 				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
 				# 	to compensate for this. Set the message visible, then simply pass back the state. 
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
@@ -393,7 +396,7 @@ class GameHandler(Handler):
 		if(userChoice == 'discardPile'):
 			# logging.info('Choice was to discard it')
 			# take the card the user has decided about and add it to the discard
-			statePassedIn['discard'].append(currentCard)
+			statePassedIn['discard'].append(int(currentCard))
 			# reset displayCard
 			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
 			# clear the player clicks queue
