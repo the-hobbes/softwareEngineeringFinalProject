@@ -599,13 +599,16 @@ function draw2PlayerChoice(state){
 	//to select either the discard pile, their card to switch out, or the deck to draw another card.
 
 	//Add glow
+	state.deckActivity = 0;
 	state = glowActiveCards(state);
 	console.log(state)
 	renderState(1,state,[null]);
 
 	//Add ajax method
 	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
-	$('#deck').addClass('draw2PlayerChoiceAJAX');
+	if(state.draw2Counter != 1){
+		$('#deck').removeClass('draw2PlayerChoiceAJAX');	
+	}
 	//Iterate through each div within playerCards and add the ajax class
 	var $divs = $('#playerCards').children('div').each(function(){
 		$(this).addClass('draw2PlayerChoiceAJAX');
