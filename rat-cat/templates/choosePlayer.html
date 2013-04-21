@@ -41,6 +41,23 @@
 				$('#characterDescription').text(description);
 				// console.log("images/characters/" + selector)
 				// $("#imageBox").text("The image should be #: " + selector);
+
+			   	//Play sound affect for character
+			   	var soundSrc = getSoundSource(name);
+			   	console.log("play sound" + soundSrc);
+
+			   	//Refactor this to call peters sound code
+			   	var embed=document.createElement('object');
+		  		embed.setAttribute('type','audio/wav');
+				embed.setAttribute('data', 'sounds/' + soundSrc);
+			 	embed.setAttribute('enablejavascript', true);
+				embed.setAttribute('autostart',true);
+				embed.setAttribute('width',0);
+				embed.setAttribute('height',0);
+  				
+				$('#sound').append(embed);
+					    
+
 			}
 
 			//handle displaying the title and description of each character, based on its name. 
@@ -66,6 +83,33 @@
 						break;
 					default:
 						return "The default case";
+						break;
+				}
+			}
+
+			//handle displaying the title and description of each character, based on its name. 
+			function getSoundSource(name){
+				switch(name){
+					case 'Betty, Queen of Rats':
+						return "betty";
+						break;
+					case 'Jason H.':
+						return "hibbels";
+						break;
+					case 'The RatMan':
+						return "ratman";
+						break;
+					case 'The Crazy Cat Lady':
+						return "cat";
+						break;
+					case 'The Big Lebowscat':
+						return "lebow.mp3";
+						break;
+					case 'Tommy Cat':
+						return "tommy";
+						break;
+					default:
+						return "";
 						break;
 				}
 			}
@@ -121,6 +165,6 @@
 
 			</script>
 			<!-- end analytics code -->
-
+			<div id="sound"></div>
 		</body>
 	</html>

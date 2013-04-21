@@ -448,7 +448,7 @@ class GameHandler(Handler):
 						pCard['active'] = 1
 					for oCard in statePassedIn['compCard']:
 						oCard['active'] = 0
-					if(statePassedIn['draw2Counter']==1):
+					if(statePassedIn['draw2Counter'] <= 1):
 						statePassedIn['deckActivity'] = 0
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
