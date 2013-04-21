@@ -541,6 +541,7 @@ function draw2PlayerChoice(state){
 
 	//Add glow
 	state = glowActiveCards(state);
+	console.log(state)
 	renderState(1,state,[null]);
 
 	//Add ajax method

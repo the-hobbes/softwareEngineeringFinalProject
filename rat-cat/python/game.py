@@ -86,6 +86,8 @@ class GameHandler(Handler):
 		# reset all of the active flags in the json (to remove all glowing effects and prepare for new ones)
 		oldState = self.resetActiveFlags(oldState)
 
+		logging.info("HANDLING " + oldState['state'])
+
 		# if the deck is empty, its time for the endgame state
 		if( len(oldState['deck']) == 0 ):
 			logging.info("Deck is empty")
@@ -96,6 +98,7 @@ class GameHandler(Handler):
 			newState = self.parseState(oldState)
 		
 		#write the new data out as a response for the view to render
+		logging.info("NEW STATE IS " + newState['state'])
 		newState = json.dumps(newState)
 
 		self.write(newState)
@@ -374,7 +377,7 @@ class GameHandler(Handler):
 		userChoice = statePassedIn['playerClicks'][0]
 		# and what is the card they have made this decision about?
 		currentCard = statePassedIn['displayCard']['image']
-
+		logging.info("USER CHOICE: " + userChoice)
 		# if choice is discard, add the card the discard pile, and remove it from the displayCard. clear the playerclicks as well
 		if(userChoice == 'discardPile'):
 			# logging.info('Choice was to discard it')
@@ -429,7 +432,11 @@ class GameHandler(Handler):
 
 					# make the player's cards non-clickable (non-active)
 					for pCard in statePassedIn['playCard']:
-						pCard['active'] = 0
+						pCard['active'] = 1
+					for oCard in statePassedIn['compCard']:
+						oCard['active'] = 0
+					if(statePassedIn['draw2Counter']==1):
+						statePassedIn['deckActivity'] = 0
 					
 					# draw the top card from the deck, and set it as the display card. put the display card(the draw 2) in the discard pile
 					statePassedIn['discard'].append(currentCard)
@@ -441,8 +448,6 @@ class GameHandler(Handler):
 						# It would probs need to be something similar to a knock state, which we may have to do as well.
 						return self.endGame(statePassedIn)
 
-					logging.info("PASSION")
-					logging.info(drawnCard)
 
 					# set the display card to the newly drawn card
 					statePassedIn['displayCard']['image'] = drawnCard
@@ -569,8 +574,7 @@ class GameHandler(Handler):
 				# check for knock state
 				statePassedIn = self.checkKnock(statePassedIn)
 
-				return statePassedIn
-
+				return statePassedIn	
 		# otherwise, the user's choice must've been to use the card that was drawn
 		else:
 			# we can learn about what the user clicked (how they decided to use the card) from the currently displayed card...
@@ -580,6 +584,38 @@ class GameHandler(Handler):
 			if(currentCard <= 9):
 				# add the current card to discard
 				statePassedIn['discard'].append(currentCard)
+
+				#They have already drawn a card once, but they clicked the deck to draw again
+				if(userChoice=='deck'):
+					logging.info(statePassedIn['draw2Counter'])
+					if(statePassedIn['draw2Counter']==2):
+						#We draw 1 card, but are now drawing another
+						statePassedIn['draw2Counter']=1
+						statePassedIn['state'] = 'playerChoice'
+						statePassedIn['deckActivity'] = 0
+						
+						for pCard in statePassedIn['playCard']:
+							pCard['active'] = 1
+						for oCard in statePassedIn['compCard']:
+							oCard['active'] = 0
+						# pop out a new card for the user from the deck
+						try:
+							drawnCard = statePassedIn['deck'].pop()
+						except:
+							# no cards left in the deck. The round ends
+							return self.endGame(statePassedIn)
+						else:
+							statePassedIn['displayCard'] = {'image' : drawnCard, 'active' : 0}	
+							statePassedIn['discardActivity'] = 1
+					else:
+						#turn is over, reset counter and give ai control
+						statePassedIn['draw2Counter']=2
+						statePassedIn['state'] = 'HAL'
+						statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+					
+					statePassedIn['playerClicks'] = []
+					
+					return statePassedIn
 
 				# what was the card that the user clicked (translated from the value in the playerclicks array), and what was its
 				#	index position?
@@ -634,6 +670,13 @@ class GameHandler(Handler):
 			# if the card is an 11, then it is a peek card
 			elif(currentCard == 11):
 				# this mean's they've chosen a card of theirs to look at. get that card from player clicks
+				
+				#They have already drawn a card once, but they clicked the deck to draw again
+				if(userChoice=='deck'):
+					#They have a peak  but clicked the deck for some reason.
+					#too bad you're seeing the 1st card in your hand for being stupid
+					userChoice = 'playCard1'
+		
 				idx, cardArray, cardClicked = self.translateDivToCard(userChoice, statePassedIn)
 				# set its visibility to 1
 				statePassedIn[cardArray][idx]["visible"] = 1
