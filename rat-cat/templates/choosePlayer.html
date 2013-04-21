@@ -5,9 +5,12 @@
 			<meta name="description" content="">
 			<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+			<script src="scripts/audio.js" type = 'text/javascript'></script>
 			<script>
 
 				//Simple function to assist in readability of jQuery, capitilizes first letter of word
+				
+
 				function capitaliseFirstLetter(string)
 				{
     				return string.charAt(0).toUpperCase() + string.slice(1);
@@ -114,10 +117,13 @@
 				}
 			}
 		</script>
-	</head>
 
+	</head>
 		<body>
 		  
+		  	<div id="sound">
+			</div>
+			
 			<div id="container" class="shadow">
 				<form id="characterForm" method="post">
 				<div id="characterStripLeft">
@@ -166,5 +172,9 @@
 			</script>
 			<!-- end analytics code -->
 			<div id="sound"></div>
+			<script>
+				insertAudio('audio/wav','sounds/chooseCharacter.wav');
+				insertAudio('audio/mpeg','sounds/SSBbackground.mp3');
+			</script>
 		</body>
 	</html>
