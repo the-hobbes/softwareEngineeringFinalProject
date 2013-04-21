@@ -544,7 +544,6 @@ class GameHandler(Handler):
 
 		# if the user's choice was to discard:
 		if(userChoice == 'discardPile'):
-			logging.info(statePassedIn['draw2Counter'])
 			# what's the counter looking like? If it is 0, then the user has used up all of their discards and their turn is over.
 			if(statePassedIn['draw2Counter'] <= 0):
 				# put current display card into discard pile and reset it
