@@ -126,6 +126,7 @@ function waitingForDraw(state){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
+		
 
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
@@ -203,7 +204,7 @@ function waitingForPCard(state){
 		state.playerClicks.push(this.id);
 
 		
-
+		state.knockState = updateKnockState();	
 		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
 	        url: "/game",
