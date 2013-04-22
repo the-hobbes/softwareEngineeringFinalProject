@@ -56,7 +56,7 @@
 			   	//Play sound affect for character
 			   	var soundSrc = getSoundSource(name);
 			   	console.log("playing " + soundSrc);
-				insertAudio('audio/mpeg','sounds/' + soundSrc);				    
+				insertAudio('sounds/' + soundSrc);				    
 
 			}
 
@@ -91,22 +91,22 @@
 			function getSoundSource(name){
 				switch(name){
 					case 'Betty, Queen of Rats':
-						return "betty.mp3";
+						return "betty.wav";
 						break;
 					case 'Jason H.':
-						return "hibbels.mp3";
+						return "hibbels.wav";
 						break;
 					case 'The RatMan':
-						return "ratman.mp3";
+						return "ratman.wav";
 						break;
 					case 'The Crazy Cat Lady':
-						return "catLady.mp3";
+						return "catLady.wav";
 						break;
 					case 'The Big Lebowscat':
-						return "lebow.mp3";
+						return "lebow.wav";
 						break;
 					case 'Tommy Cat':
-						return "tommy.mp3";
+						return "tommy.wav";
 						break;
 					default:
 						return "";
@@ -171,8 +171,8 @@
 			<!-- end analytics code -->
 			<div id="sound"></div>
 			<script>
-				insertAudio('audio/wav','sounds/chooseCharacter.wav');
-				insertAudio('audio/mpeg','sounds/SSBbackground.mp3');
+				insertAudio('sounds/chooseCharacter.wav');
+				insertAudio('sounds/SSBbackground.wav');
 			</script>
 		</body>
 	</html>
