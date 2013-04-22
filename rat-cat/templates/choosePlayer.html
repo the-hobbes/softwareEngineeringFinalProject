@@ -47,11 +47,8 @@
 
 			   	//Play sound affect for character
 			   	var soundSrc = getSoundSource(name);
-
-				insertAudio('audio/mp3','sounds/' + soundSrc);
-  				
-				$('#sound').append(embed);
-					    
+			   	console.log("playing " + soundSrc);
+				insertAudio('audio/mpeg','sounds/' + soundSrc);				    
 
 			}
 
@@ -88,10 +85,10 @@
 						return "betty.mp3";
 						break;
 					case 'Jason H.':
-						return "hibbels";
+						return "hibbels.mp3";
 						break;
 					case 'The RatMan':
-						return "ratman";
+						return "ratman.mp3";
 						break;
 					case 'The Crazy Cat Lady':
 						return "catLady.mp3";

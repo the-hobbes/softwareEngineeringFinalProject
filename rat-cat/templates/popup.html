@@ -25,42 +25,19 @@
 			if(state.win == 1){
 				//they won
 				$("#resultImage").attr("src","images/win.png");
-				var embed=document.createElement('object');
-  				embed.setAttribute('type','audio/mpeg');
-  				embed.setAttribute('data', 'sounds/fanfare.mp3');
-  				embed.setAttribute('enablejavascript', true);
-  				embed.setAttribute('autostart',true);
-  				embed.setAttribute('width',0);
-  				embed.setAttribute('height',0);
-  				
-				$('#sound').append(embed);
+  				insertAudio('audio/mpeg','sounds/fanfare.mp3');
 			}
 			else if(state.win == 2){
 				//they tied
 				$("#resultImage").attr("src","images/tie.png");
-
-				var embed=document.createElement('object');
-  				embed.setAttribute('type','audio/mpeg');
-  				embed.setAttribute('data', 'sounds/tie.mp3');
-  				embed.setAttribute('enablejavascript', true);
-  				embed.setAttribute('autostart',true);
-  				embed.setAttribute('width',0);
-  				embed.setAttribute('height',0);
-  				
-				$('#sound').append(embed);	
+				insertAudio('audio/mpeg','sounds/tie.mp3');	
+				
 			}
 			else{
 				//they lost
 				
 				$("#resultImage").attr("src","images/lose.png");
-				var embed=document.createElement('object');
-  				embed.setAttribute('type','audio/mpeg');
-  				embed.setAttribute('data', 'sounds/endofline.mp3');
-  				embed.setAttribute('enablejavascript', true);
-  				embed.setAttribute('autostart',true);
-  				embed.setAttribute('width',0);
-  				embed.setAttribute('height',0);
-  				
+  				insertAudio('audio/mpeg','sounds/endofline.mp3');
 				$('#sound').append(embed);
 
 				
