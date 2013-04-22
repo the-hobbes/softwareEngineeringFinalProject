@@ -74,7 +74,6 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 
  	}
 
- 	console.log(newState.state)
 
 	// animation section
 	if(playerClicks[0] == 'deck' && newState.state == "playerChoice"){
@@ -107,7 +106,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 	for(var i=0; i < 4; i++){
  		var imgId = newState.compCard[i].image;
  		//Are they different?
- 		if(true){
+ 		if(newState.compCard[i].visible){
 			$('#opCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );
 		}else{
 			$('#opCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );
@@ -117,7 +116,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
  	//Update thos player cards if they need to be changed!
 	for(var i=0; i < 4; i++){
 		var imgId = newState.playCard[i].image;
-		if(true){
+		if(newState.playCard[i].visible){
 			$('#playerCard' + (i + 1)).css("background-image", 'url(' + "images/cards/smallCards/"+ imgId + ".png" + ')' );	
 		}else{
 			$('#playerCard' + (i + 1)).css("background-image", 'url(images/cards/smallCards/13.png)' );	
@@ -136,7 +135,7 @@ document.writeln("<script type='text/javascript' src='scripts/stateChanges.js'><
 
 	//Display either the bottom of a card or a placeholder if we managed to run out of deck cards
 	//this stays 0 for the same reason discard's check does
- 	if(false){
+ 	if(newState.deck[0] == null){
  		$('#deck').css("background-image", 'url(images/placeholderCard.png)');
  	}else{
  		$('#deck').css("background-image", 'url(images/cards/smallCards/13.png)');

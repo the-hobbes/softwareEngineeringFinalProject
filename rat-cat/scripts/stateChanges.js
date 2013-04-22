@@ -22,7 +22,6 @@ knock = 1;
  * 	the AI.
  */
 function updateKnock(){
-	console.log("got to updateKnock");
 	if(knock ==1 ){
 		//if on, switch off. make it look like it has been pressed down
 		knock = 0;
@@ -35,7 +34,6 @@ function updateKnock(){
 		var pressMe = $('#knockButton');
 		pressMe.addClass('pressed');
 	}
-	console.log(knock);
 }
 
 function updateKnockState(){
@@ -43,8 +41,7 @@ function updateKnockState(){
 	if(knock == 1){
 		//returns a boolean, telling us if they want to knock or not. 
 		result = confirm("Would you like to knock? If you don't want to get this prompt, uncheck the knock button.");
-		// console.log("the result of that was:");
-		// console.log(result);
+		
 		if(result == true){
 			//if they want to knock, we will update the knockstate to
 			return 2;
@@ -130,8 +127,6 @@ function waitingForDraw(state){
 		e.stopImmediatePropagation();
 		e.preventDefault();
 
-		console.log("The waitingForDrawAJAX bind has been fired");
-		console.log(state['discard']);
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
@@ -144,17 +139,13 @@ function waitingForDraw(state){
 	    
 	    // callback handler that will be called on success
 	    requestDeck.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from waitingForDrawAJAX callback');
-	        // console.log(response);
-	       	console.log("Wait For Draw Discard prerender:" + state['discard']);
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
 			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
-	        console.log("Wait For Draw Discard post handled:" + state['discard']);
+	        
 	        renderState(1,state,localClicks);
-	        console.log("Wait For Draw Discard post render:" + state['discard']);
 	    });
 
 	    // callback handler that will be called on failure
@@ -226,10 +217,6 @@ function waitingForPCard(state){
 
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from waitingForPCardAJAX callback');
-	        // console.log(response);
-	        console.log('Phelan: this is the object sent back from the server');
-	    	console.log(response);
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForPCardAJAX').unbind('click');
@@ -278,10 +265,6 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
-
-	console.log('HAL Says');
-	console.log(state);
-
 	setTimeout(function(){
 		showHalLoader();
 	},1000);
@@ -296,8 +279,6 @@ function HAL(state){
 
 			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
-			        console.log('Returned from playerChoiceAJAX callback');
-			        // console.log(response);
 			        setTimeout(function(){
 						hideHalLoader();
 					},3000);
@@ -316,17 +297,6 @@ function HAL(state){
 			            textStatus, errorThrown,jqXHR
 			        );
 			    });
-
-	//state.state = 'waitingForDraw';	
-	//state.discardActivity = 1
-	//state.deckActivity = 1
-
-	console.log(state)
-
-
-	// state.state = 'waitingForDraw';	
-	// state = handleState(state);
-	// renderState(1,state,state.playerClicks);
 
 	return state;
 }
@@ -375,13 +345,11 @@ function playerChoice(state){
 			state.playerClicks.push(this.id);
 			//Conditional ajax call here if the player has selected their card already
 			oClick = oClick + 1;
-			console.log(oClick);
 
 			e.stopImmediatePropagation();
         	e.preventDefault();
 
 			if(oClick > 0 && pClick > 0){
-				console.log("hello2");
 				state.knockState = updateKnockState();	
 				//Fire Ajax
 				var request = $.ajax({
@@ -396,9 +364,6 @@ function playerChoice(state){
 
 			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
-			        console.log('Returned from playerChoiceAJAX callback');
-			        // console.log(response);
-
 			        //Remove the click so we don't send a ajax request to the server while this 
 			        //click shouldn't do anything
 			        $('.opSwap').unbind('click');
@@ -450,8 +415,6 @@ function playerChoice(state){
 		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
-
-			console.log("hello1");
 			state.knockState = updateKnockState();
 
 			// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
@@ -468,21 +431,13 @@ function playerChoice(state){
 		     var localClicks = 
 		    // callback handler that will be called on success
 		    request.done(function (response, textStatus, jqXHR){
-		        console.log('Returned from playerChoiceAJAX callback');
 		        hideLoader();
-		        // console.log(response);
-
 		        //Remove the click so we don't send a ajax request to the server while this 
 		        //click shouldn't do anything
-
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
-		    	console.log('player choice bind for numbers');
-		    	console.log(state.discard);
 		        state = handleState(response);      
-		        console.log("post handle state");
-		        console.log(state.discard);
-
+		       
 		        //close the loading popup
 		        renderState(1,state,localClicks);
 
@@ -508,7 +463,7 @@ function playerChoice(state){
 				state.playerClicks.push(this.id);
 				pClick = 0;
 				oClick = 0;
-				console.log("hello");
+				
 				state.knockState = updateKnockState();
 				var request = $.ajax({
 			        url: "/game",
@@ -518,9 +473,6 @@ function playerChoice(state){
 					dataType: 'json'
 			    });
 			    request.done(function (response, textStatus, jqXHR){
-				        console.log('Returned from playerChoiceAJAX callback');
-				        // console.log(response);
-
 				        //Remove the click so we don't send a ajax request to the server while this 
 				        //click shouldn't do anything
 				        $('.opSwap').unbind('click');
@@ -544,7 +496,6 @@ function playerChoice(state){
 					$('.glowing').removeClass('glowing');	
 			}else{
 				if(pClick > 0 && oClick > 0){
-					console.log("hello3");
 					state.knockState = updateKnockState();
 					var request = $.ajax({
 				        url: "/game",
@@ -556,9 +507,6 @@ function playerChoice(state){
 
 				    // callback handler that will be called on success
 				    request.done(function (response, textStatus, jqXHR){
-				        console.log('Returned from playerChoiceAJAX callback');
-				        // console.log(response);
-
 				        //Remove the click so we don't send a ajax request to the server while this 
 				        //click shouldn't do anything
 				        $('.opSwap').unbind('click');
@@ -620,7 +568,7 @@ function draw2PlayerChoice(state){
 	//Add glow
 	state.deckActivity = 0;
 	state = glowActiveCards(state);
-	console.log(state)
+	
 	renderState(1,state,[null]);
 
 	//Add ajax method
@@ -662,9 +610,6 @@ function draw2PlayerChoice(state){
 	    var localClicks = state.playerClicks;
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from draw2PlayerChoiceAJAX callback');
-	        // console.log(response);
-
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.draw2PlayerChoiceAJAX').unbind('click');
@@ -743,7 +688,6 @@ function handleState(state){
  *	returns: The updated state
  */
 function glowActiveCards(state){
-	console.log(state);
 	if(state.deckActivity==1){
 		$('#deck').addClass('glowing');
 	}
