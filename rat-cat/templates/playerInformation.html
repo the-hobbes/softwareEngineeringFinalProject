@@ -5,11 +5,19 @@
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="scripts/jquery.tubular.1.0.js"></script>
+		<script>
+			jQuery().ready(function($){
+				// ready function
+				// this is a call to the tubular method of jquery.tubular to render another inspirational background video
+				$('#videoContainer').tubular({videoId: 'oP2eVtuDgEE'}); // where idOfYourVideo is the YouTube ID.
+			});
+		</script>
 	</head>
 
 	<body>
-	  <div id="container" class="shadow">
-
+	  <div id="container" class="shadow translucent">
+			<div id="videoContainer"></div><!-- end videoContainer -->	
 	  	<div id="userEntry">
 		  	<h1>Name and Age</h1>
 			<hr>
@@ -23,6 +31,17 @@
 		</div><!-- end userentry-->
 
 	  </div><!-- end container-->
+			<!-- begin analytics code -->
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+			  ga('create', 'UA-40175389-1', 'rat-a-tat-cat.appspot.com');
+			  ga('send', 'pageview');
+
+			</script>
+			<!-- end analytics code -->
 	</body>
 </html>

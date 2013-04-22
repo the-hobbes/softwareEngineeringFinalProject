@@ -15,6 +15,10 @@ import python.HAL as ai
 import python.game as gh
 import logging
 import json
+from google.appengine.ext.db import stats
+
+global_stat = stats.GlobalStat.all().get()
+
 
 class UnitHarness(Handler):
 	'''
@@ -35,7 +39,9 @@ class UnitHarness(Handler):
 		self.testPlayerInfo()
 		self.testHAL()
 		self.testGame()
-		self.render("unit.html",tests=self.tests)
+		totalBytes = 'Total bytes stored: %d' % global_stat.bytes
+		totalEntities ='Total entities stored: %d' % global_stat.count
+		self.render("unit.html",tests=self.tests,totalBytes=totalBytes,totalEntities=totalEntities)
 		
 
 	def addTest(self,name,passed=False,message="No Message Set"):
@@ -134,13 +140,11 @@ class UnitHarness(Handler):
 			passed = False
 		self.addTest("HAL Test",passed,"HAL object placed into datastore in %2.5f seconds" % (eTime - sTime))
 
-
 	def testGame(self):
 		'''
 			testGame
 			Monolithic test function to test game play
 		'''
-
 		#Need to figure out a way to test game.py correctly
 		#this may mean rigging the deck and stuff and testing
 		#each power card and sending it fake user actions and such
@@ -159,9 +163,8 @@ class UnitHarness(Handler):
 			passed = False
 		else:
 			message = ""
-
+		
 		self.addTest("Game Initialize Test",passed,message)
-
 		passed=True
 		#div to card translation test
 		try:
@@ -182,9 +185,8 @@ class UnitHarness(Handler):
 				passed = False
 				self.write(cardChoice['image'])
 				message = message + " cardChoice incorect <br />"
-
+		
 		self.addTest("Translate Div -> Card Test",passed,message)
-
 		passed=True
 		#Test on actives
 		try:
@@ -200,7 +202,6 @@ class UnitHarness(Handler):
 				message = " Failed to reset active flags "
 		
 		self.addTest("Reset active Flags Test",passed,message)
-
 		passed=True
 		#Testing swap cards
 		try:
@@ -220,10 +221,9 @@ class UnitHarness(Handler):
 			if card2 != state['playCard'][0]['image']:
 				passed = False
 				message = message + " failed to swap computer card 2 and player card 1 <br />"
+		
 		self.addTest("Swap Cards Test",passed,message)
-
 		passed=True
-
 
 		#Waiting for PCard test
 		try:
@@ -239,15 +239,6 @@ class UnitHarness(Handler):
 			if state['playCard'][0]['image'] != newCard:
 				passed = False
 				message = "Failed to swap display and selected card "
-
+		
 		self.addTest("waitingForPCard Test",passed,message)
-
-
-
 		self.addTest("Game Test",passed,message)
-
-
-
-
-
-	

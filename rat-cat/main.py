@@ -18,10 +18,11 @@
 # Authors:
 # 	Ethan, Phelan
 # 
-# This is the main app driver file. Requests will hit here when users first enter the page
+# This is the main app driver file. Requests will hit here when users first enter the page.
 from python.handler import *
 from python.game import *
 from python.scores import *
+from python.scoreinfo import *
 from python.playerinfo import *
 from python.difficulty import *
 from python.characterchoice import *
@@ -55,6 +56,7 @@ app = webapp2.WSGIApplication([
 	('/', MasterControlProgram),
 	('/game',GameHandler),
 	('/scores',ScoresHandler),
+	('/scoreinfo',ScoreInfoHandler),
 	('/playerinfo',PlayerInfoHandler),
 	('/difficulty',DifficultyHandler),
 	('/characterchoice',CharacterHandler),

@@ -42,6 +42,10 @@ body {
   margin-right: 5px;
   float:left;
 }
+#popupBox{
+  margin-right: 5px;
+  float:left;
+}
 #scoresBox{
   margin-right: 5px;
   float:left;
@@ -55,6 +59,15 @@ body {
   color:white;
   padding-top:5px;
   padding-bottom: 5px;
+}
+#playerInfoBox{
+  margin-right: 2px;
+  float: left;
+  margin-left: 190px;
+}
+#homeBox{
+  float: left;
+  margin-left: 5px;
 }
 /*
   Snappy styling global to all pages.
@@ -270,6 +283,7 @@ submitButton:active{position:relative;top:2px;}
   top:-35px;
 }
 #discardPile{
+  position: relative;
   width:135px;
   height:175px;
   background-color: rgba(0,0,0,.2);
@@ -280,6 +294,7 @@ submitButton:active{position:relative;top:2px;}
   border-radius:10px;
 }
 #deck{
+  position:relative;
   width:135px;
   height:175px;
   background-color: rgba(0,0,0,.2);
@@ -306,6 +321,13 @@ submitButton:active{position:relative;top:2px;}
   position: relative;
   right: 70px;
 }
+#knockButton:hover{
+  background-color:blue;
+}
+.pressed{
+  /*width: 200px;*/
+  background-color: red;
+}
 #playerCards{
   width:700px;
   height:200px;
@@ -321,6 +343,7 @@ submitButton:active{position:relative;top:2px;}
   cursor: pointer;
   margin-top: 10px;
   margin-right: 5px;
+  position:relative;
 
   -moz-border-radius:10px;-webkit-border-radius:10px;
   border-radius:10px;
@@ -344,6 +367,15 @@ submitButton:active{position:relative;top:2px;}
 }
 #opCard1, #playerCard1{
   margin-left:65px;
+}
+#characterAvatar{
+  height:150px;
+  width: 150px;
+  background-color: rgba(0,0,0,.7);
+  position: absolute;
+  margin-left:370px;
+  border: 1px solid black;
+  opacity: .7;
 }
 
 /*
@@ -382,12 +414,21 @@ submitButton:active{position:relative;top:2px;}
   padding-top:5px;
   padding-bottom:5px;
 }
+#scoresButton{
+  width:100px;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
+  margin-top: 21px;
+}
 #homeButton{
   width:100px;
   font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
-  margin-top: 30px;
+  margin-top: 21px;
 }
-
+#viewPlayerInfo{
+  width:210px;
+  font:1.4em Futura, Century Gothic, AppleGothic, sans-serif;
+  margin-top: 21px;
+}
 /*
   Styling for links on the credit page
 */
@@ -395,7 +436,6 @@ a.credits:link {text-decoration:none; color: #000000 !important;}   /* unvisited
 a.credits:visited {text-decoration:none; color: #000000 !important;} /* visited link */
 a.credits:hover {text-decoration:underline;}  /* mouse over link */
 a.credits:active {text-decoration:none;} /* selected link */
-
 
 /*
   This styling applys to the Unit Test Harness page
@@ -413,4 +453,11 @@ div.unitTest{
   height: 500px;
   overflow: auto;
 }
-
+#hacksAreUs{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 400px;
+}
+.translucent{
+  background-color: rgba(196, 196, 196, .7) !important;
+}
