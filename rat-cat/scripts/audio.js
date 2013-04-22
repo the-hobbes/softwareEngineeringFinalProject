@@ -7,6 +7,6 @@ function insertAudio(src){
   embed.setAttribute('width',0);
   embed.setAttribute('height',0);
   				
-	$('#sound').append(embed);
+  $('#sound').append(embed);
 
 }
