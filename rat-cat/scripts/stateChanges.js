@@ -1,7 +1,7 @@
 /*
  * Created 14MAR2013 
  * Authors:
- * 	Ethan
+ * 	Ethan, Phelan
  *
  * The purpose of this file is to provide the changes to the view upon each change of state. The following functions
  * are defined here:
@@ -14,6 +14,48 @@
  *	handleState(state)
  */
 
+// globally scoped knock variable
+knock = 1;
+
+/*updateKnock: This function is used to switch the value of knock on or off. If the value is on (1), users will be prompted to 
+ * 	knock every time their turn ends. If the value is off (0), then they won't be prompted and their turn will pass over to  	
+ * 	the AI.
+ */
+function updateKnock(){
+	if(knock ==1 ){
+		//if on, switch off. make it look like it has been pressed down
+		knock = 0;
+		var pressMe = $('#knockButton');
+		pressMe.removeClass('pressed');
+	}
+	else{
+		// if off, switch on. remove the css that makes it look pressed down
+		knock = 1;
+		var pressMe = $('#knockButton');
+		pressMe.addClass('pressed');
+	}
+}
+
+function updateKnockState(){
+	// knocking logic to update knockstate before the state is Posted
+	if(knock == 1){
+		//returns a boolean, telling us if they want to knock or not. 
+		result = confirm("Would you like to knock? If you don't want to get this prompt, uncheck the knock button.");
+		
+		if(result == true){
+			//if they want to knock, we will update the knockstate to
+			return 2;
+		}
+		else{
+			//if they don't want to knock, we will update the knockstate to do nothing.
+			return 0;			
+		}
+	}
+	else{
+		//otherwise, knockstate isn't checked and we return 0
+		return 0;
+	}
+}
 
 /*initialState: This function shows the player their cards for a brief time and then transitions 
  *			to the next state
@@ -25,7 +67,6 @@
  */
 function initialState(state){
 	console.log('initialState entered');
-
 	//Any fancy animations for shuffling and dealing go here, such as tweening cards from the deck to the players hands
 
 	//Show the player their two outermost cards for a short time:
@@ -40,7 +81,7 @@ function initialState(state){
 	setTimeout(function(){
 		$('#playerCard1').css("background-image", 'url(images/cards/smallCards/13.png)');
 		$('#playerCard4').css("background-image", 'url(images/cards/smallCards/13.png)');
-	},5000);
+	},6000);
 
 	//No real need for an ajax call we'll just update things here
 	state.state = 'waitingForDraw';
@@ -64,8 +105,7 @@ function initialState(state){
 function waitingForDraw(state){
 	console.log("waitingForDraw state entered");
 	//Add glow to whatever the user will interact with
-	$('#deck').addClass('glowing');
-	$('#discardPile').addClass('glowing');
+	state = glowActiveCards(state);
 
 	//Add Ajax class to things that will be responsive to user input
 	$('#deck').addClass('waitingForDrawAJAX');
@@ -77,17 +117,17 @@ function waitingForDraw(state){
 	    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
 	}, 2000);
 	
-	
-	//Add listeners for clicks that will fire off whatever interaction we need
-	//and will also remove the glow
 
-	$('.waitingForDrawAJAX').bind('click',function(){
+
+	$('.waitingForDrawAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
-		//Use ajax to yell over to the server that something has happened
+		e.stopImmediatePropagation();
+		e.preventDefault();
 
+		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
 	        type: 'POST',
@@ -95,20 +135,17 @@ function waitingForDraw(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
-
+		var localClicks = state.playerClicks;
+	    
 	    // callback handler that will be called on success
 	    requestDeck.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from waitingForDrawAJAX callback');
-	        // console.log(response);
-
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
 			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
-
-
+	        
+	        renderState(1,state,localClicks);
 	    });
 
 	    // callback handler that will be called on failure
@@ -121,9 +158,8 @@ function waitingForDraw(state){
 	    });
 
 		//Remove the glow from both glowing pieces in this state
-		$('#deck').removeClass('glowing');
+		$('#deck').removeClass('glowing');	
 		$('#discardPile').removeClass('glowing');
-		
 	});
 
 
@@ -142,9 +178,11 @@ function waitingForDraw(state){
 function waitingForPCard(state){
 	console.log('waitingForPCard state entered');
 	
-	//Iterate through each div within playerCards and add the glowing class
+	//Add the glowing state
+	state = glowActiveCards(state);
+
+	//Add the ajax handler
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
 		$(this).addClass('waitingForPCardAJAX');
 	});
 
@@ -157,12 +195,16 @@ function waitingForPCard(state){
 	}, 2000);
 
 	//Define the AJAX call to the server 
-	$('.waitingForPCardAJAX').bind('click',function(){
+	$('.waitingForPCardAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
-		//Use ajax to yell over to the server that something has happened
 
+		e.stopImmediatePropagation();
+		e.preventDefault();
+		
+		state.knockState = updateKnockState();	
+		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
 	        url: "/game",
 	        type: 'POST',
@@ -170,19 +212,17 @@ function waitingForPCard(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
+		
+		var localClicks = state.playerClicks;
 
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from waitingForPCardAJAX callback');
-	        // console.log(response);
-	        console.log('Phelan: this is the object sent back from the server');
-	    	console.log(response);
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForPCardAJAX').unbind('click');
 	    	$('.waitingForPCardAJAX').removeClass('waitingForPCardAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
+	        renderState(1,state,localClicks);
 
 	    });
 
@@ -225,10 +265,38 @@ function HAL(state){
 	//call renderState a few times, and use proper timing to get this to work right. And we'll use variables
 	//to control the timing so everything is relative and we can set it to 0 for quick debugging or stats 
 	//getting.
-	console.log(state)
-	state.state = 'waitingForDraw';	
-	state = handleState(state);
+	setTimeout(function(){
+		showHalLoader();
+	},1000);
 
+	var request = $.ajax({
+			        url: "/game",
+			        type: 'POST',
+					data: JSON.stringify(state),
+					contentType: "application/json",
+					dataType: 'json'
+			    });
+
+			    // callback handler that will be called on success
+			    request.done(function (response, textStatus, jqXHR){
+			        setTimeout(function(){
+						hideHalLoader();
+					},3000);
+
+			        // hideHalLoader();
+			        //We're done with HAL's turn, render the players
+			        state = handleState(response);      
+			        renderState(1,state,[]);
+			    });
+
+			    // callback handler that will be called on failure
+			    request.fail(function (jqXHR, textStatus, errorThrown){
+			        // log the error to the console
+			        console.error(
+			            "The following error occured: "+
+			            textStatus, errorThrown,jqXHR
+			        );
+			    });
 
 	return state;
 }
@@ -244,17 +312,23 @@ function playerChoice(state){
 	console.log("playerChoice State entered");
 	
 	//Add glow to the players cards
-	$('#discardPile').addClass('glowing');
+	state = glowActiveCards(state);
+
+
 	$('#discardPile').addClass('playerChoiceAJAX');
+
+
+	if(state.displayCard.image == '10'){
+		//If we've selected a draw2 card then that means we get to add the call onto the deck
+		$('#deck').addClass('playerChoiceAJAX');		
+	}
 
 	//Iterate through each div within playerCards and add the glowing class
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
-		$(this).addClass('playerChoiceAJAX');
+		if(state.displayCard.image != '10'){
+			$(this).addClass('playerChoiceAJAX');	
+		}
 	});
-
-	glowActiveCards(state);
-	
 
 	//Keep track of cards clicked:
 	var pClick = 0;
@@ -262,18 +336,21 @@ function playerChoice(state){
 
 	//Add a click pushing function to the opponents cards if we are able to swap:
 	if(state.displayCard.image == '12'){
-		alert('SWAPPING TIME');
+		// alert('SWAPPING TIME');
 		var $oDivs = $('#opponentCards').children('div').each(function(){
-			$(this).addClass('glowing');
 			$(this).addClass('opSwap');
 		});	
 
-		$('.opSwap').bind('click', function(){
+		$('.opSwap').bind('click', function(e){
 			state.playerClicks.push(this.id);
 			//Conditional ajax call here if the player has selected their card already
 			oClick = oClick + 1;
-			console.log(oClick);
+
+			e.stopImmediatePropagation();
+        	e.preventDefault();
+
 			if(oClick > 0 && pClick > 0){
+				state.knockState = updateKnockState();	
 				//Fire Ajax
 				var request = $.ajax({
 			        url: "/game",
@@ -282,19 +359,18 @@ function playerChoice(state){
 					contentType: "application/json",
 					dataType: 'json'
 			    });
+				
+				var localClicks = state.playerClicks;
 
 			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
-			        console.log('Returned from playerChoiceAJAX callback');
-			        // console.log(response);
-
 			        //Remove the click so we don't send a ajax request to the server while this 
 			        //click shouldn't do anything
 			        $('.opSwap').unbind('click');
 			    	$('.playerChoiceAJAX').unbind('click');
 			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 			        state = handleState(response);      
-			        renderState(1,state);
+			        renderState(1,state,localClicks);
 			    });
 
 			    // callback handler that will be called on failure
@@ -309,6 +385,16 @@ function playerChoice(state){
 
 				//Remove the glow from discard and player cards
 				$('.glowing').removeClass('glowing');	
+			}else if(pClick || oClick){
+				$('#discardPile').removeClass('glowing');
+				$('#discardPile').removeClass('playerChoiceAJAX');
+				$('#discardPile').unbind('click');
+				
+				
+				//They clicked but its not time to do ajax, so remove the glow from the cards they clicked
+				var $oDivs = $('#opponentCards').children('div').each(function(){
+					$(this).removeClass('glowing');
+				});	
 			}
 		});
 	}
@@ -317,16 +403,23 @@ function playerChoice(state){
 
 
 	//Define the AJAX call to the server 
-	$('.playerChoiceAJAX').bind('click',function(){
+	$('.playerChoiceAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 		pClick = pClick + 1;
-		console.log(pClick);
-		//Use ajax to yell over to the server that something has happened
+		
+		e.stopImmediatePropagation();
+        e.preventDefault();
 
+		//Use ajax to yell over to the server that something has happened
 		//Normal Player Choice
 		if(state.displayCard.image != '12'){
+			state.knockState = updateKnockState();
+
+			// Bring up the loading icon so the user can see we are making progress on their request(this will be closed later in endgame)
+			showLoader();
+		
 		    var request = $.ajax({
 		        url: "/game",
 		        type: 'POST',
@@ -335,22 +428,24 @@ function playerChoice(state){
 				dataType: 'json'
 		    });
 
+		     var localClicks = 
 		    // callback handler that will be called on success
 		    request.done(function (response, textStatus, jqXHR){
-		        console.log('Returned from playerChoiceAJAX callback');
-		        // console.log(response);
-
+		        hideLoader();
 		        //Remove the click so we don't send a ajax request to the server while this 
 		        //click shouldn't do anything
-
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
 		        state = handleState(response);      
-		        renderState(1,state);
+		       
+		        //close the loading popup
+		        renderState(1,state,localClicks);
+
 		    });
 
 		    // callback handler that will be called on failure
 		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	hideLoader();
 		        // log the error to the console
 		        console.error(
 		            "The following error occured: "+
@@ -364,7 +459,12 @@ function playerChoice(state){
 		}else{
 			//Swap playerChoice, we need to use the number of clicks
 			//so far to say yes we can submit the ajax request.
-			if(pClick > 0 && oClick > 0){
+			if(this.id == "discardPile"){
+				state.playerClicks.push(this.id);
+				pClick = 0;
+				oClick = 0;
+				
+				state.knockState = updateKnockState();
 				var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -372,33 +472,71 @@ function playerChoice(state){
 					contentType: "application/json",
 					dataType: 'json'
 			    });
-
-			    // callback handler that will be called on success
 			    request.done(function (response, textStatus, jqXHR){
-			        console.log('Returned from playerChoiceAJAX callback');
-			        // console.log(response);
+				        //Remove the click so we don't send a ajax request to the server while this 
+				        //click shouldn't do anything
+				        $('.opSwap').unbind('click');
+				    	$('.playerChoiceAJAX').unbind('click');
+				    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+				        state = handleState(response);      
+				        renderState(1,state,localClicks);
+				    });
 
-			        //Remove the click so we don't send a ajax request to the server while this 
-			        //click shouldn't do anything
-			        $('.opSwap').unbind('click');
-			    	$('.playerChoiceAJAX').unbind('click');
-			    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
-			        state = handleState(response);      
-			        renderState(1,state);
-			    });
-
-			    // callback handler that will be called on failure
-			    request.fail(function (jqXHR, textStatus, errorThrown){
-			        // log the error to the console
-			        console.error(
-			            "The following error occured: "+
-			            textStatus, errorThrown
-			        );
-			    });
+				    // callback handler that will be called on failure
+				    request.fail(function (jqXHR, textStatus, errorThrown){
+				        // log the error to the console
+				        console.error(
+				            "The following error occured: "+
+				            textStatus, errorThrown
+				        );
+				    });
 
 
-				//Remove the glow from discard and player cards
-				$('.glowing').removeClass('glowing');	
+					//Remove the glow from discard and player cards
+					$('.glowing').removeClass('glowing');	
+			}else{
+				if(pClick > 0 && oClick > 0){
+					state.knockState = updateKnockState();
+					var request = $.ajax({
+				        url: "/game",
+				        type: 'POST',
+						data: JSON.stringify(state),
+						contentType: "application/json",
+						dataType: 'json'
+				    });
+
+				    // callback handler that will be called on success
+				    request.done(function (response, textStatus, jqXHR){
+				        //Remove the click so we don't send a ajax request to the server while this 
+				        //click shouldn't do anything
+				        $('.opSwap').unbind('click');
+				    	$('.playerChoiceAJAX').unbind('click');
+				    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+				        state = handleState(response);      
+				        renderState(1,state,localClicks);
+				    });
+
+				    // callback handler that will be called on failure
+				    request.fail(function (jqXHR, textStatus, errorThrown){
+				        // log the error to the console
+				        console.error(
+				            "The following error occured: "+
+				            textStatus, errorThrown
+				        );
+				    });
+
+
+					//Remove the glow from discard and player cards
+					$('.glowing').removeClass('glowing');	
+				}else if(pClick || oClick){
+					$('#discardPile').removeClass('glowing');
+					$('#discardPile').removeClass('playerChoiceAJAX');
+					$('#discardPile').unbind('click');
+					
+					var $oDivs = $('#playerCards').children('div').each(function(){
+						$(this).removeClass('glowing');
+					});	
+				}
 			}
 		}	
 	});
@@ -428,14 +566,18 @@ function draw2PlayerChoice(state){
 	//to select either the discard pile, their card to switch out, or the deck to draw another card.
 
 	//Add glow
-	$('#discardPile').addClass('glowing');
-	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
-	$('#deck').addClass('glowing');
-	$('#deck').addClass('draw2PlayerChoiceAJAX');
+	state.deckActivity = 0;
+	state = glowActiveCards(state);
+	
+	renderState(1,state,[null]);
 
-	//Iterate through each div within playerCards and add the glowing class
+	//Add ajax method
+	$('#discardPile').addClass('draw2PlayerChoiceAJAX');
+	if(state.draw2Counter != 1){
+		$('#deck').removeClass('draw2PlayerChoiceAJAX');	
+	}
+	//Iterate through each div within playerCards and add the ajax class
 	var $divs = $('#playerCards').children('div').each(function(){
-		$(this).addClass('glowing');
 		$(this).addClass('draw2PlayerChoiceAJAX');
 	});
 
@@ -449,10 +591,13 @@ function draw2PlayerChoice(state){
 
 
 	//Define the AJAX call to the server 
-	$('.draw2PlayerChoiceAJAX').bind('click',function(){
+	$('.draw2PlayerChoiceAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
 		
+		e.stopImmediatePropagation();
+		e.preventDefault();
+
 		//Use ajax to yell over to the server that something has happened
 
 	    var request = $.ajax({
@@ -462,18 +607,15 @@ function draw2PlayerChoice(state){
 			contentType: "application/json",
 			dataType: 'json'
 	    });
-
+	    var localClicks = state.playerClicks;
 	    // callback handler that will be called on success
 	    request.done(function (response, textStatus, jqXHR){
-	        console.log('Returned from draw2PlayerChoiceAJAX callback');
-	        // console.log(response);
-
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.draw2PlayerChoiceAJAX').unbind('click');
 	    	$('.draw2PlayerChoiceAJAX').removeClass('draw2PlayerChoiceAJAX');
 	        state = handleState(response);      
-	        renderState(1,state);
+	        renderState(1,state,localClicks);
 
 	    });
 
@@ -487,14 +629,27 @@ function draw2PlayerChoice(state){
 	    });
 
 		//Remove the glow from discard and player cards
-		$('#discardPile').removeClass('glowing');
-		$('#deck').removeClass('glowing');
-		var $divs = $('#playerCards').children('div').each(function(){
-			$(this).removeClass('glowing');
+		$('.glowing').removeClass('glowing');
 		
-		});
+		
 	});
 	return state;
+}
+
+/*endGame: This function causes the board to update to the end round state.
+ * First, it shows a hidden lightbox to interact with the user. Then it sends the state to an interaction function so the 
+ * user may decide what to do, depending on whether or not the game is over or the round is over. 
+ * note that this lightbox is a jinja snippet called popup.html, which is included in game.html
+ */
+function endGame(state){
+	//render the board visible
+	renderState(1,state,[]);
+	//close the loading popup
+	hideLoader();
+	//show the dialog popup
+	$('#popupDialog').jqmShow();
+	//call the interaction function, passing in the state.
+	endGameInteraction(state);
 }
 
 /*handleState: This function passes the state through a switch statement and calls the proper rendering function
@@ -518,6 +673,8 @@ function handleState(state){
 			return draw2PlayerChoice(state);
 		case 'initial':
 			return initialState(state);
+		case 'endGame':
+			return endGame(state);
 		default:
 			return state;
 	}
@@ -531,8 +688,27 @@ function handleState(state){
  *	returns: The updated state
  */
 function glowActiveCards(state){
-	console.log(state);
 	if(state.deckActivity==1){
-		//alert('deck active');
+		$('#deck').addClass('glowing');
 	}
+	if(state.discardActivity){
+		$('#discardPile').addClass('glowing');
+	}
+	//Iterate through each div within playerCards and add the glowing class
+	i=0;
+	var $divs = $('#playerCards').children('div').each(function(){
+		if(state.playCard[i].active){
+			$(this).addClass('glowing');
+		}
+		i=i+1;
+	});
+
+	i=0;
+	var $oDivs = $('#opponentCards').children('div').each(function(){
+		if(state.compCard[i].active){
+			$(this).addClass('glowing');
+		}
+		i=i+1;
+	});	
+	return state;
 }

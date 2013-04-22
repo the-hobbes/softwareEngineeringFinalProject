@@ -9,6 +9,9 @@
 		<script src="scripts/jqModal.js"></script>
 		<script src="scripts/stateChanges.js"></script>
 		<script src="scripts/gameRender.js"></script>
+		<script src="scripts/animations.js"></script>
+		<script src="scripts/audio.js"></script>
+
 
 		<script>
 
@@ -18,6 +21,9 @@
 			// $('#startDialog').jqm();
 			$('#creditsDialog').jqm();
 			$('#rulesDialog').jqm();
+			$('#popupDialog').jqm();
+			$('#loadingDialog').jqm();
+			$('#halTurnDialog').jqm();
 
 			//add event handlers to each button, which will fire when clicked and call jqmShow() on the dialogs
 			 // $('#startButton').live('click',function(){
@@ -29,6 +35,7 @@
 			 $('#rulesLink').live('click',function(){
 			      $('#rulesDialog').jqmShow();
 			 });
+			 
 		});
 		</script>
 	</head>
@@ -37,8 +44,8 @@
 	 	<div id="infoBox">
 	 		<a href="#"><p id="rulesLink">Rules</p></a>
 			<a href="#"><p id="creditsLink">Credits</p></a>
-			<p><a href="/scores" target="_blank">Here is a link to the scores</a></p>
-	 		<p><a href="https://github.com/the-hobbes/softwareEngineeringFinalProject">Here is a link quit</a></p>
+			<p><a href="/scores" target="_blank">High Scores</a></p>
+	 		<p><a href="/">Home</a></p>
 	 	</div><!--end infobox-->
 		<div id="container" class="shadow" style="margin-top:30px;">
 			<div id="opponentCards" class="shadow">
@@ -57,9 +64,10 @@
 			</div><!--end opponentCards-->
 
 			<div id="discardPile" class="shadow" onclick="console.log('discardPile')"></div><!--end discardPile-->
+			<div id="characterAvatar" class="shadow" style="background:url(images/characters/thumbs/{{thumbnailImage}});"></div><!-- end characterAvatar -->
 			<div id="deck" class="shadow" onclick="console.log('deckClicked')"></div><!--end deck-->
 			<div id="currentCard" class="shadow"></div><!--end currentCard-->
-			<button id="knockButton" class="shadow" onclick="testPost()">Knock</button><!--end knockButton-->
+			<button id="knockButton" class="shadow pressed" onclick="updateKnock()">Knock</button><!--end knockButton-->
 
 			<div id="playerCards" class="shadow">
 				<div style="background:url(images/cards/smallCards/13.png);" id="playerCard1" class="card" onclick="console.log('playerCard1')">
@@ -79,11 +87,28 @@
 
 		{% include "rules.html" %}
 		{% include "credits.html" %}
+		{% include "popup.html" %}
+		{% include "loading.html" %}
+		{% include "halTurn.html" %}
 
 		<script>
 		var currentState;
 		currentState = renderState({{oldState}},{{newState}});
 		</script>
+	
+		<!-- begin analytics code -->
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+		  ga('create', 'UA-40175389-1', 'rat-a-tat-cat.appspot.com');
+		  ga('send', 'pageview');
+
+		</script>
+
+		<div id="sound"></div>
+		<!-- end analytics code -->
 	</body>
 </html>

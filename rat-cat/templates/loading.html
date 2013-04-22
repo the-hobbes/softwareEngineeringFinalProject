@@ -1,0 +1,32 @@
+{% block loadingLightbox %}
+<!-- Rules Button Lightbox-->
+<div id="loadingBox">
+ </div><!-- end rulesBox -->
+
+<div class="jqmWindow hideMe" id="loadingDialog" style="width:50px; margin:0px auto; top:40%;">
+	<div style="width:100%; text-align: center;">
+		<img id="loadingImage" alt="" src="images/loading.gif" style="margin-top:10px;"/>
+		<script>
+
+			/* 
+			* showLoader: This function is used to show the loading gif. It is called from stateChanges.js
+			*/
+			function showLoader(){
+				$('#loadingDialog').jqmShow();				
+				// console.log("got to showLoader");
+			}
+
+			/* 
+			* hideLoader: This function is used to hide the loading gif. It is called from stateChanges.js
+			*/
+			function hideLoader(){
+				
+				$('#loadingDialog').jqmHide();
+				// console.log("got to hide loader");
+			}
+
+		</script>
+	</div>
+</div><!-- end startDialog-->
+	<!-- End Rules Button Lightbox-->
+{% endblock %}

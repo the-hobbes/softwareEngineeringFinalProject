@@ -9,33 +9,40 @@ import datetime
 from handler import *
 from google.appengine.ext import db
 
-# Database table for Players
 class Players(db.Model):
-	playerID = db.IntegerProperty(required=True)
-	name = db.StringProperty()
+	'''
+		Players
+		Datastore entity for Players. Used to record relevent player information. Inherits from db.Model
+	'''
+	# player specific information
+	name = db.StringProperty(required=True)
 	age = db.IntegerProperty()
 	joinDate = db.DateTimeProperty(auto_now_add=True)
-	games = db.FloatProperty()
-	gamesWon = db.FloatProperty()
-	gamesLost = db.FloatProperty()
-	roundsTotal = db.FloatProperty()
-	roundsWonTotal = db.FloatProperty()
-	roundsLostTotal = db.FloatProperty()
-	scoreTotal = db.FloatProperty()
-	catCardsTotal = db.IntegerProperty()
-	ratCardsTotal = db.IntegerProperty()
-	powerCardsTotal = db.IntegerProperty()
+	sessionId = db.StringProperty()
+	avatar = db.StringProperty()
 
-# Database table for Games
+	# statistics gathering information
+	games = db.IntegerProperty(default=0)
+	gamesWon = db.IntegerProperty(default=0)
+	gamesLost = db.IntegerProperty(default=0)
+	roundsTotal = db.IntegerProperty(default=0)
+	roundsWonTotal = db.IntegerProperty(default=0)
+	roundsLostTotal = db.IntegerProperty(default=0)
+	scoreTotal = db.IntegerProperty(default=0)
+
 class Games(db.Model):
-    gameID = db.IntegerProperty(required=True)
-    Players_playerID = db.IntegerProperty()
-    gameStart = db.DateTimeProperty(auto_now_add=True)
-    win = db.BooleanProperty()
-    score = db.FloatProperty()
-    rounds = db.FloatProperty()
-    roundsWon = db.FloatProperty()
-    roundsLost = db.FloatProperty()
-    catCards = db.IntegerProperty()
-    ratCards = db.IntegerProperty()
-    powerCards = db.IntegerProperty()
+	'''
+		Games
+		Datastore entity for Games. Used to record relevent game information. Inherits from db.Model
+	'''
+	# gameID = db.IntegerProperty(required=True)
+	# Players_playerID = db.StringProperty()
+	gameStart = db.DateTimeProperty(auto_now_add=True)
+	win = db.BooleanProperty()
+	score = db.IntegerProperty(default=0)
+	rounds = db.IntegerProperty(default=0)
+	halScore = db.IntegerProperty(default=0)
+
+	# foreign key
+	sessionId = db.StringProperty()
+	difficulty = db.StringProperty()

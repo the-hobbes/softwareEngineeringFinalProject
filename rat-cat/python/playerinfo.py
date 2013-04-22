@@ -6,8 +6,12 @@
 # This handler processes user information entry. It renders a form for the user to input their name and age, then adds that
 # to the database and forwards the user to the next page. 
 from handler import *
+from datetime import *
+import hashlib
 #re = regular expresion module
-import re;
+import re
+from python.datastore import Players
+from python.datastore import Games
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
 
@@ -66,10 +70,26 @@ class PlayerInfoHandler(Handler):
 		#get the parameters from the post
 		name = self.request.get("name")
 		age = self.request.get("age")
-
+		#hash user info 
+		time = str(datetime.now())
+		m = hashlib.sha224()
+		m.update(name)
+		m.update(age)
+		m.update(time)
+		m.digest()
+		
 		valid,error=self.validateInput(name,age)
+		sessionId = m.hexdigest()
 
 		if valid:
-			self.redirect("/characterchoice")
+			# add a new player to the datastore
+			playerObj = Players(name=name, age=int(age), sessionId=sessionId)
+			playerObj.put()
+			# add a corresponding new game to the datastore
+			gameObj = Games(sessionId=sessionId)
+			gameObj.put()
+
+			# redirect, with sessionID as a GET parameter
+			self.redirect("/characterchoice" + "?sessionId=" + sessionId)
 		else:
 			self.renderPlayerInfo(name, age, error)

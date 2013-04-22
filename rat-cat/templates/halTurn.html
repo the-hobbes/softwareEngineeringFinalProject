@@ -1,0 +1,42 @@
+{% block halTurn %}
+<script>
+	function playHALSound(){
+		//Choose a random HAL sound to play
+		var path = 'sounds/HAL/HAL'; //number)
+		var  endpath ='.wav';
+		var randomnumber=Math.floor(Math.random()*12)+1//between 1 and 13
+
+  		insertAudio(path + randomnumber + endpath);		
+	}
+</script>
+
+<div class="jqmWindow hideMe" id="halTurnDialog" style="text-align:center;">
+	<!-- <div style="width:100%; text-align: center;"> -->
+		<img id="loadingImage" alt="" src="images/hal.gif" style="margin-top:10px;"/>
+		<h3> Please wait while HAL plots and executes your destruction...</h3>
+		<script>
+
+			/* 
+			* showLoader: This function is used to show the hal gif. It is called from stateChanges.js
+			*/
+			function showHalLoader(){
+				playHALSound();
+				$('#halTurnDialog').jqmShow();		
+				$('#halTurnDialog').css("z-index",2999);
+				// console.log("got to showLoader");
+			}
+
+			/* 
+			* hideLoader: This function is used to hide the hal gif. It is called from stateChanges.js
+			*/
+			function hideHalLoader(){
+				// setTimeout($('#halTurnDialog').jqmHide(), 5000);
+				$('#halTurnDialog').jqmHide();
+				// console.log("got to hide loader");
+			}
+
+		</script>
+	<!-- </div> -->
+</div><!-- end startDialog-->
+	<!-- End Rules Button Lightbox-->
+{% endblock %}
