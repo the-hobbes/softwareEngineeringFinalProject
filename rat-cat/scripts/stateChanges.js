@@ -272,7 +272,11 @@ function HAL(state){
 
 	console.log('HAL Says');
 	console.log(state);
-	showHalLoader();
+
+	setTimeout(function(){
+		showHalLoader();
+	},1000);
+
 	var request = $.ajax({
 			        url: "/game",
 			        type: 'POST',
@@ -306,8 +310,9 @@ function HAL(state){
 	//state.state = 'waitingForDraw';	
 	//state.discardActivity = 1
 	//state.deckActivity = 1
-	//waitingForDraw(state);
+
 	console.log(state)
+
 
 	state.state = 'waitingForDraw';	
 	state = handleState(state);

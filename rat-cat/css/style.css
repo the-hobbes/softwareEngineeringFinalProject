@@ -458,3 +458,6 @@ div.unitTest{
   overflow-x: hidden;
   height: 400px;
 }
+.translucent{
+  background-color: rgba(196, 196, 196, .7) !important;
+}

@@ -297,7 +297,8 @@ class HAL(db.Model):
 				i = j
 		#reset the memory (this is effectively the same as us looking at it)
 		self.aiCardsMem[i] = 1.0
-		self.actionsToTake = self.actionsToTake + " HAL remembers his " + i + "th card!"
+		# self.actionsToTake = self.actionsToTake + " HAL remembers his " + str(i) + "th card!"
+		time.sleep(1)
 
 		return state
 
