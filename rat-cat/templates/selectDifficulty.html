@@ -33,18 +33,16 @@
 				$('#imageBox').css("background-image", "url(/images/difficulty/"+ selector+")"); 
 				// $("#imageBox").text("The image should be #: " + selector);
 				if(selector == 'hard.png'){
-		
-		
+					$('#videoContainer').css('display','block');
 					$('#videoContainer').tubular({videoId: 'oP2eVtuDgEE', mute:true}); // where idOfYourVideo is the YouTube ID.
-		
-					insertAudio('hard.mp3');
+					insertAudio('sounds/hard.wav');
 				}
 				else if(selector == 'medium.png'){
-					insertAudio('medium.mp3');
 					$('#videoContainer').css('display','none');
+					insertAudio('sounds/medium.wav');
 				}
 				else if(selector == 'easy.png'){
-					insertAudio('easy.mp3');
+					insertAudio('sounds/easy.wav');
 					$('#videoContainer').css('display','none');
 				}
 			}
