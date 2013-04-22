@@ -5,9 +5,12 @@
 			<meta name="description" content="">
 			<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+			<script src="scripts/audio.js" type = 'text/javascript'></script>
 			<script>
 
 				//Simple function to assist in readability of jQuery, capitilizes first letter of word
+				
+
 				function capitaliseFirstLetter(string)
 				{
     				return string.charAt(0).toUpperCase() + string.slice(1);
@@ -44,16 +47,8 @@
 
 			   	//Play sound affect for character
 			   	var soundSrc = getSoundSource(name);
-			   	console.log("play sound" + soundSrc);
 
-			   	//Refactor this to call peters sound code
-			   	var embed=document.createElement('object');
-		  		embed.setAttribute('type','audio/wav');
-				embed.setAttribute('data', 'sounds/' + soundSrc);
-			 	embed.setAttribute('enablejavascript', true);
-				embed.setAttribute('autostart',true);
-				embed.setAttribute('width',0);
-				embed.setAttribute('height',0);
+				insertAudio('audio/mp3','sounds/' + soundSrc);
   				
 				$('#sound').append(embed);
 					    
@@ -86,12 +81,11 @@
 						break;
 				}
 			}
-
 			//handle displaying the title and description of each character, based on its name. 
 			function getSoundSource(name){
 				switch(name){
 					case 'Betty, Queen of Rats':
-						return "betty";
+						return "betty.mp3";
 						break;
 					case 'Jason H.':
 						return "hibbels";
@@ -114,10 +108,13 @@
 				}
 			}
 		</script>
-	</head>
 
+	</head>
 		<body>
 		  
+		  	<div id="sound">
+			</div>
+			
 			<div id="container" class="shadow">
 				<form id="characterForm" method="post">
 				<div id="characterStripLeft">
@@ -166,5 +163,9 @@
 			</script>
 			<!-- end analytics code -->
 			<div id="sound"></div>
+			<script>
+			insertAudio('audio/wav','sounds/chooseCharacter.wav');
+			insertAudio('audio/mpeg','sounds/SSBbackground.mp3');
+			</script>
 		</body>
 	</html>
