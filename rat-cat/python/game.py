@@ -93,13 +93,9 @@ class GameHandler(Handler):
 			newState = self.endGame(oldState)
 		# otherwise, proceed as normal
 		else:
-			logging.info("ooooooooooooooooollllllllllllllllllddddddddddddddd")
-			logging.info(oldState['discard'])
 			# send the object to the state parser, and get the new state of the gameboard
 			newState = self.parseState(oldState)
-			logging.info('nnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeewwwwwwwwwwwwwwwww')
-			logging.info(newState['discard'])
-		
+			
 		#write the new data out as a response for the view to render
 		logging.info("NEW STATE IS " + newState['state'])
 		newState = json.dumps(newState)
@@ -202,8 +198,6 @@ class GameHandler(Handler):
 		'''
 		# the div id of what the player clicked (either deck, or discardPile)
 		userChoice = statePassedIn['playerClicks'][0]
-		logging.info("this is the discard: ")
-		logging.info(statePassedIn['discard'])
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
@@ -212,7 +206,7 @@ class GameHandler(Handler):
 				logging.info("this is the selectedCard: ")
 				logging.info(selectedCard)
 			except:
-				logging.info("SHIT BROKE!!!!!!!!!!!")
+				
 				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
 				# 	to compensate for this. Set the message visible, then simply pass back the state. 
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
