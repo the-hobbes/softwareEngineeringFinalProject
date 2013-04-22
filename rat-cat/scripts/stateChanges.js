@@ -292,6 +292,7 @@ function HAL(state){
 			        setTimeout(function(){
 						hideHalLoader();
 					},3000);
+
 			        // hideHalLoader();
 			        //We're done with HAL's turn, render the players
 			        state = handleState(response);      
