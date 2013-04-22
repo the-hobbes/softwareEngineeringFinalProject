@@ -93,7 +93,7 @@ body {
 .centerText{
   text-align: center;
 }
-a:link {text-decoration:none; color: #FFFFFF}   /* unvisited link */
+a:link {text-decoration:none; color: #FF0000}   /* unvisited link */
 a:visited {text-decoration:none; color: #FF0000} /* visited link */
 a:hover {text-decoration:underline;}  /* mouse over link */
 a:active {text-decoration:underline;} /* selected link */
@@ -432,11 +432,12 @@ submitButton:active{position:relative;top:2px;}
 /*
   Styling for links on the credit page
 */
-a.credits:link {text-decoration:none; color: #000000 !important;}   /* unvisited link */
-a.credits:visited {text-decoration:none; color: #000000 !important;} /* visited link */
-a.credits:hover {text-decoration:underline;}  /* mouse over link */
-a.credits:active {text-decoration:none;} /* selected link */
-
+/*
+a.credits:link {text-decoration:none; color: #000000 !important;}   
+a.credits:visited {text-decoration:none; color: #000000 !important;} 
+a.credits:hover {text-decoration:underline;}  
+a.credits:active {text-decoration:none;} 
+*/
 /*
   This styling applys to the Unit Test Harness page
 */
