@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Created 5MAR2013 
 # Authors:
-# 	Phelan
+# 	Bryan
 # 
 # This handler displays the player's game information, and performs all of the associated database calls to do so.
 
@@ -40,6 +40,6 @@ class ScoreInfoHandler(Handler):
 				thumbnailImage = "tommyCatThumb.png"
 		
 		if name:
-			self.render("scoreInfo.html", players=players, thumbnailImage=thumbnailImage, name=name)
+			self.render("scoreinfo.html", players=players, thumbnailImage=thumbnailImage, name=name)
 		else:
 			self.render("scores.html", error=error)
