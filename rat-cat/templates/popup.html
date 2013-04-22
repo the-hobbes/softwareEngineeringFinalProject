@@ -25,19 +25,19 @@
 			if(state.win == 1){
 				//they won
 				$("#resultImage").attr("src","images/win.png");
-  				insertAudio('audio/mpeg','sounds/fanfare.mp3');
+  				insertAudio('sounds/fanfare.mp3');
 			}
 			else if(state.win == 2){
 				//they tied
 				$("#resultImage").attr("src","images/tie.png");
-				insertAudio('audio/mpeg','sounds/tie.mp3');	
+				insertAudio('sounds/tie.mp3');	
 				
 			}
 			else{
 				//they lost
 				
 				$("#resultImage").attr("src","images/lose.png");
-  				insertAudio('audio/mpeg','sounds/endofline.mp3');				
+  				insertAudio('sounds/endofline.mp3');				
 			}
 			
 
