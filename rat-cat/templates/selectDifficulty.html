@@ -6,9 +6,13 @@
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="scripts/jquery.tubular.1.0.js"></script>
 		<script>
 			//document ready function (note that $ replaces jQuery().ready)
 			$(function($){
+				// this is a call to the tubular method of jquery.tubular to render another inspirational background video
+				$('#videoContainer').tubular({videoId: 'oP2eVtuDgEE', mute:false}); // where idOfYourVideo is the YouTube ID.
+
 				//hide the radio buttons
 				$('#difficultyForm input:radio').addClass('input_hidden');
 				//when a label is clicked, its corresponding radio button is selected and its siblings are deselected
@@ -33,7 +37,9 @@
 
 	<body>
 	  
-		<div id="container" class="shadow">
+		<div id="container" class="shadow translucent">
+			<div id="videoContainer"></div><!-- end videoContainer -->
+			
 			<form id="difficultyForm" method="post">
 
 				<div id="imageBox" class="shadow"></div><!-- end imageBox-->
