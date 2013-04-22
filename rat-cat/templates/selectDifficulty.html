@@ -6,7 +6,6 @@
 		<meta name="description" content="">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-
 		<script src="scripts/audio.js" type = 'text/javascript'></script>
 		<script src="scripts/jquery.tubular.1.0.js"></script>
 		<script>
@@ -34,13 +33,19 @@
 				$('#imageBox').css("background-image", "url(/images/difficulty/"+ selector+")"); 
 				// $("#imageBox").text("The image should be #: " + selector);
 				if(selector == 'hard.png'){
-					insertAudio('audio/mpeg','hard.mp3');
+		
+		
+					$('#videoContainer').tubular({videoId: 'oP2eVtuDgEE', mute:true}); // where idOfYourVideo is the YouTube ID.
+		
+					insertAudio('hard.mp3');
 				}
 				else if(selector == 'medium.png'){
-					insertAudio('audio/mpeg','medium.mp3');
+					insertAudio('medium.mp3');
+					$('#videoContainer').css('display','none');
 				}
 				else if(selector == 'easy.png'){
-					insertAudio('audio/mpeg','easy.mp3');
+					insertAudio('easy.mp3');
+					$('#videoContainer').css('display','none');
 				}
 			}
 		</script>
