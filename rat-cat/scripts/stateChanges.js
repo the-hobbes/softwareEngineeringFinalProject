@@ -122,11 +122,16 @@ function waitingForDraw(state){
 	
 
 
-	$('.waitingForDrawAJAX').bind('click',function(){
+	$('.waitingForDrawAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
+		e.stopImmediatePropagation();
+		e.preventDefault();
+
+		console.log("The waitingForDrawAJAX bind has been fired");
+		console.log(state['discard']);
 		//Use ajax to yell over to the server that something has happened
 	    var requestDeck = $.ajax({
 	        url: "/game",
@@ -141,13 +146,15 @@ function waitingForDraw(state){
 	    requestDeck.done(function (response, textStatus, jqXHR){
 	        console.log('Returned from waitingForDrawAJAX callback');
 	        // console.log(response);
-	       	
+	       	console.log("Wait For Draw Discard prerender:" + state['discard']);
 	        //Remove the click so we don't send a ajax request to the server while this 
 	        //click shouldn't do anything
 	    	$('.waitingForDrawAJAX').unbind('click');
 			$('.waitingForDrawAJAX').removeClass('waitingForDrawAJAX');
 	        state = handleState(response);      
+	        console.log("Wait For Draw Discard post handled:" + state['discard']);
 	        renderState(1,state,localClicks);
+	        console.log("Wait For Draw Discard post render:" + state['discard']);
 	    });
 
 	    // callback handler that will be called on failure
@@ -197,13 +204,15 @@ function waitingForPCard(state){
 	}, 2000);
 
 	//Define the AJAX call to the server 
-	$('.waitingForPCardAJAX').bind('click',function(){
+	$('.waitingForPCardAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. We will probs need to include
 		// this in documentation going forward, and modify our current code to accomodate for it. 
 		state.playerClicks.push(this.id);
 
+		e.stopImmediatePropagation();
+		e.preventDefault();
 		
-
+		state.knockState = updateKnockState();	
 		//Use ajax to yell over to the server that something has happened
 	    var request = $.ajax({
 	        url: "/game",
@@ -315,9 +324,9 @@ function HAL(state){
 	console.log(state)
 
 
-	state.state = 'waitingForDraw';	
-	state = handleState(state);
-	renderState(1,state,state.playerClicks);
+	// state.state = 'waitingForDraw';	
+	// state = handleState(state);
+	// renderState(1,state,state.playerClicks);
 
 	return state;
 }
@@ -468,7 +477,11 @@ function playerChoice(state){
 
 		    	$('.playerChoiceAJAX').unbind('click');
 		    	$('.playerChoiceAJAX').removeClass('playerChoiceAJAX');
+		    	console.log('player choice bind for numbers');
+		    	console.log(state.discard);
 		        state = handleState(response);      
+		        console.log("post handle state");
+		        console.log(state.discard);
 
 		        //close the loading popup
 		        renderState(1,state,localClicks);
@@ -630,10 +643,12 @@ function draw2PlayerChoice(state){
 
 
 	//Define the AJAX call to the server 
-	$('.draw2PlayerChoiceAJAX').bind('click',function(){
+	$('.draw2PlayerChoiceAJAX').bind('click',function(e){
 		//CHANGE: added a player clicks array to track what the player has actually clicked. 
 		state.playerClicks.push(this.id);
 		
+		e.stopImmediatePropagation();
+		e.preventDefault();
 
 		//Use ajax to yell over to the server that something has happened
 
