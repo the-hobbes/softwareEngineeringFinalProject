@@ -93,13 +93,9 @@ class GameHandler(Handler):
 			newState = self.endGame(oldState)
 		# otherwise, proceed as normal
 		else:
-			logging.info("ooooooooooooooooollllllllllllllllllddddddddddddddd")
-			logging.info(oldState['discard'])
 			# send the object to the state parser, and get the new state of the gameboard
 			newState = self.parseState(oldState)
-			logging.info('nnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeewwwwwwwwwwwwwwwww')
-			logging.info(newState['discard'])
-		
+			
 		#write the new data out as a response for the view to render
 		logging.info("NEW STATE IS " + newState['state'])
 		newState = json.dumps(newState)
@@ -146,7 +142,7 @@ class GameHandler(Handler):
 					"discardActivity" : 1,
 					"deck" : deck,
 					"deckActivity" : 1,
-					"displayCard" : {'image' : "13", 'active' : 0}, 
+					"displayCard" : {'image' : "14", 'active' : 0}, 
 					"knockState" : 0, 
 					"state" : "waitingForDraw",
 					"score" : 0,
@@ -202,8 +198,6 @@ class GameHandler(Handler):
 		'''
 		# the div id of what the player clicked (either deck, or discardPile)
 		userChoice = statePassedIn['playerClicks'][0]
-		logging.info("this is the discard: ")
-		logging.info(statePassedIn['discard'])
 		# if the user has chosen a card from the discard pile, the user must decide what card to swap it out for:
 		if (userChoice == 'discardPile'):
 			# what was the card they picked? 
@@ -212,7 +206,7 @@ class GameHandler(Handler):
 				logging.info("this is the selectedCard: ")
 				logging.info(selectedCard)
 			except:
-				logging.info("SHIT BROKE!!!!!!!!!!!")
+				
 				# This could happen if the opponent takes the discard pile and then the user tries to. Added field to json array
 				# 	to compensate for this. Set the message visible, then simply pass back the state. 
 				statePassedIn['displayCard'] = {'image' : str(selectedCard), 'active' : 0}
@@ -317,7 +311,7 @@ class GameHandler(Handler):
 			statePassedIn['playCard'][3]['image'] = activeCard['image']
 
 		# reset the activecard, reset the clicks list, set the new state
-		statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+		statePassedIn['displayCard'] = {'image' : "14", 'active' : 0}
 		statePassedIn['playerClicks'] = []
 		statePassedIn['state'] = "HAL" 
 
@@ -402,7 +396,7 @@ class GameHandler(Handler):
 			# take the card the user has decided about and add it to the discard
 			statePassedIn['discard'].append(int(currentCard))
 			# reset displayCard
-			statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+			statePassedIn['displayCard'] = {'image' : "14", 'active' : 0} 
 			# clear the player clicks queue
 			statePassedIn['playerClicks'] = []
 			# the user's turn is now over, so it is up to HAL to take over as the new state
@@ -438,7 +432,7 @@ class GameHandler(Handler):
 				# housekeeping
 				for oCard in statePassedIn['compCard']:
 					oCard['active'] = 0
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+				statePassedIn['displayCard'] = {'image' : "14", 'active' : 0} 
 				statePassedIn['playerClicks'] = []
 				statePassedIn['state'] = "HAL"
 
@@ -519,7 +513,7 @@ class GameHandler(Handler):
 				statePassedIn['discard'].append(currentCard)
 				# reset the displaycard and playclicks 
 				if(statePassedIn['state'] != 'draw2PlayerChoice'):
-					statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+					statePassedIn['displayCard'] = {'image' : "14", 'active' : 0}
 				statePassedIn['playerClicks'] = []
 				
 		# check for knock state
@@ -556,7 +550,7 @@ class GameHandler(Handler):
 			if(statePassedIn['draw2Counter'] <= 0):
 				# put current display card into discard pile and reset it
 				statePassedIn['discard'].append(currentCard)
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0} 
+				statePassedIn['displayCard'] = {'image' : "14", 'active' : 0} 
 				# clear the player clicks queue
 				statePassedIn['playerClicks'] = []
 				# the user's turn is now over, so it is up to HAL to take over as the new state
@@ -636,7 +630,7 @@ class GameHandler(Handler):
 						#turn is over, reset counter and give ai control
 						statePassedIn['draw2Counter']=2
 						statePassedIn['state'] = 'HAL'
-						statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+						statePassedIn['displayCard'] = {'image' : "14", 'active' : 0}
 					
 					statePassedIn['playerClicks'] = []
 					
@@ -651,7 +645,7 @@ class GameHandler(Handler):
 
 				# reset the playerclicks array and the display card.
 				statePassedIn['playerClicks'] = []
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				statePassedIn['displayCard'] = {'image' : "14", 'active' : 0}
 
 				# return, with the state being set to HAL
 				statePassedIn['state'] = 'HAL'
@@ -707,7 +701,7 @@ class GameHandler(Handler):
 				statePassedIn[cardArray][idx]["visible"] = 1
 				# put the active display card into the discard pile and reset that display card
 				statePassedIn['discard'].append(currentCard)
-				statePassedIn['displayCard'] = {'image' : "13", 'active' : 0}
+				statePassedIn['displayCard'] = {'image' : "14", 'active' : 0}
 				# clear the clicks array
 				statePassedIn['playerClicks'] = []
 				# return, with the state being set to HAL
