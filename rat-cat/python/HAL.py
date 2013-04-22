@@ -130,11 +130,14 @@ class HAL(db.Model):
 			#Choose whichever card is highest in our hand, if card is lower then take it
 			#else discard
 			indexOfHighest,highVal = self.findHighestInHand()
-			if(card < highVal):
+			logging.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas")
+			if(card < highVal['image']):
 				#Yes we do!
 				#give us the card and we remember it well becuase we just got it	
+				logging.info(self.realAiCards[indexOfHighest]['image'])
 				state['discard'].append(self.realAiCards[indexOfHighest]['image'])
 				self.realAiCards[indexOfHighest] = {'image' : card, 'active' : 0, 'visible' : 0}
+				logging.info(self.realAiCards[indexOfHighest]['image'])
 				self.aiCards = json.dumps(self.realAiCards)
 				self.aiCardsMem[indexOfHighest] = 1.0
 				self.actionsToTake = self.actionsToTake + " HAL kept the card!"
