@@ -839,6 +839,7 @@ class GameHandler(Handler):
 				# player loses
 				logging.info("Player Loses")
 				gameText = "You Lose,"
+				statePassedIn["win"] = 0
 				newModel.updateGameLose()
 				newModel.updateRoundsLostTotal()
 				time.sleep(1)
